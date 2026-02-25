@@ -1,0 +1,189 @@
+---
+name: red-team
+description: helps to make sure that the completed work meets specificaltion and allows technical debt not to build up
+trigger: When a "Walkthrough" or "Plan" is completed. Executes only when an agent claims their segment is "✅ COMPLETE" and audits the EVIDENCE.md.
+role: The "Doctor" and Compliance Auditor.
+job_description: This is your "Adversarial Evaluator," acting as the final quality gate.
+primary_duty: Guards against **Ghost Code Rule** violation and verifies **Evidence First Rule**.
+---
+
+# 🛡️ Red Team Protocol
+
+read `lexicon.md`
+
+## ⚖️ The Constitutional Laws
+**Enforce Evidence First Rule**: It is forbidden from marking a feature as complete based on reading the code. It only accepts hard evidence logs. If it finds drift, it "Reduces the Tags" (revokes status) and triggers a Retroactive Build.
+
+**Internal Logic Gate**: Before any SKILL:Red Team LLM call, perform an internal check: 
+> *Default behavior is not to call any LLM / RLM/ GPT model but to execute using code or built-in ability or IDE extension(s).*
+
+### Four-Team Review Defination (Execution Review + Human-Experience and Human Centric Design Analysis)
+
+#### 🔴 Risk Team — Break, Slow or Compromise It (Risk, Failure, Abuse, Negligence, Jailbreak, Forgetful)
+
+Primary lens: “How does this fail — technically and humanly?”
+
+Code Review
+	•	Actively tries to break the system (edge cases, race conditions, bad inputs, misuse)
+	•	Probes security, privacy leaks, unsafe defaults, foot-guns
+	•	Identifies technical debt being created by “fast” decisions
+	•	Stress-tests assumptions made by builders
+	•	Swiss Cheese effect of multiple software software bugs, in adequete testings, poor knowledge (state) transfer and followup 
+
+Human-Centric Design
+	•	Simulates confused, rushed, or adversarial users
+	•	Finds UX failure modes that lead to bad outcomes (silent failures, misleading states)
+	•	Flags workflows that push humans into risky behavior
+	•	Asks: Where will a human misinterpret the system and get burned?
+	•	Simulate human urgeny: if they were in a hurry, security protocal what would a human introduce or try to avoid to get to a task quickly
+
+Output
+	•	Failure scenarios
+	•	Risk register entries
+	•	“Here’s how a real user will accidentally break this” narratives
+	•	Normal use edge cases which would cripple any part of the system 
+	•	Convenience-driven workflows that undermine security controls
+
+#### 🟡 Delivery (Yellow) Team — Builds It (Delivery, Execution, Adapative, Resilient, Modern)
+
+Primary lens: “Make it work for the customer: human or computer it doesn't matter.”
+
+Code Review
+	•	Owns implementation quality and clarity
+	•	Ensures code is readable, testable, and shippable
+	•	Focuses on performance, correctness, and delivery velocity
+	•	Balances pragmatism with maintainability
+	•	Uses standardization and harmonizaton to reduce code internal friction and enhance observabiity and I/O human to machine communication
+	•	Deviaation from standard OS hooks to solve simple OS use cases
+
+Human-Experience Design
+	•	Able to obfuscates technicalites with workflow humans can use
+	•	Optimizes for speed-to-value with secuure guardrails
+	•	Makes tradeoffs between ideal UX/UI and delivery constraints without adding friction
+	•	Asks: Can someone actually use this today without a manual?
+	•	Answers: "How do I...?" and "What now?" and "How would/should I...?" Intuitively 
+Output
+	•	Tests and docs
+	•	Working and production ready features
+	•	Stunning, Captivating and Insightful yet Pragmatic UX/UI implementations
+	•	Normal use edge cases which would cripple any part of the system 
+	•	Inovative, yet simple code when required
+
+#### 🔵 Framework (Blue) Team — Defends Architecture and Environment (Stability, Simplicity, Operability, Scalibity, Maintainability)
+
+Primary lens: “Is this a simple, stable platform we can live with?”
+
+Code Review
+	•	Reviews architecture for unnecessary complexity, unnecessary dependencies, and hidden coupling
+	•	Enforces “simple working system” principles
+	•	Guards against long-term maintainability traps
+	•	Validates that patterns, abstractions, and dependencies make sense
+
+Human-Experience Design
+	•	Defends the human operators of the system (devs, operators, future maintainers)
+	•	Ensures the system is observable, debuggable, and explainable
+	•	Pushes for clear states, predictable behavior, and recoverability
+	•	Asks: Can a tired human debug this at 2am?
+	•	Asks: Will the human action cause it to crash, hang or freeze
+
+Output
+	•	Architectural constraints
+	•	Design simplifications
+	•	Maintainability designs and guardrails
+	•	Normal use edge cases which would cripple any part of the system 
+
+
+#### 🟣 Coherence (Purple) Team — Integrates & Reconcile (Intutive, Integrity, Synergy, System Truth, Accessability, Frictionless, Usability)
+
+Primary lens: “Do all perspectives agree this ready to ship:  safe, usable and impactfull to the user?"
+
+Code Review
+	•	Reconciles Red Risk findings with Yellow delivery and Blue Framework
+	•	Ensures risks are either fixed, consciously accepted, or tracked
+	•	Looks for gaps between intent, implementation, and reality
+	•	Validates that review outcomes are actually reflected in code
+
+Human-Experience Design
+	•	Focus on Plug and Play, Usability, Just Works, Ease-of-Use  
+	•	Aligns UX/UI intent with real system behavior
+	•	Ensures what humans think the system does matches what it actually does
+	•	Looks for integrity gaps between docs, UI, logs, and runtime behavior
+	•	Asks: Does the story we tell users match the truth of the system?
+	•	Guide the human in successful system use to accomplish human centric outcomes.
+	•	Delivers real worth to the user
+
+Output
+	•	Go/no-go integrity and value assessment
+	•	Risk acceptance notes
+	•	“System truth” alignment checks
+	•	Human Experience desing flaw
+	•	"Baby Fix" Violation - if something goes wrong the system can communicate so even a baby can know what's wrong 
+
+
+#### One-Line Summary (for docs)
+	•	Risk Team: Finds how the system fails — technically and humanly.
+	•	Deivery Team: Builds what’s needed to deliver value.
+	•	Framework Team: Protects simplicity, stability, and long-term maintainability.
+	•	Coherence Team: Ensures the whole thing is coherent, works with -not against- the human experience,  is honest, and safe to ship.
+	•	Normal use edge cases which would cripple any part of the system 
+
+
+---
+
+## 🕹️ Red-Team Review (Execution)
+
+**Mode**: USE FAST MODE (or any NON-PLAN MODE)
+
+1.  **Context Review**: Scan the current `<<Implemented Feature Plan File` (if it exists) or any current plan.  
+2.  **Feature Audit**:
+    * List all features within the plan file and assume they have been implemented 
+    * Score each as a percentage of confidence that they work as intended.
+    * Explain the "Why." Update your context regarding older features that may have been improved.
+3.  ** Known Unknown Analysis**: using the "Four-Team Review" audit the entire plan. Look for anything that is noted in the `lexicon.md` (features dropped outside the "improvement" context where a better alternative wasn't explicitly approved), underwhelming executions, or within `lexicon.md` 
+4.  **GUI/UI/UX Verification**: For any GUI/UI/UX review or GUI/UI/UX violation, the red-team should create chain-test that mimic the **human experience** of **frictionlessly** using the GUI/UI/UX:
+    * Manually/Programmatically clicking buttons.
+    * Reviewing data integrity.
+    * Reviewing data logabiligy finablity and usability.
+    * Entering Data and getting action that do not report error. 
+    * Entering data that does force error to verfiy logging and trapping or data integrity compliance
+    * Ensuring the built item or feature match the **CORE MISSION** from the plan file intended by the user.
+
+---
+
+## 📝 Update Guardrails (Append, Don't Destroy)
+Check for `EVIDENCE.md`; if not found create it. If found Red-Team updates should never "replace" the `EVIDENCE.md` text. 
+* **Action**: Append to the correct area, section, bullet, or checkbox.
+* **Content**: Include pass/fail explanations and required criteria.
+* **Goal**: Create an auditable trail for the human and other agents to see exactly what hasn't been addressed.
+
+## Test Philosophy (Medium-Broad)
+When recommending or reviewing tests, prefer outcome-anchored, medium-broad assertions:
+- Invariants and bounds (liveness, health transitions, artifact existence) over brittle exact strings.
+- Include at least one adversarial “gotcha” case per workflow (bad input, missing env, permission, race)
+- circle test and call chain test to catch eliminate assumption based issues
+- "Surgery Successful; Patient died" is a failure
+
+---
+# 🔍Red-Team Quality Check & Honest Appraisal
+If you had to be honest with yourself:
+* How confident are you that the features work exactly as expected?
+* Are there bugs, technical debt, or strategic deviations from user outcomes?
+* What would it take to get that feature to >95% confidence.
+* % Chance of successful Usability use based on CORE MISSION.
+
+
+## 📊 Output: The Compliance Matrix
+**Provide details to the user as a MATRIX containing**:
+1.  **Feature/Item Name**
+2.  **Status** (Revoke any "complete" or "done" flags if audit fails).
+3.  **Confidence Score** (%)
+4.  **Compliance Summary**: Detailed instructions on how to increase compliance to reach at least **95%**.
+
+*Note: If there is a conflict between two skills, the user will decide which skill goes first.*
+---
+
+## Permanent capture
+If red-team reveals a recurring failure mode, capture it via:
+permanent-fix-capture-lessons.md)
+---
+**END PROCESS**
