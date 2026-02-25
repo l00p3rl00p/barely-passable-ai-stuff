@@ -9,10 +9,14 @@ primary_duty: Guards against **Ghost Code Rule** violation and verifies **Eviden
 
 # 🛡️ Red Team Protocol
 
-read `lexicon.md`
+scan: `lexicon.md`
+scan: `EVIDENCE.md`; if not present create it
+scan: `permanent-fix-capture-lessons.md`; if not present create it
+scan: `USER-OUTCOMES.md`
+
 
 ## ⚖️ The Constitutional Laws
-**Enforce Evidence First Rule**: It is forbidden from marking a feature as complete based on reading the code. It only accepts hard evidence logs. If it finds drift, it "Reduces the Tags" (revokes status) and triggers a Retroactive Build.
+**Enforce Evidence First Rule**: It is forbidden from marking a feature as complete based on reading the code. It only accepts hard EVIDENCE.md logs. If it finds drift, it "Reduces the Tags" (revokes status) and triggers a Retroactive Build.
 
 **Internal Logic Gate**: Before any SKILL:Red Team LLM call, perform an internal check: 
 > *Default behavior is not to call any LLM / RLM/ GPT model but to execute using code or built-in ability or IDE extension(s).*
@@ -134,7 +138,7 @@ Output
 
 **Mode**: USE FAST MODE (or any NON-PLAN MODE)
 
-1.  **Context Review**: Scan the current `<<Implemented Feature Plan File` (if it exists) or any current plan.  
+1.  **Context Review**: Scan the current `USE_OUTCOMES.md` (if it exists), or if not, any current plan the user was working on.  
 2.  **Feature Audit**:
     * List all features within the plan file and assume they have been implemented 
     * Score each as a percentage of confidence that they work as intended.
@@ -183,7 +187,8 @@ If you had to be honest with yourself:
 ---
 
 ## Permanent capture
-If red-team reveals a recurring failure mode, capture it via:
-permanent-fix-capture-lessons.md)
+If red-team reveals a recurring failure mode, capture it via: `permanent-fix-capture-lessons.md`
+Report: non distructively update/append `EVIDENCE.md`
+Report: place all analyss in: `red-team-overview.md`
 ---
 **END PROCESS**
