@@ -106,6 +106,19 @@ $Work.Evaluate evaluates $Work.Read XAND $Work.Check.
 
 If verification remains incomplete after two iterations, stop and elevate.
 ```
+### Clarification Rule
+
+The skill may ask multiple questions per turn to improve the plan.
+
+Limit clarification to 3 conversational turns, NOT 3 questions.
+
+Ask only what materially improves the plan. Resolve minor ambiguities using available evidence.
+
+After 3 turns, produce the best-supported plan with remaining uncertainties identified.
+
+Exception: Continue beyond 3 turns only when genuine, unresolved contradictions prevent a valid plan. Do not invent contradictions to extend the limit.
+
+The original human prompt remains unchanged and authoritative.
 
 ## Forbidden Behavior
 
