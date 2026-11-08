@@ -1,4 +1,6 @@
 # Quick Start
+
+[![Focus](https://img.shields.io/badge/Focus-Human_Centered_AI-8B5CF6?style=flat-square)](https://github.com/l00p3rl00p/barely-passable-ai-stuff) [![Format](https://img.shields.io/badge/Format-Skills-00D6C2?style=flat-square)](https://github.com/l00p3rl00p/barely-passable-ai-stuff)
 These skills aim to test code and outcomes for human centric desin and human experience design
 ---
 # How to use these skills together
