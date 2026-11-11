@@ -537,9 +537,9 @@ The library provides a practical realization of these steps: initialize, remembe
                     evolving knowledge
 ```
 
-One deployment may maintain conversational knowledge in an authorized private directory while another intelligence maintains its own separate store. We chose a chat-only scope, Core-first capture, graph-theoretically bounded working-context retrieval, reviewed write-back, and separate provider-owned stores. Those are application decisions. They are not prerequisites for using the library.
+The current public research deployment keeps its derived JIT navigation artifact with this repository while original sources retain their own source/access boundaries. We chose a chat-oriented scope, Core-first capture, graph-theoretically bounded working-context retrieval, and reviewed write-back. Those are application decisions, not prerequisites for using the library.
 
-The earlier pilot exercised selective retrieval from a prepared conversation fixture. The live follow-up then grew a graph from actual working discussions and used the library's expanding graph capabilities on it. The recorded 15-node, 21-relationship snapshot and the capture workflow demonstrate the mechanics of starting small, preserving discoveries and continuing the work. They do not establish a controlled benefit for every independent session, a universal retrieval policy, or measured token savings.
+The earlier pilot exercised selective retrieval from a prepared conversation fixture. The current public follow-up adds a section-scoped JIT index over the evolving manuscript and uses the public library's graph capabilities to navigate it. Together they demonstrate the mechanics of starting small, preserving stable identities, retrieving targeted evidence and continuing the work. They do not establish a controlled benefit for every independent session, a universal retrieval policy, or measured token savings.
 
 The point is not to finish indexing the world before beginning. It is to start with one useful discovery, make it navigable, and let the knowledge grow through work. The intelligence does not need permission from the library to investigate; it needs human authorization and a meaningful task.
 
@@ -590,7 +590,7 @@ The point is not to finish indexing the world before beginning. It is to start w
       <---- the knowledge grows through work -----+
 ```
 
-**Figure 7. No grand ingestion ceremony.** Start with one useful discovery and connect more as evidence establishes relationships. The next investigation can use what the first leaves behind. The letters illustrate the method, not actual node identifiers. The original pilot and the subsequent living knowledge graph demonstrate the mechanics of this progression.
+**Figure 7. No grand ingestion ceremony.** Start with one useful discovery and connect more as evidence establishes relationships. The next investigation can use what the first leaves behind. The letters illustrate the method, not actual node identifiers. The original pilot and the current public section-scoped JIT artifact demonstrate the mechanics of this progression.
 
 
 ## 15. Execution-boundary capture: persistence cannot be an optional thought [EKC:28]
