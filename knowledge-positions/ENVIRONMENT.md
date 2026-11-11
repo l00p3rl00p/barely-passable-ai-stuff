@@ -18,8 +18,6 @@ The current implementation is a standalone Python library, version 0.1.0. [Sourc
 
 ## Runtime boundaries
 
-Original sources remain external to the index.## Runtime boundaries
-
 **Implemented versus proposed:** the Python library currently stores source/version/span fields, NetworkX relationships and JSON graphs; it does **not** enforce access realms, write to LadybugDB or automatically trigger enrichment when a file is read. [Precise location and access signals](LOCATION_ACCESS.md), the implemented **three-touch mutation guard**, and the default on-touch enrichment policy are distinct from the still-uninstalled host hook. LadybugDB remains a proposed persistence backend, not an implemented Knowledge Positions adapter.
 
 Original sources remain external to the index. No mandatory Tree-sitter, graph database, MCP server, LLM server or custom graph-search framework. The graph resides in memory; vector search is linear. The actual model requires local cache or model access. The GPS lexical encoder is not semantic.
@@ -42,15 +40,15 @@ Web ChatGPT session                 Local or cloud execution boundary
 +-------------------+              | JSON graph / source registry  |
           |                         +-------------------------------+
           | authorized GitHub access           |
-          +--------------------------> private knowledge repository
+          +--------------------------> public research JIT index
 
-Original chat/session files: separate; resolve only with authorized access.
+Original sources remain separate; resolve only with authorized access.
 SQLite FTS5: optional example index. LadybugDB: future persistence option.
 ```
 
 ```mermaid
 flowchart TB
-  W[Ordinary ChatGPT] -->|repository connector| R[Private knowledge graph and locators]
+  W[Ordinary ChatGPT] -->|repository connector| R[Public research JIT index and locators]
   W -->|available execution environment| P[Python library]
   P --> N[NetworkX graph]
   P --> V[NumPy vectors]
@@ -58,7 +56,7 @@ flowchart TB
   P --> C[Bounded chat cache: at most 32 results]
   P -.-> E[SQLite FTS5 example]
   P -.-> L[LadybugDB proposed]
-  R -.-> S[Original session files: separate authorized access]
+  R -.-> S[Original sources: separate authorized access]
 ```
 
 The chat-only application uses `chat_context(root, relations=..., direction=..., profile=...)`: default Personalized PageRank / random-walk-with-restart attenuation with conservative/balanced/aggressive profiles, plus immediate boundary references in `other`; callers may explicitly request an ego radius. API writes clear the in-memory derived cache; source-version changes cascade staleness through explicit dependencies independently of retrieval breadth. `enrich_node` enforces the hard three-touch semantic mutation cap while allowing outward relationship growth. Direct graph edits must call `invalidate_cache()`. The graph views and algorithms remain available independently of bounded retrieval. No separate service, database server, provider-cache integration or automatic background capture is running. [SQLite](https://www.sqlite.org/) · [LadybugDB](https://docs.ladybugdb.com/).
