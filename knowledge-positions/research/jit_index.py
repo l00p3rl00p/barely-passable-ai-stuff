@@ -1,8 +1,9 @@
 """Current section-scoped JIT navigation index for the evolving research paper.
 
 This is a derived navigation artifact, not a second theory. It indexes stable EKC
-sections independently so unchanged sections retain identity and optional vector
-state when another section changes.
+sections independently so unchanged sections retain identity and compatible vector
+state when another section changes. When no semantic encoder is used, the index
+materializes the repository's deterministic lexical-hash-512 fallback.
 """
 import argparse
 import hashlib
