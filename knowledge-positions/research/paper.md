@@ -648,3 +648,46 @@ This separates responsibilities: the **host** records events; the **library** ve
 **Optional persistent implementation.** Python can apply Knowledge Positions to parsed AST and portable OKF knowledge, then update an embedded [LadybugDB](https://docs.ladybugdb.com/) graph directly in a transaction—without an intermediate JSON export/import. Use stable item identities and independent source/annotation hashes to update only affected knowledge; retrieve bounded subgraphs into NetworkX and resolve originals only where authorized. Ladybug uses binary on-disk storage with logging/checkpointing, so logical knowledge records, not Git text diffs, describe incremental changes. This is a recommended **design**, not an installed Knowledge Positions backend. Persistence still does not compel an LLM to capture: that needs an actual execution boundary. See the [portable location/storage design](../LOCATION_ACCESS.md).
 
 The next experiment must attach a real hook, perform normal work without any model-initiated save call, clear the context, and independently verify that source journal, graph and checkpoints advanced. It must also test a failed write and recovery. Our GPS and living-graph experiments established the navigation mechanics, **not** this enforcement guarantee. The [Runbook](../RUNBOOK.md#7-deterministic-capture-enforce-the-execution-boundary-not-the-prompt) defines the proposed integration contract. The observed cold-start failure is summarized here without linking private project material.
+
+## Appendix A — Adoption phases
+
+**Phase 1 = Core/JIT foundation**
+
+- identity
+- location
+- relation
+- proximity/vector
+- source/version integrity
+- deterministic maintenance
+- bounded retrieval
+- basic qualified relationships
+
+That gets you a working, small, navigable knowledge system.
+
+**Phase 2 = Enrichment/evolution layer**
+
+A real application can then start using the richer mechanisms already described in:
+
+- [Knowledge Asset Evolution: An OKF-Compatible Extension Profile, v1.6.3](../Knowledge-Asset-Evolution-Spec-v1.6.3.md)
+- [Knowledge Graph Relationships and Enrichment](../Knowledge_Graph_Relationships_and_Enrichment.md)
+
+- stronger provenance and qualification
+- minimum enrichment fields
+- contradiction/support relationships
+- recurring-pattern detection
+- human/machine ownership boundaries
+- enrichment hash gates
+- schema observation and evolution
+- richer dependency/staleness propagation
+- runtime event → knowledge projection
+- promotion of frequently reused knowledge
+- optional richer persistence such as LadybugDB
+
+**Next layer above the Core.**
+
+The important distinction is:
+
+**Phase 1 proves the system can know where things are, how they relate, how similar they are, and retrieve only what matters.**
+
+**Phase 2 makes that knowledge progressively richer and more self-maintaining without bloating or corrupting the Core.**
+
