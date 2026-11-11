@@ -188,7 +188,7 @@ We propose a simple experimental policy: more than five retrievals of the same i
 
 A source version is identified by its content digest. Unchanged material can reuse previous extraction and vector positioning. Newly discovered relationships can be added without rerunning the original source through a model. If an embedding model or extraction algorithm changes, the representation may need rebuilding even though the source has not changed.
 
-Working enrichment is intentionally limited to **at most three useful contextual levels** around the material actually used. This is a *ceiling*, not three mandatory LLM passes: stop early when the current task has sufficient evidence or no new qualified relationship is established. Further enrichment follows later genuine work, not an eager sweep through unrelated files. This is separate from the implementation's three-hop **retrieval** window: it constrains the meaning-making work performed, not general graph algorithms, structural indexing or explicit dependency invalidation. The application must observe the read/touch and reuse material already in context; leaving enrichment as an optional instruction permits the model to skip it.
+Working enrichment uses a **three-touch mutation budget** on a node or explicit cluster. Initial admission/extraction is touch 1; only touches 2 and 3 may revise or thicken that semantic payload. After touch 3 the core freezes. New context must grow outward as new nodes and qualified relationships rather than repeatedly inflating the same record. A verified source-version change begins a new enrichment epoch. This write budget is separate from retrieval: working-context reads use graph-theoretic attenuation rather than a universal hop count. The application must observe the read/touch and reuse material already in context; leaving enrichment as an optional instruction permits the model to skip it.
 
 The earlier Knowledge Asset Evolution profile v1.6.3 [8] describes independent ownership-sensitive hash gates for authored content and machine enrichment. A machine update should not trigger the same enrichment process indefinitely. Those gates are a design reference; the present library does not implement that complete lifecycle.
 
@@ -497,14 +497,14 @@ We are not indexing all human knowledge. We are indexing the working conversatio
 ```mermaid
 flowchart LR
   C[Original conversation] --> K[Core knowledge]
-  K --> R[Root plus three hops]
+  K --> R[Graph-theoretically bounded retrieval]
   R --> W[Working context]
   W --> A[Investigation]
   A -->|Qualified findings| K
   R -.-> O[other: boundary references]
 ```
 
-The three-hop conversational lookup is bounded; the underlying graph and dependency cascade are not. We can run the ten named views or calculate another structure. When original evidence changes, mark explicit dependents stale and clear the derived lookup cache. We learned the cascading mechanism from [Garyu-tt/noosphere-lite-mcp](https://github.com/Garyu-tt/noosphere-lite-mcp). Nine regression tests passed against the later library implementation. This is a library-cache result, not a claim about a model provider's internal cache.
+Working-context retrieval is bounded by the selected graph policy, not by a universal hop count; the underlying graph and dependency cascade are unrestricted. The default implementation uses Personalized PageRank / random-walk-with-restart attenuation with conservative, balanced and aggressive profiles; an explicit ego radius remains available when radius itself is the intended query. We can run the ten named views or calculate another structure. When original evidence changes, mark explicit dependents stale and clear the derived lookup cache. We learned the cascading mechanism from [Garyu-tt/noosphere-lite-mcp](https://github.com/Garyu-tt/noosphere-lite-mcp). Nine regression tests passed against the later library implementation. This is a library-cache result, not a claim about a model provider's internal cache.
 
 The [four architecture views](ARCHITECTURE_VIEWS.md) extend the paper with information, graph, retrieval and runtime perspectives, including the actual ChatGPT deployment boundary and the roles of [SQLite](https://www.sqlite.org/) and [LadybugDB](https://docs.ladybugdb.com/). They also describe the chat-only scope, independent Git module direction and future security work.
 
@@ -560,7 +560,7 @@ The library provides a practical realization of these steps: initialize, remembe
                     evolving knowledge
 ```
 
-One deployment may maintain conversational knowledge in an authorized private directory while another intelligence maintains its own separate store. We chose a chat-only scope, Core-first capture, a three-hop working-context lookup, reviewed write-back, and separate provider-owned stores. Those are our application decisions. They are not prerequisites for using the library.
+One deployment may maintain conversational knowledge in an authorized private directory while another intelligence maintains its own separate store. We chose a chat-only scope, Core-first capture, graph-theoretically bounded working-context retrieval, reviewed write-back, and separate provider-owned stores. Those are application decisions. They are not prerequisites for using the library.
 
 The earlier pilot exercised selective retrieval from a prepared conversation fixture. The live follow-up then grew a graph from actual working discussions and used the library's expanding graph capabilities on it. The recorded 15-node, 21-relationship snapshot and the capture workflow demonstrate the mechanics of starting small, preserving discoveries and continuing the work. They do not establish a controlled benefit for every independent session, a universal retrieval policy, or measured token savings.
 
