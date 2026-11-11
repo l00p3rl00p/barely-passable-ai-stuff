@@ -76,7 +76,7 @@ We did not invent the cascading-staleness mechanism: we learned it from [Garyu-t
 
 ```mermaid
 flowchart LR
-  C[Ordinary ChatGPT] -->|authorized tools| P[Private knowledge graph]
+  C[Ordinary ChatGPT] -->|authorized tools| P[Public research JIT index]
   P -->|source locator| W[Accessible ChatGPT conversation]
   P -.->|unresolved local locator| L[Local session directory]
   A[Authorized local agent] --> L
