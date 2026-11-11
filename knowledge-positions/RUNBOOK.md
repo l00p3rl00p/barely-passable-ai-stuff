@@ -106,9 +106,9 @@ Select a view by purpose, not by a mandatory workflow. Weighted/forest views req
 ## Bounded chat retrieval
 
 ```python
-context = k.chat_context(root, direction='both')
-print(context['levels'])  # root, 1, 2, 3
-print(context['other'])   # boundary references, not deeper source text
+context = k.chat_context(root, direction='both', profile='balanced')
+print(context['retrieval'])  # PPR parameters and transparent profile
+print(context['other'])      # immediate boundary references not loaded
 ```
 
 API writes clear the derived cache. After direct edits to k.graph, call k.invalidate_cache(). Full graph operations and dependency invalidation remain unrestricted. No raw chats or secrets in Git.
@@ -174,7 +174,7 @@ session append / tool result / clear boundary
 3. **Index independently of model decisions.** A bounded single-writer worker consumes journal offsets, verifies source spans, invokes Knowledge Positions to persist source positions and graph structures, and records completed offsets. Idempotency means an event retry does not duplicate its source identity. Indexing may defer vectors and optional model-derived interpretation.
 4. **Keep optional inference optional.** A later LLM may add qualified semantic relationships using evidence; such enrichment is separate from the mandatory event-capture path. Unknown vectors remain unknown. Do not turn model-generated hypotheses into original evidence.
 
-**Do not confuse initial ingestion with enrichment:** a fast AST/schema pass may index whole repositories without LLM interpretation. The default host integration enriches only what has already been provided to the intelligence during real work. Reuse those source spans, consult at most three meaningful enrichment levels, and persist only qualified deltas. Three enrichment levels are a ceiling, not required passes or a bulk job. This is independent of the separate three-hop retrieval boundary. An explicit offline full-corpus enrichment request is a different workload, not the default architecture. See [location and application pattern](LOCATION_ACCESS.md#recommended-application-pattern).
+**Do not confuse initial ingestion with enrichment:** a fast AST/schema pass may index whole repositories without LLM interpretation. The default host integration enriches only what has already been provided to the intelligence during real work. Initial admission is touch 1; a node or explicit cluster may receive only touches 2 and 3 as later semantic mutation passes. After touch 3, freeze its payload and grow outward through new nodes/relationships. Verified source mutation starts a new epoch. This hard write budget is separate from retrieval, which uses graph-theoretic attenuation rather than a fixed hop ceiling. An explicit offline full-corpus enrichment request is a different workload, not the default architecture. See [location and application pattern](LOCATION_ACCESS.md#recommended-application-pattern).
 5. **Make lookup observable and enforceable.** A host-managed task-entry tool/MCP boundary can request the relevant navigational context and source evidence rather than relying on an optional reminder to run search. Record the tool call, retrieved evidence, model-visible context and any bypass reason. Ordinary model-directed lookup is still allowed, but it is not evidence that mandatory lookup ran.
 6. **Audit failure and recovery.** Compare observed source events to durable journal entries, accepted graph nodes and committed checkpoints. A failed write must remain visible and retryable; do not report success solely because a hook was invoked. Preserve ordering across session clear/rotation and use a bounded queue/backpressure policy that protects user work. If a runtime cannot expose a usable event seam, report that integration gap rather than claiming automatic capture.
 
