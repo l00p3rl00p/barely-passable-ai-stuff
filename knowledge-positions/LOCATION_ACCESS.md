@@ -110,7 +110,7 @@ Original source -> authorized Python parser / AST + OKF
                 -> authorized original-source resolution
 ```
 
-- **One operation, not a two-stage copy:** a Python backend can write directly to embedded [LadybugDB](https://docs.ladybugdb.com/). The general Knowledge Positions → Ladybug adapter is **not implemented** in the library. A separate prior experiment demonstrated actual AST/OKF storage and query in Ladybug; it is outside this repository.
+- **One operation, not a two-stage copy:** a Python backend can write directly to embedded [LadybugDB](https://docs.ladybugdb.com/). The general Knowledge Positions → Ladybug adapter is **not implemented** in the library; treat it as a recommended persistence design until a public adapter and reproducible validation are added here.
 - **Incremental:** compare source/annotation hashes per stable knowledge item, change only affected records and qualified edges, preserve unchanged vectors and provenance. Document-wide version changes or shifted offsets must not rotate every unchanged knowledge ID.
 - **Safe writes:** Ladybug's on-disk store uses a WAL and checkpoints. Coordinate writers; checkpoint/close before external snapshots. A binary `.lbdb` does not produce meaningful Git text diffs—inspect logical record deltas.
 - **Enforcement remains separate:** database persistence does not make a model volunteer to save. Reliable capture requires an actual host hook or application-controlled invocation. A connector may only resolve authorized source locations.
