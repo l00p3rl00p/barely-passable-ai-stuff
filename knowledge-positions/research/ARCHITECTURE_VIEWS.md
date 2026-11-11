@@ -52,7 +52,7 @@ The ten named views are conveniences. If a different graph helps, calculate it. 
 
 ```mermaid
 flowchart LR
-  W[Ordinary ChatGPT] -->|authorized repository tools| S[Private knowledge graph]
+  W[Ordinary ChatGPT] -->|authorized repository tools| S[Public research JIT index]
   W -->|available execution| P[Knowledge Positions]
   P --> N[NetworkX / NumPy]
   P --> J[JSON graph]
@@ -61,7 +61,7 @@ flowchart LR
   S -.-> O[Original conversations / local sessions]
 ```
 
-[SQLite](https://www.sqlite.org/) supplies the [FTS5](https://www.sqlite.org/fts5.html) lexical-index example. [LadybugDB](https://docs.ladybugdb.com/) is a possible embedded graph persistence backend. Neither is a new mandatory dependency. Ordinary ChatGPT participates through its available authorized tools, rather than a modified model or provider memory system. Cross-domain pointers do not imply original-source access or transfer ownership; [source realm and access signals](../LOCATION_ACCESS.md) must be resolved per environment, with separately protected private source stores. Structural ingestion can precede and outnumber semantic enrichment: **an LLM enriches on actual use/read, not on initial corpus ingestion**. Semantic payload mutation has a hard three-touch budget per node or explicit cluster: admission is touch 1, touches 2 and 3 may revise the payload, then it freezes until verified source mutation starts a new epoch. Later discoveries grow outward through relationships. Retrieval breadth is separate and graph-theoretically bounded. An explicit bulk offline enrichment run is a separate opt-in policy.
+[SQLite](https://www.sqlite.org/) supplies the [FTS5](https://www.sqlite.org/fts5.html) lexical-index example. [LadybugDB](https://docs.ladybugdb.com/) is a possible embedded graph persistence backend. Neither is a new mandatory dependency. Ordinary ChatGPT participates through its available authorized tools, rather than a modified model or provider memory system. Cross-domain pointers do not imply original-source access or transfer ownership; [source realm and access signals](../LOCATION_ACCESS.md) must be resolved per environment, with source stores protected according to their own ownership and access boundaries. Structural ingestion can precede and outnumber semantic enrichment: **an LLM enriches on actual use/read, not on initial corpus ingestion**. Semantic payload mutation has a hard three-touch budget per node or explicit cluster: admission is touch 1, touches 2 and 3 may revise the payload, then it freezes until verified source mutation starts a new epoch. Later discoveries grow outward through relationships. Retrieval breadth is separate and graph-theoretically bounded. An explicit bulk offline enrichment run is a separate opt-in policy.
 
 **We did not invent cascading staleness.** We learned it from [Garyu-tt/noosphere-lite-mcp](https://github.com/Garyu-tt/noosphere-lite-mcp). Explicit dependents are marked stale when evidence changes; derived conversation caches are cleared. History remains inspectable. Regression coverage now includes adaptive PPR retrieval profiles, explicit ego-radius retrieval, direction/relation filtering, three-touch enrichment freezing, and dependency cascades that remain independent of retrieval scope.
 
