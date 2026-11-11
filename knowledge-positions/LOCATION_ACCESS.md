@@ -75,7 +75,7 @@ If a source is actually read, record its observed version, precise span/unit and
 
 **Two costs, not two mandatory import stages:** deterministic structural ingestion is cheap enough to operate across broad accessible sources (AST/schema, spans, identity, hashes, structural relationships). It does **not** call an LLM to interpret the corpus. Semantic enrichment is a separate *on-touch* operation: the host observes source material actually supplied for work, and the application captures useful, evidence-backed knowledge from that already-read material.
 
-The default enrichment ceiling is **three useful contextual levels**, not three automatic reprocessing passes. Stop earlier when the task has enough evidence; don't expand unrelated neighbors or enrich on repository open. Additional levels happen only as future work needs them. This limit governs LLM interpretation, whereas the library's three-hop conversational retrieval ceiling governs the context returned; independent structural parsing, full graph algorithms and dependency invalidation remain unrestricted.
+The default enrichment ceiling is a **three-touch mutation budget**, not three traversal levels. Initial admission/extraction is touch 1; only two additional semantic payload mutations are permitted for a node or explicit cluster. After touch 3, freeze that payload and express later discoveries as new nodes/relationships. A verified source-version change re-opens the budget as a new enrichment epoch. Retrieval is separate: the default working-context query uses Personalized PageRank attenuation with a conservative/balanced/aggressive profile; explicit ego radius remains available when radius is the intended graph operation.
 
 ```python
 # Architecture sketch: adapters below are application responsibilities,
@@ -90,9 +90,9 @@ def on_model_source_used(observed_event):
     if not observed_event.content_was_supplied:
         return
     item = resolve_verified_source(observed_event)
-    relevant = retrieve_bounded_existing_knowledge(item, hops=3)
+    relevant = retrieve_existing_knowledge(item, profile='balanced')
     delta = qualify_useful_meaning_from_current_work(
-        observed_event, relevant, enrichment_levels_at_most=3
+        observed_event, relevant, mutation_touch_limit=3
     )
     if delta:
         verify_and_commit_changed_records_only(delta)  # JSON or Ladybug adapter
