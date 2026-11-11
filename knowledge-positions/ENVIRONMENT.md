@@ -20,7 +20,7 @@ The current implementation is a standalone Python library, version 0.1.0. [Sourc
 
 Original sources remain external to the index.## Runtime boundaries
 
-**Implemented versus proposed:** the Python library currently stores source/version/span fields, NetworkX relationships and JSON graphs; it does **not** enforce access realms, write to LadybugDB or automatically trigger enrichment when a file is read. [Precise location and access signals](LOCATION_ACCESS.md) and the default **on-touch, maximum three-level enrichment** policy are architecture guidance, not an installed host hook. A separate prior experiment executed real Markdown AST/OKF writes to LadybugDB; that experiment is not part of this repository and is not the generic Knowledge Positions storage adapter.
+**Implemented versus proposed:** the Python library currently stores source/version/span fields, NetworkX relationships and JSON graphs; it does **not** enforce access realms, write to LadybugDB or automatically trigger enrichment when a file is read. [Precise location and access signals](LOCATION_ACCESS.md), the implemented **three-touch mutation guard**, and the default on-touch enrichment policy are distinct from the still-uninstalled host hook. A separate prior experiment executed real Markdown AST/OKF writes to LadybugDB; that experiment is not part of this repository and is not the generic Knowledge Positions storage adapter.
 
 Original sources remain external to the index. No mandatory Tree-sitter, graph database, MCP server, LLM server or custom graph-search framework. The graph resides in memory; vector search is linear. The actual model requires local cache or model access. The GPS lexical encoder is not semantic.
 
@@ -61,7 +61,7 @@ flowchart TB
   R -.-> S[Original session files: separate authorized access]
 ```
 
-The chat-only application uses `chat_context(root, relations=..., direction=...)`: three hops, boundary references in `other`. API writes clear the in-memory derived cache; source-version changes cascade staleness through explicit dependencies even beyond three hops. Direct graph edits must call `invalidate_cache()`. Nine regression tests passed against library blob `6c02c308337a70fe2c84e70e4bc08e2f597e9243`; the graph views and algorithms remain available independently of bounded retrieval. No separate service, database server, provider-cache integration or automatic background capture is running. [SQLite](https://www.sqlite.org/) · [LadybugDB](https://docs.ladybugdb.com/).
+The chat-only application uses `chat_context(root, relations=..., direction=..., profile=...)`: default Personalized PageRank / random-walk-with-restart attenuation with conservative/balanced/aggressive profiles, plus immediate boundary references in `other`; callers may explicitly request an ego radius. API writes clear the in-memory derived cache; source-version changes cascade staleness through explicit dependencies independently of retrieval breadth. `enrich_node` enforces the hard three-touch semantic mutation cap while allowing outward relationship growth. Direct graph edits must call `invalidate_cache()`. The graph views and algorithms remain available independently of bounded retrieval. No separate service, database server, provider-cache integration or automatic background capture is running. [SQLite](https://www.sqlite.org/) · [LadybugDB](https://docs.ladybugdb.com/).
 
 ## Agent capture entry point
 
