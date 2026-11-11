@@ -11,6 +11,8 @@ import re
 from collections import Counter
 from pathlib import Path
 
+import numpy as np
+
 ROOT = Path(__file__).resolve().parent
 PAPER = ROOT / "paper.md"
 INDEX = ROOT / "jit-index.json"
@@ -56,6 +58,15 @@ def term_map(text):
     counts = Counter(w for w in WORDS.findall(text.lower()) if w not in STOP)
     return dict(sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))[:24])
 
+def lexical_hash_vector(text):
+    """Deterministic 512-d fallback used elsewhere in Knowledge Positions."""
+    v = np.zeros(512)
+    for word in re.findall(r"\w+", text.lower()):
+        h = hashlib.sha256(word.encode()).digest()
+        v[int.from_bytes(h[:4], "big") % 512] += 1 if h[4] % 2 else -1
+    norm = np.linalg.norm(v)
+    return (v / norm if norm else v).tolist()
+
 def build():
     raw = PAPER.read_bytes()
     old = {}
@@ -86,8 +97,12 @@ def build():
             "source_version_scope": "section",
             "source_version_sha256": digest,
             "terms": prior.get("terms") if same and prior.get("terms") else term_map(span.decode("utf-8")),
-            "vector": prior.get("vector") if same else None,
-            "vector_status": prior.get("vector_status", "unknown") if same else "unknown",
+            "vector": prior.get("vector") if same and prior.get("vector") is not None
+                      else lexical_hash_vector(span.decode("utf-8")),
+            "vector_status": "known",
+            "embedding_model": prior.get("embedding_model", "lexical-hash-512")
+                               if same and prior.get("vector") is not None
+                               else "lexical-hash-512",
         }
         nodes.append(node)
         if i:
@@ -102,7 +117,7 @@ def build():
         "schema_version": 1,
         "authority": "paper.md",
         "maintenance": "section_scoped_incremental",
-        "notes": "Derived JIT navigation index. Stable EKC identity; exact section spans/hashes; vectors may remain unknown.",
+        "notes": "Derived JIT navigation index. Stable EKC identity; exact section spans/hashes; deterministic lexical-hash-512 fallback vectors when no semantic encoder is used.",
         "paper_sha256": sha(raw),
         "nodes": nodes,
         "edges": edges,
