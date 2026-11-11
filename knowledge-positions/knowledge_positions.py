@@ -19,7 +19,7 @@ class KnowledgePositions:
             self.encoder = SentenceTransformer(self.model_name)
         return [float(x) for x in self.encoder.encode(text, normalize_embeddings=True)]
 
-    def add(self, source, text, *, version, position, kind='text', node_id=None, defer_embedding=False, entity_type=None):
+    def add(self, source, text, *, version, position, kind='text', node_id=None, defer_embedding=False, entity_type=None, cluster_id=None):
         """Store a source-backed span. Position uses 1-based lines, UTF-8 byte columns for Python."""
         if not text.strip() or not source or not version or not position:
             raise ValueError('source, version, position and nonempty text are required')
@@ -34,7 +34,28 @@ class KnowledgePositions:
         vector = None if defer_embedding else self._embed(text)
         self.graph.add_node(node_id, source=source, version=version, position=position,
                             kind=kind, content_hash=hashlib.sha256(text.encode()).hexdigest(),
-                            entity_type=entity_type or kind, vector=vector, vector_status='unknown' if vector is None else 'known', embedding_model=self.model_name, status='current', status_history=[])
+                            entity_type=entity_type or kind, vector=vector,
+                            vector_status='unknown' if vector is None else 'known',
+                            embedding_model=self.model_name, status='current', status_history=[],
+                            enrichment={}, enrichment_touches=1,
+                            enrichment_touch_limit=3, enrichment_frozen=False,
+                            enrichment_cluster=cluster_id)
+        if cluster_id is not None:
+            budgets = self.graph.graph.setdefault('enrichment_budgets', {})
+            state = budgets.get(cluster_id)
+            if state is None:
+                budgets[cluster_id] = {'touches': 1, 'limit': 3, 'frozen': False,
+                                       'source_versions': {source: version},
+                                       'members': [node_id]}
+            else:
+                versions = state.setdefault('source_versions', {})
+                # A verified new source version begins a new enrichment epoch.
+                if source in versions and versions[source] != version:
+                    state.update(touches=1, frozen=False)
+                versions[source] = version
+                members = state.setdefault('members', [])
+                if node_id not in members:
+                    members.append(node_id)
         self.invalidate_cache()
         return node_id
 
@@ -184,6 +205,70 @@ class KnowledgePositions:
             d['vector_status'] = 'known'
             self.invalidate_cache()
         return d['vector']
+    def enrichment_state(self, node_id, *, cluster_id=None):
+        """Return the hard mutation budget for a node or explicit cluster."""
+        if node_id not in self.graph:
+            raise KeyError(node_id)
+        node = self.graph.nodes[node_id]
+        if cluster_id is None:
+            return {'scope': 'node', 'id': node_id,
+                    'touches': int(node.get('enrichment_touches', 1)),
+                    'limit': int(node.get('enrichment_touch_limit', 3)),
+                    'frozen': bool(node.get('enrichment_frozen', False))}
+        state = self.graph.graph.get('enrichment_budgets', {}).get(cluster_id)
+        if state is None:
+            raise KeyError(cluster_id)
+        return {'scope': 'cluster', 'id': cluster_id,
+                'touches': int(state['touches']), 'limit': int(state['limit']),
+                'frozen': bool(state['frozen'])}
+
+    def enrich_node(self, node_id, updates, *, cluster_id=None, source_version=None):
+        """Apply one semantic enrichment touch; the third touch freezes payload mutation.
+
+        Initial admission is touch 1. Touches 2 and 3 may update the explicit
+        enrichment payload. After touch 3, new knowledge must grow outward
+        through relationships/new nodes rather than inflating this payload.
+        Relationship writes remain legal because they do not mutate the frozen
+        node payload. A new verified source version creates a new node identity
+        and therefore a fresh node budget; cluster epochs reset only when add()
+        observes a changed version for an existing cluster source.
+        """
+        if node_id not in self.graph:
+            raise KeyError(node_id)
+        if not isinstance(updates, dict) or not updates:
+            raise ValueError('updates must be a nonempty mapping')
+        node = self.graph.nodes[node_id]
+        if node.get('status', 'current') != 'current':
+            raise ValueError('Only current knowledge can be enriched')
+        if source_version is not None and source_version != node.get('version'):
+            raise ValueError('Enrichment belongs to a different source version')
+        touches = int(node.get('enrichment_touches', 1))
+        limit = int(node.get('enrichment_touch_limit', 3))
+        if node.get('enrichment_frozen') or touches >= limit:
+            raise ValueError('Enrichment mutation budget exhausted; add outward relationships/new knowledge instead')
+        cluster_id = cluster_id if cluster_id is not None else node.get('enrichment_cluster')
+        cluster = None
+        if cluster_id is not None:
+            budgets = self.graph.graph.setdefault('enrichment_budgets', {})
+            cluster = budgets.get(cluster_id)
+            if cluster is None:
+                cluster = budgets[cluster_id] = {
+                    'touches': 1, 'limit': 3, 'frozen': False,
+                    'source_versions': {node['source']: node['version']},
+                    'members': [node_id]}
+            if cluster.get('frozen') or int(cluster.get('touches', 1)) >= int(cluster.get('limit', 3)):
+                raise ValueError('Cluster enrichment mutation budget exhausted; link outward instead')
+        payload = dict(node.get('enrichment', {}))
+        payload.update(updates)
+        node['enrichment'] = payload
+        touches += 1
+        node['enrichment_touches'] = touches
+        node['enrichment_frozen'] = touches >= limit
+        if cluster is not None:
+            cluster['touches'] = int(cluster.get('touches', 1)) + 1
+            cluster['frozen'] = cluster['touches'] >= int(cluster.get('limit', 3))
+        self.invalidate_cache()
+        return self.enrichment_state(node_id, cluster_id=cluster_id) if cluster_id is not None else self.enrichment_state(node_id)
 
     def link(self, source_id, target_id, relation, *, evidence=None, weight=None, cost=None, qualification=None):
         if source_id not in self.graph or target_id not in self.graph:
@@ -403,24 +488,40 @@ class KnowledgePositions:
                     minimum_spanning_forest=list(forest.edges(data=True)),
                     shortest_path=nx.shortest_path(w,root,target,weight='cost') if nx.has_path(w,root,target) else None)
 
-    def chat_context(self, root, *, relations=None, direction='both'):
-        """Return at most three hops of working conversational knowledge.
+    RETRIEVAL_PROFILES = {
+        'conservative': {'alpha': 0.55, 'score_ratio': 0.20},
+        'balanced': {'alpha': 0.75, 'score_ratio': 0.08},
+        'aggressive': {'alpha': 0.90, 'score_ratio': 0.02},
+    }
 
-        The fourth-hop boundary is an 'other' bucket of references only.
-        No deeper traversal, source reads, or synthetic knowledge edges occur.
-        Full graph operations and dependency invalidation are not depth-limited.
+    def chat_context(self, root, *, relations=None, direction='both',
+                     retrieval='ppr', profile='balanced', radius=None):
+        """Return a graph-theoretically bounded working context.
+
+        Default retrieval uses Personalized PageRank / random-walk-with-restart
+        attenuation from root. Profile is the normal dial: conservative,
+        balanced, or aggressive. No fixed hop depth is imposed. Callers may
+        explicitly request retrieval='ego' with a nonnegative radius when an
+        ego-graph radius is genuinely the desired algorithm. The other bucket
+        retains one-edge boundary references without loading payloads.
         """
         from copy import deepcopy
         if direction not in ('both', 'out', 'in'):
             raise ValueError('direction must be both, out or in')
         if root not in self.graph or self.graph.nodes[root].get('status','current') != 'current':
             raise ValueError('Choose a current root')
+        if retrieval not in ('ppr', 'ego'):
+            raise ValueError('retrieval must be ppr or ego')
+        if profile not in self.RETRIEVAL_PROFILES:
+            raise ValueError('profile must be conservative, balanced or aggressive')
+        if retrieval == 'ego' and (not isinstance(radius, int) or radius < 0):
+            raise ValueError('ego retrieval requires a nonnegative integer radius')
         allowed = None if relations is None else frozenset(r.lower() for r in relations)
-        # API writes clear the small derived cache. Direct NetworkX mutations
-        # require invalidate_cache(); use detached graph_view() for analysis.
-        key = (root, None if allowed is None else tuple(sorted(allowed)), direction)
+        key = (root, None if allowed is None else tuple(sorted(allowed)), direction,
+               retrieval, profile, radius)
         if key in self._chat_cache:
             return deepcopy(self._chat_cache[key])
+
         def adjacent(n):
             edges = []
             if direction in ('both','out'):
@@ -430,33 +531,62 @@ class KnowledgePositions:
             return [(v,a,b,k,d) for v,a,b,k,d in edges
                     if self.graph.nodes[v].get('status','current') == 'current'
                     and (allowed is None or d['relation'].lower() in allowed)]
-        levels = [[root]]
-        seen = {root}
-        # Breadth-first expansion is strictly limited to three edges from root.
-        for _ in range(3):
-            nxt = sorted({v for n in levels[-1] for v,*_ in adjacent(n) if v not in seen})
-            levels.append(nxt)
-            seen.update(nxt)
-        # Inspect only the boundary's immediate edge references; do not expand
-        # or load the outside nodes. 'other' is not a factual graph node.
+
+        current = [n for n,d in self.graph.nodes(data=True)
+                   if d.get('status','current') == 'current']
+        h = nx.Graph() if direction == 'both' else nx.DiGraph()
+        h.add_nodes_from(current)
+        for a,b,k,d in self.graph.edges(keys=True,data=True):
+            if a not in h or b not in h or (allowed is not None and d['relation'].lower() not in allowed):
+                continue
+            if direction == 'both':
+                h.add_edge(a,b)
+            elif direction == 'out':
+                h.add_edge(a,b)
+            else:
+                h.add_edge(b,a)
+
+        scores = {root: 1.0}
+        if retrieval == 'ego':
+            selected = set(nx.ego_graph(h, root, radius=radius).nodes)
+            policy = {'algorithm':'ego_graph', 'radius':radius, 'profile':profile}
+        else:
+            cfg = self.RETRIEVAL_PROFILES[profile]
+            scores = nx.pagerank(h, alpha=cfg['alpha'],
+                                 personalization={root: 1.0},
+                                 dangling={root: 1.0})
+            root_score = scores.get(root, 0.0)
+            threshold = root_score * cfg['score_ratio']
+            selected = {n for n,s in scores.items() if s >= threshold and s > 0}
+            selected.add(root)
+            policy = {'algorithm':'personalized_pagerank',
+                      'profile':profile, 'alpha':cfg['alpha'],
+                      'score_ratio':cfg['score_ratio'],
+                      'absolute_threshold':threshold}
+
+        sub = h.subgraph(selected)
+        lengths = nx.single_source_shortest_path_length(sub, root) if root in sub else {root:0}
+        levels = []
+        for depth in range(max(lengths.values(), default=0)+1):
+            levels.append(sorted(n for n,d in lengths.items() if d == depth))
         outside = {}
-        for n in levels[3]:
+        for n in selected:
             for v,a,b,k,d in adjacent(n):
-                if v not in seen:
+                if v not in selected:
                     outside.setdefault(v,set()).add((a,b,k))
-        result = {'root':root,'depth':3,'levels':levels,
-                  'nodes': sorted(seen),
-                  'edges': sorted({(a,b,k) for n in seen for v,a,b,k,d in adjacent(n)
-                                   if v in seen}),
+        result = {'root':root, 'depth':max(lengths.values(), default=0),
+                  'levels':levels, 'nodes':sorted(selected),
+                  'edges':sorted({(a,b,k) for n in selected for v,a,b,k,d in adjacent(n)
+                                  if v in selected}),
+                  'retrieval':policy,
+                  'scores':{n:scores[n] for n in sorted(selected) if n in scores},
                   'other':{'label':'other','boundary_refs':[
                       {'node_id':v,'edge_refs':sorted(refs)} for v,refs in sorted(outside.items())],
-                      'count':len(outside), 'deeper_contents':'not traversed'}}
-        # Bound memory without maintaining a second graph or a cache database.
+                      'count':len(outside), 'deeper_contents':'not loaded'}}
         if len(self._chat_cache) >= 32:
             self._chat_cache.clear()
         self._chat_cache[key] = deepcopy(result)
         return result
-
     def invalidate_cache(self):
         """Discard derived chat results. Original source evidence stays intact."""
         self._chat_cache.clear()
