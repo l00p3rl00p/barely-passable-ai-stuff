@@ -100,6 +100,9 @@ def main():
     p.add_argument("--reason")
     p.add_argument("--reviewed", action="store_true")
     p.add_argument("--defer-embedding", action="store_true")
+    p.add_argument("--profile", choices=["conservative", "balanced", "aggressive"], default="balanced")
+    p.add_argument("--retrieval", choices=["ppr", "ego"], default="ppr")
+    p.add_argument("--radius", type=int)
     a = p.parse_args()
     home = a.home.resolve()
     graph = home / "graph.json"
@@ -120,7 +123,8 @@ def main():
         verify(home, k)
         print(json.dumps(k.graph.nodes[a.value]["locator"], indent=2))
     elif a.action == "context":
-        print(json.dumps(k.chat_context(a.value), indent=2))
+        print(json.dumps(k.chat_context(a.value, profile=a.profile,
+                                        retrieval=a.retrieval, radius=a.radius), indent=2))
     else:
         if not a.reviewed:
             raise ValueError("Review every field and relation for sensitive information; pass --reviewed")
