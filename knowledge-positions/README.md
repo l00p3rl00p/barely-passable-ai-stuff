@@ -71,7 +71,7 @@ python capture.py --home "$HOME_DIR" link "$NODE_ID" \
 python capture.py --home "$HOME_DIR" verify
 ```
 
-The capture procedure computes hashes, identity and lexical vectors (or use `--defer-embedding`), saves and verifies records. Context returns root plus three hops and an `other` boundary. Full graph analysis is unrestricted: ten named views are available, and additional structures can be calculated. Source-version changes use `mark_source_changed` to cascade staleness; direct graph edits require cache invalidation. Use one writer at a time.
+The capture procedure computes hashes, identity and lexical vectors (or use `--defer-embedding`), saves and verifies records. Context retrieval defaults to Personalized PageRank attenuation with a `conservative`, `balanced`, or `aggressive` profile and an `other` boundary; explicit ego radius is available when requested. Full graph analysis is unrestricted: ten named views are available, and additional structures can be calculated. Source-version changes use `mark_source_changed` to cascade staleness; direct graph edits require cache invalidation. Use one writer at a time.
 
 ### 4. Choose how to use it
 
@@ -119,7 +119,7 @@ Design coverage belongs in Architecture, implemented capabilities in Environment
 
 ![Working conversational knowledge](diagrams/knowledge-loop.svg)
 
-We started trying to save tokens. The bigger opportunity is to stop repeatedly paying to learn the same thing. This application indexes working conversations, not all human knowledge. First pass is Core; retrieve only a three-hop neighborhood and keep deeper boundary references in `other`. The ten named graph views remain available for full analysis, and agents can calculate more.
+We started trying to save tokens. The bigger opportunity is to stop repeatedly paying to learn the same thing. This application indexes working conversations, not all human knowledge. First pass is Core; retrieve a graph-theoretically bounded working set and keep immediate excluded neighbors as boundary references in `other`. The default dial is balanced PPR attenuation, not a magic hop count. The ten named graph views remain available for full analysis, and agents can calculate more.
 
 **We did not invent cascading invalidation.** We learned the dependency-staleness mechanism from [Garyu-tt/noosphere-lite-mcp](https://github.com/Garyu-tt/noosphere-lite-mcp). In our engineering judgment, the library supplies roughly 95% of the mechanisms needed for JIT memory; the remaining work is architecture, integration and execution. This is a design assessment, not a measured percentage or token-saving result. [LadybugDB](https://docs.ladybugdb.com/) is a prospective embedded graph store; [SQLite](https://www.sqlite.org/) supplies the FTS5 example. Neither is required for the core in-memory library.
 
