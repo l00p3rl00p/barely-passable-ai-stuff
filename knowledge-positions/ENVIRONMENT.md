@@ -20,7 +20,7 @@ The current implementation is a standalone Python library, version 0.1.0. [Sourc
 
 Original sources remain external to the index.## Runtime boundaries
 
-**Implemented versus proposed:** the Python library currently stores source/version/span fields, NetworkX relationships and JSON graphs; it does **not** enforce access realms, write to LadybugDB or automatically trigger enrichment when a file is read. [Precise location and access signals](LOCATION_ACCESS.md), the implemented **three-touch mutation guard**, and the default on-touch enrichment policy are distinct from the still-uninstalled host hook. A separate prior experiment executed real Markdown AST/OKF writes to LadybugDB; that experiment is not part of this repository and is not the generic Knowledge Positions storage adapter.
+**Implemented versus proposed:** the Python library currently stores source/version/span fields, NetworkX relationships and JSON graphs; it does **not** enforce access realms, write to LadybugDB or automatically trigger enrichment when a file is read. [Precise location and access signals](LOCATION_ACCESS.md), the implemented **three-touch mutation guard**, and the default on-touch enrichment policy are distinct from the still-uninstalled host hook. LadybugDB remains a proposed persistence backend, not an implemented Knowledge Positions adapter.
 
 Original sources remain external to the index. No mandatory Tree-sitter, graph database, MCP server, LLM server or custom graph-search framework. The graph resides in memory; vector search is linear. The actual model requires local cache or model access. The GPS lexical encoder is not semantic.
 
@@ -30,7 +30,7 @@ The GPS example indexes text it has already scanned using FTS5 contentless mode;
 
 [core_operations.py](core_operations.py) provides a read-only executable example of the core graph algorithms and vector calculations using the existing NetworkX graph and NumPy vectors. It does not introduce a new graph engine, dependency or store. Semantic-model evaluation remains separate from lexical-vector demonstrations.
 
-Native `graph_view`, `derive_graph` and `core_algorithms` are implemented in the library. Six local regression tests (lifecycle and graph views) passed against the exact committed library code; all ten views and algorithms also ran over an eleven-node live test graph. Similarity uses existing lexical vectors in that experiment, not a real semantic-model benchmark.
+Native `graph_view`, `derive_graph` and `core_algorithms` are implemented in the library. Public regression tests cover lifecycle and graph-view behavior. Similarity evaluation remains separate from a semantic-model benchmark.
 
 ## Runtime / network view — what actually runs
 
