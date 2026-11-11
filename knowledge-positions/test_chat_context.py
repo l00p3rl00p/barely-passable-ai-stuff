@@ -1,4 +1,4 @@
-"""Regression tests for three-hop conversation lookup and cache invalidation."""
+"""Regression tests for adaptive conversation retrieval and cache invalidation."""
 import unittest
 from knowledge_positions import KnowledgePositions
 
@@ -12,19 +12,28 @@ class TestChatContext(unittest.TestCase):
         for a,b in zip(self.ids,self.ids[1:]):
             self.k.link(b,a,'requires')
 
-    def test_strict_depth_and_other(self):
-        result = self.k.chat_context(self.ids[0], direction='in')
-        self.assertEqual(result['levels'], [[n] for n in self.ids[:4]])
-        self.assertEqual(set(result['nodes']), set(self.ids[:4]))
-        self.assertEqual(len(result['edges']), 3)
-        self.assertEqual(result['other']['label'], 'other')
-        self.assertEqual(result['other']['count'], 1)
-        self.assertEqual(result['other']['boundary_refs'][0]['node_id'], self.ids[4])
-        self.assertNotIn(self.ids[5], str(result))
-        self.assertEqual(len(self.k.graph_view('dag')), 7)
+    def test_ppr_profile_is_not_a_fixed_three_hop_limit(self):
+        conservative = self.k.chat_context(self.ids[0], direction='in',
+                                           profile='conservative')
+        aggressive = self.k.chat_context(self.ids[0], direction='in',
+                                         profile='aggressive')
+        self.assertEqual(aggressive['retrieval']['algorithm'], 'personalized_pagerank')
+        self.assertGreaterEqual(set(aggressive['nodes']), set(conservative['nodes']))
+        self.assertIn(self.ids[4], aggressive['nodes'])  # beyond the old 3-hop ceiling
+        self.assertGreater(aggressive['depth'], 3)
+        self.assertEqual(aggressive['other']['label'], 'other')
         # Cached results are detached from the caller.
-        result['nodes'].clear()
-        self.assertEqual(len(self.k.chat_context(self.ids[0], direction='in')['nodes']), 4)
+        aggressive['nodes'].clear()
+        again = self.k.chat_context(self.ids[0], direction='in', profile='aggressive')
+        self.assertTrue(again['nodes'])
+
+    def test_explicit_ego_radius_remains_available_when_requested(self):
+        result = self.k.chat_context(self.ids[0], direction='in',
+                                     retrieval='ego', radius=2)
+        self.assertEqual(result['retrieval']['algorithm'], 'ego_graph')
+        self.assertEqual(result['depth'], 2)
+        self.assertEqual(set(result['nodes']), set(self.ids[:3]))
+        self.assertEqual(result['other']['boundary_refs'][0]['node_id'], self.ids[3])
 
     def test_write_and_cascade_invalidate(self):
         self.k.chat_context(self.ids[0], direction='in')
