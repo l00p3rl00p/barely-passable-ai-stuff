@@ -38,7 +38,7 @@ python jit_index.py read EKC:12
 
 The historical whole-paper companion remains reproducible separately with `python build_companion.py build`; use it only when intentionally replaying that historical representation.
 
-`jit_index.py` does not require an embedding model. It preserves compatible vector state if present, but vectors may remain explicitly unknown. Use `python build_companion.py build --semantic` only to replay the historical companion with real embeddings; it requires model access and is not part of normal incremental maintenance.
+`jit_index.py` does not require a semantic embedding model. It materializes the same deterministic `lexical-hash-512` fallback used elsewhere in Knowledge Positions, labels that vector space explicitly, and preserves compatible unchanged vectors section-by-section. A compatible semantic encoder may replace the fallback when desired. Use `python build_companion.py build --semantic` only to replay the historical companion with semantic embeddings; it requires model access and is not part of normal incremental maintenance.
 
 If the paper changes, do not silently reuse old source positions. Re-resolve and update the affected source locations and relationships through the current incremental method. Rebuild the historical whole-paper companion only when intentionally replaying that historical artifact.
 
