@@ -3,18 +3,20 @@
 **Working research paper, not submitted or peer reviewed.**
 
 - [Read the manuscript](paper.md)
+- [Current section-scoped JIT index](jit-index.json) — derived navigation over the evolving paper; stable EKC identities, exact section spans/hashes, structural relationships
+- [JIT index tool](jit_index.py) — build, verify, search, read and inspect section neighbors without treating the whole paper as one mutable knowledge item
 - [Historical Evolving Knowledge Context](evolving-knowledge-context.json) — retained whole-document navigational artifact; not the authority for the evolving theory
 - [Experiment evidence and replay](EXPERIMENT.md)
 - [Historical whole-paper index generator](build_companion.py) — retained for comparison, not the incremental method
 - [Incremental Markdown AST + OKF alpha](alpha/README.md) — executable two-section test and actual generated concept examples
 
-## Two distinct experiments: historical index and incremental alpha
+## Current JIT maintenance, historical index and incremental alpha
 
-**Incremental source-version caution:** this manuscript has received surgical updates after the earlier whole-paper companion was generated. Its historical whole-document hash and byte offsets must not be mistaken for current original-source coordinates. The [two-section alpha](alpha/README.md) demonstrates scoped change processing; unchanged sections should retain their identities rather than triggering a full rebuild.
+**Incremental source-version caution:** this manuscript has received surgical updates after the earlier whole-paper companion was generated. Its historical whole-document hash and byte offsets must not be mistaken for current original-source coordinates. The current [section-scoped JIT index](jit-index.json) covers all EKC sections with stable section identities and exact current spans/hashes. The [two-section alpha](alpha/README.md) separately demonstrates richer Markdown AST + OKF delta processing; it is still only a two-section alpha.
 
 **Enrichment policy:** parsing and locating a large corpus is structural ingestion, not LLM interpretation. The standard architecture enriches only work-touched, already-read material and applies a hard three-touch mutation budget to a node or explicit cluster: admission is touch 1, touches 2 and 3 may revise semantic payload, then the core freezes until verified source mutation starts a new epoch. Later knowledge grows outward by relationship. Retrieval is independent and graph-theoretically bounded rather than fixed to a magic hop count. The current alpha demonstrates caller-supplied annotations, not an automatic read-event hook.
 
-The `evolving-knowledge-context.json` companion below is the earlier **whole-document-version index**. It rewrites node identities across document versions, so it is *not* the method we intend to standardize. The [new alpha](alpha/README.md) uses real Markdown AST syntax, source-addressed paragraphs, portable OKF concept documents, separate section-content and annotation hashes, and stable section identities. It proves that a local annotation change need not regenerate source AST or unrelated knowledge. Only two excerpted paper sections are admitted so far; the full 28-section manuscript has **not** been migrated.
+The `evolving-knowledge-context.json` companion below is the earlier **whole-document-version index**. It rewrites node identities across document versions, so it is *not* the maintenance method we standardize. The current `jit-index.json` is the lightweight full-paper navigation artifact: all 28 EKC sections have stable IDs, exact current spans and section-scoped hashes. The [alpha](alpha/README.md) goes deeper on only two sections with real Markdown AST syntax, source-addressed paragraphs, portable OKF concept documents, separate section-content and annotation hashes, and stable section identities.
 
 ## One evolving paper; navigation artifacts are derived
 
@@ -28,12 +30,15 @@ From this directory, after installing the parent library:
 
 ```bash
 python -m pip install ..
-python build_companion.py build
-python build_companion.py search "cascading staleness"
-python build_companion.py read EKC:13
+python jit_index.py verify
+python jit_index.py search "enrichment retrieval"
+python jit_index.py neighbors EKC:12
+python jit_index.py read EKC:12
 ```
 
-Use `python build_companion.py build --semantic` to generate real embeddings with the configured model; it requires model access and has not been executed in the manuscript preparation environment. Python verification of the complete manuscript companion is also pending; the published source manifest and vectors were generated directly from the repository bytes, and the original GPS experiment was replayed separately.
+The historical whole-paper companion remains reproducible separately with `python build_companion.py build`; use it only when intentionally replaying that historical representation.
+
+`jit_index.py` does not require an embedding model. It preserves compatible vector state if present, but vectors may remain explicitly unknown. Use `python build_companion.py build --semantic` only to replay the historical companion with real embeddings; it requires model access and is not part of normal incremental maintenance.
 
 If the paper changes, do not silently reuse old source positions. Re-resolve and update the affected source locations and relationships through the current incremental method. Rebuild the historical whole-paper companion only when intentionally replaying that historical artifact.
 
@@ -41,9 +46,9 @@ If the paper changes, do not silently reuse old source positions. Re-resolve and
 
 The paper presents a single exploratory trial, not a controlled benchmark. It reports source bytes, not token savings. Related work is intentionally limited to relevant precedents and contributions. Private drafting notes and unrelated project discussions are excluded. The research branch has been merged into main; the manuscript and companion now live with the canonical library. No automatic publishing/submission is included.
 
-## Follow-up: living knowledge in ordinary ChatGPT
+## Follow-up: living public knowledge
 
-The manuscript preserves the original cold-context experiment and adds [Section 12](paper.md#12-follow-up-from-a-retrieval-experiment-to-living-knowledge-ekc25), documenting subsequent library growth and a human-directed live private-graph experiment in ordinary ChatGPT. At the historical revision represented by the whole-paper companion, its section spans and lexical vectors were recalculated. That historical artifact does not become the authority for later paper revisions. The original experimental results and limitations remain intact. The complete Python reconstruction test is still pending. Git history preserves the historical experimental baseline, while main contains the evolving manuscript and implementation together.
+The manuscript preserves the original cold-context experiment and adds [Section 12](paper.md#12-follow-up-from-a-retrieval-experiment-to-living-knowledge-ekc25), documenting subsequent public library growth and the current section-scoped JIT maintenance proof. The historical whole-paper companion remains evidence about its own revision and does not become the authority for later paper changes. `jit-index.json` is the current lightweight navigation artifact; `paper.md` remains the theory authority.
 
 ## Architecture in motion
 
