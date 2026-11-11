@@ -3,7 +3,7 @@
   "authority": "paper.md",
   "maintenance": "section_scoped_incremental",
   "notes": "Derived JIT navigation index. Stable EKC identity; exact section spans/hashes; vectors may remain unknown.",
-  "paper_sha256": "66018a91223482b1286ed6c60c56dd2c605b8f2a773c6ba8f09f15435a8f23c8",
+  "paper_sha256": "8bda25e05cae5e21fcddb171bdb4687534490bd0d186578f4a45d19bf83d59a9",
   "nodes": [
     {
       "id": "paper.md#EKC:01",
@@ -1201,13 +1201,13 @@
       "source": "paper.md",
       "source_position": {
         "start_byte": 57908,
-        "end_byte": 62062,
+        "end_byte": 61996,
         "start_line": 596,
         "end_line": 633,
         "unit": "utf8_byte"
       },
       "source_version_scope": "section",
-      "source_version_sha256": "5b1f56437dc623aa7e14e56bf523b0646d023b6a6cfbe5c9790c531f7a8ea9fe",
+      "source_version_sha256": "2b310703725e5eb51f9327ded895f95a26f0316560e093299aa300e5184a2524",
       "terms": {
         "knowledge": 10,
         "capture": 5,
@@ -1225,14 +1225,14 @@
         "journal": 3,
         "llm": 3,
         "mcp": 3,
-        "real": 3,
         "tool": 3,
         "update": 3,
         "actual": 2,
         "alone": 2,
         "application": 2,
         "assistant": 2,
-        "attach": 2
+        "attach": 2,
+        "behavior": 2
       },
       "vector": null,
       "vector_status": "unknown"
