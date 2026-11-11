@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "knowledge-positions"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["networkx", "sentence-transformers", "numpy"]
+[tool.setuptools]
+py-modules = ["knowledge_positions"]
+
+[project.optional-dependencies]
+paper-alpha = ["markdown-it-py", "PyYAML"]

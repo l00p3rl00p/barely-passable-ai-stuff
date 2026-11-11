@@ -1,0 +1,28 @@
+I want to share with you. I want you to take a view okay I want you to go back for like the last three hours of our conversation.
+A clear context is the minimum context.
+The retrieval is automatic and deterministic. The LLM doesn't have to decide to retrieve anything.
+The current context itself is the query.
+We preserve the raw data outside the context window, clear the context, and observe what happens next.
+The agent told us what worked.
+It didn't need all the information. It needed enough information to make the connections and, critically, it knew exactly where to find the rest.
+The original information can stay exactly where it is.
+We don't have to make all information reside in the same place. We have to make all information addressable from the same place.
+Fuzzy matching is the holy grail of knowledge.
+The fuzzy match opens the door. The structure does the rest.
+The agent didn't need the answer in its initial context. It needed a way to get to the answer.
+The retrieval count is maintained against the information's identity, so different agents, conversations, and context windows contribute to the same count.
+The sixth retrieval triggers the promotion automatically.
+Most of the information we're talking about is immutable.
+Once you've enriched it, it's done.
+The knowledge doesn't change. The connections grow.
+The original words remain authoritative. Tags and relationships are metadata attached to them.
+SQLite's FTS5 documentation explicitly describes an option to create a full-text search index that does not store a copy of the original content.
+Source location gives you precision. Graph location gives you connections. Vector location gives you discovery.
+Python AST already gives you source position.
+Vector positioning is universal. Vector searching is just one way we use it.
+Graph position is where a node sits relative to other nodes.
+The LLM doesn't have to carry the knowledge. It has to know how to reach it.
+The SDK and the codebase become two connected knowledge graphs.
+The SDK and codebase retain their own structures, but their connections become navigable knowledge.
+You and the LLM are navigating the same knowledge.
+Bloop was the glimpse. Context Surgery is the foundation. Mission UI is where the human gets to use it.
