@@ -14,8 +14,8 @@ The technical means by which Knowledge Positions intends to achieve its [mission
 ## Engineering sequence
 
 1. **Validate the existing library:** execute both notebooks with the actual semantic model, reproduce GPS retrieval and source rejection, and test address-only handoff.
-2. **Strengthen retrieval:** implement and evaluate optional lexical/fuzzy/semantic combinations and context windows; retain agent control over graph construction and traversal.
-3. **Persist and enrich on touch:** establish durable, idempotent source identities and qualified write-back; evaluate optional LadybugDB and portable OKF; use independent source/annotation hash gates. Let structural AST indexing run broadly without LLM enrichment. Qualify useful meaning only as work actually reads/touches a source, at most three contextual enrichment levels; bulk LLM enrichment is a separate explicit task.
+2. **Strengthen retrieval:** calibrate the implemented PPR/RWR working-context profiles, compare explicit ego-radius and other graph-native boundaries (including community-aware approaches when justified), and evaluate optional lexical/fuzzy/semantic rank fusion; retain agent control over graph construction and traversal.
+3. **Persist and enrich on touch:** establish durable, idempotent source identities and qualified write-back; evaluate optional LadybugDB and portable OKF; use independent source/annotation hash gates. Let structural AST indexing run broadly without LLM enrichment. Enforce the three-touch mutation budget (admission + two later semantic passes) on nodes/clusters, freezing payloads after touch 3 while allowing outward relationships; bulk LLM enrichment is a separate explicit task.
 4. **Maintain currency:** build on implemented dependency-based cascading staleness and deprecation, inspired by [Noosphere Lite MCP](ATTRIBUTION.md); integrate source monitoring, evidence-driven revalidation and cycle recovery.
 5. **Validate real workflows:** connect SDKs, application code, documentation and decisions; measure cold-context retrieval and enrichment reuse at increasing scale.
 
