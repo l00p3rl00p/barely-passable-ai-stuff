@@ -439,7 +439,7 @@ This manuscript was developed from the author's design discussions with AI assis
 
 ## 12. Follow-up: from a retrieval experiment to living knowledge [EKC:25]
 
-The preceding manuscript records the original cold-context pilot and the implementation as it stood during that investigation. The following is a chronological follow-up, not a replacement for the pilot or a claim that its initial implementation already had these capabilities.
+The preceding manuscript records the original cold-context pilot and the implementation as it stood during that investigation. The following is a chronological public follow-up, not a replacement for the pilot or a claim that its initial implementation already had these capabilities.
 
 ### Stage 1 — Can an intelligence navigate knowledge it does not carry?
 
@@ -449,42 +449,19 @@ We began with a fresh model session, a 28-passage fixture, 42 relationships and 
 
 Subsequent work established a small Core: twelve ordinary relationship types, plus three positional slots (location, relation and proximity). An unknown vector has a separate status and a null value, not fabricated numeric coordinates. Deeper discoveries are enrichment.
 
-The library now supports explicit dependency-based staleness and deprecation, historical retrieval, source-verified vector completion, and ten named native NetworkX graph views. An intelligence can calculate additional named structures directly from the captured data. The ten views are conveniences, not a closed graph language. The reference graph remains intact; an investigator chooses the projection, relation filter, direction, cost and algorithm.
+The library now supports explicit dependency-based staleness and deprecation, historical retrieval, source-verified vector completion, ten named native NetworkX graph views, open derived views, a hard three-touch semantic mutation budget, and graph-theoretically bounded working-context retrieval. The graph views are conveniences, not a closed graph language. An investigator chooses the projection, relation filter, direction, cost and algorithm.
 
-| Capability | Recorded follow-up result |
-|---|---|
-| Named graph views | Directed, undirected, weighted, multigraph, tree, forest, DAG, bipartite, similarity, neighborhood |
-| Core algorithms | DFS, BFS, topological sort, union-find, cycle detection, connected components, bipartite check, flood fill, minimum spanning forest, shortest path |
-| Additional derived graphs | Condensation and line graph |
-| Lifecycle and graph-view regression checks | Six tests reported passing |
-| Live graph snapshot used for the recorded named-view experiment | 11 nodes, 12 relationships |
-| Evolving graph after recording the result | 12 nodes, 14 relationships |
+The implementation and regression tests are public in this repository. Historical test counts in earlier revisions describe those revisions; current claims should be checked against the current code and tests rather than copied forward as fixed totals.
 
-The follow-up implementation is recorded in [the canonical library](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/9724db8f96877ff67337e4db727ba6a97706ecad/knowledge-positions/knowledge_positions.py), with [graph-view regression tests](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/61e1b6dca01f0ff5ab1016ec976180ab879a89e8/knowledge-positions/test_graph_views.py) and [current core vocabulary](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/main/knowledge-positions/CORE_VOCABULARY.md). The observed experiment and its parameters remain outside this public repository. The manuscript does not disclose private conversation content or credentials. The graph used lexical hashed vectors and explicit unit costs; this is not a semantic retrieval or measured-cost benchmark.
+### Stage 3 — Can the evolving paper navigate itself incrementally?
 
-### Stage 3 — Can the intelligence use the approach while doing ordinary work?
+The public repository now contains a current section-scoped JIT navigation index for this manuscript: [`jit-index.json`](jit-index.json), generated and verified by [`jit_index.py`](jit_index.py). Each EKC section keeps a stable identity such as `paper.md#EKC:12`, an exact UTF-8 source span, a section-scoped SHA-256 version, lightweight searchable terms, and structural relationships. Unchanged sections retain their identities and may retain compatible vector state when another section changes.
 
-We then moved the experiment into ordinary ChatGPT work. The intelligence searched available project history, inspected source documents and code, recorded source locators, discovered relationships, and wrote qualified knowledge back to its own persistent private graph through authorized tools. The graph grew from seven initial navigation records to twelve nodes, including knowledge about the library's lifecycle, the GPS experiment, the named-graph design decision, and the subsequent verification. The investigation itself became new knowledge available to later investigations.
+The index is a derived navigation artifact, not a second authority. The manuscript remains authoritative. A maintenance pass first searches the JIT index, uses NetworkX relationships to inspect the relevant neighborhood, then resolves only the indicated original paper sections before making a change.
 
-```mermaid
-flowchart LR
-  A["Ordinary ChatGPT conversation"] --> B["Search existing knowledge"]
-  B --> C["Resolve original source"]
-  C --> D["Investigate with native tools"]
-  D --> E["Record qualified finding"]
-  E --> F["Persistent private graph"]
-  F --> B
-```
+During the verification that introduced the current index, JIT navigation surfaced two concrete propagation issues without requiring a full-paper reread: a private case-study description remained in this public section, and the newly added cluster-level three-touch budget was not persisted through graph save/load. The private case-study material was removed from the public evidence trail, and cluster budget persistence received a regression test. Those are examples of the intended lifecycle: navigation identifies the likely knowledge, original public sources establish reality, repairs are surgical, and the derived positions are refreshed afterward.
 
-**Figure 4.** The live knowledge loop. The graph resides in an external repository; ordinary ChatGPT participates through available authorized tools. This is not a claim that ChatGPT's internal memory or context mechanism has been replaced.
-
-The important distinction is that the intelligence did not merely use a prebuilt demonstration graph. It contributed to the graph as part of normal project work. In doing so, it exposed real imperfections: exact ChatGPT conversation IDs were not consistently available through history retrieval, and five stored lexical vectors required correction against their original locator records. The corrected coordinates and the historical observation were retained. An evolving knowledge environment should make such corrections visible rather than conceal them.
-
-The source positions of chat locator records identify those records, not original chat-message spans when the original conversation identity is unavailable. The source provider and access route matter. Each intelligence may maintain its own knowledge repository. Authorized local agents may have broader access to session files than a web-hosted agent, but cross-provider synchronization is not required for this experiment.
-
-This is a live, human-directed case study, not an autonomous integration with every future ChatGPT session. Repository access is conditional on the connected tools available to the session. There is no automatic universal capture, and no controlled comparison yet establishes whether subsequent independent sessions perform better or consume fewer tokens. A cold-session reuse test on this evolving graph, semantic-vector evaluation, and cumulative cost accounting remain open. The manuscript's original pilot remains the historical experimental baseline; the follow-up establishes that the mechanism can be extended and used in an ordinary conversational workflow.
-
-The research proposition has therefore acquired a second, practical dimension: knowledge can evolve during the work that needs it, rather than only during a separate ingestion project.
+This follow-up therefore demonstrates a narrower and reproducible proposition than a private live-work case study: the public theory, public implementation and public navigation artifact can evolve together while keeping the manuscript as the single authority and updating knowledge at section scope rather than treating every paper change as a whole-document re-enrichment event.
 
 ## 13. Architecture in motion [EKC:26]
 
@@ -504,7 +481,7 @@ flowchart LR
   R -.-> O[other: boundary references]
 ```
 
-Working-context retrieval is bounded by the selected graph policy, not by a universal hop count; the underlying graph and dependency cascade are unrestricted. The default implementation uses Personalized PageRank / random-walk-with-restart attenuation with conservative, balanced and aggressive profiles; an explicit ego radius remains available when radius itself is the intended query. We can run the ten named views or calculate another structure. When original evidence changes, mark explicit dependents stale and clear the derived lookup cache. We learned the cascading mechanism from [Garyu-tt/noosphere-lite-mcp](https://github.com/Garyu-tt/noosphere-lite-mcp). Nine regression tests passed against the later library implementation. This is a library-cache result, not a claim about a model provider's internal cache.
+Working-context retrieval is bounded by the selected graph policy, not by a universal hop count; the underlying graph and dependency cascade are unrestricted. The default implementation uses Personalized PageRank / random-walk-with-restart attenuation with conservative, balanced and aggressive profiles; an explicit ego radius remains available when radius itself is the intended query. We can run the ten named views or calculate another structure. When original evidence changes, mark explicit dependents stale and clear the derived lookup cache. We learned the cascading mechanism from [Garyu-tt/noosphere-lite-mcp](https://github.com/Garyu-tt/noosphere-lite-mcp). Regression coverage includes working-context retrieval, graph views, lifecycle behavior and the enrichment mutation budget. Test totals are not treated as a fixed architectural fact. This is a library-cache result, not a claim about a model provider's internal cache.
 
 The [four architecture views](ARCHITECTURE_VIEWS.md) extend the paper with information, graph, retrieval and runtime perspectives, including the actual ChatGPT deployment boundary and the roles of [SQLite](https://www.sqlite.org/) and [LadybugDB](https://docs.ladybugdb.com/). They also describe the chat-only scope, independent Git module direction and future security work.
 
