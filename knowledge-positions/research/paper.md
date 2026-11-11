@@ -649,7 +649,7 @@ This separates responsibilities: the **host** records events; the **library** ve
 
 The next experiment must attach a real hook, perform normal work without any model-initiated save call, clear the context, and independently verify that source journal, graph and checkpoints advanced. It must also test a failed write and recovery. Our GPS and living-graph experiments established the navigation mechanics, **not** this enforcement guarantee. The [Runbook](../RUNBOOK.md#7-deterministic-capture-enforce-the-execution-boundary-not-the-prompt) defines the proposed integration contract. The observed cold-start failure is summarized here without linking private project material.
 
-## Appendix A — Adoption phases
+## Appendix A — Adoption phases [EKC:29]
 
 **Phase 1 = Core/JIT foundation**
 
