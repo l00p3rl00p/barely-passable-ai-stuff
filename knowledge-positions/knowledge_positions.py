@@ -681,6 +681,8 @@ class KnowledgePositions:
                    'edges': [{'source': a,'target': b,'key': k, **d} for a,b,k,d in self.graph.edges(keys=True,data=True)]}
         if self.graph.graph.get('location_methods'):
             payload['location_methods'] = self.graph.graph['location_methods']
+        if self.graph.graph.get('enrichment_budgets'):
+            payload['enrichment_budgets'] = self.graph.graph['enrichment_budgets']
         temp = p.with_name(p.name+'.tmp')
         temp.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding='utf-8')
         temp.replace(p)
@@ -692,8 +694,20 @@ class KnowledgePositions:
             raise ValueError('Unsupported schema version')
         obj = cls(data['model'], encoder)
         obj.graph.graph['location_methods'] = dict(data.get('location_methods', {}))
+        obj.graph.graph['enrichment_budgets'] = dict(data.get('enrichment_budgets', {}))
         for node in data['nodes']:
-            node = dict(node); nid = node.pop('id'); node.setdefault('status','current'); node.setdefault('status_history', []); node.setdefault('vector_status', 'unknown' if node.get('vector') is None else 'known'); node.setdefault('entity_type',node.get('kind','text')); obj.graph.add_node(nid, **node)
+            node = dict(node); nid = node.pop('id')
+            node.setdefault('status','current')
+            node.setdefault('status_history', [])
+            node.setdefault('vector_status', 'unknown' if node.get('vector') is None else 'known')
+            node.setdefault('entity_type',node.get('kind','text'))
+            node.setdefault('enrichment', {})
+            node.setdefault('enrichment_touches', 1)
+            node.setdefault('enrichment_touch_limit', 3)
+            node.setdefault('enrichment_frozen',
+                            node['enrichment_touches'] >= node['enrichment_touch_limit'])
+            node.setdefault('enrichment_cluster', None)
+            obj.graph.add_node(nid, **node)
         for edge in data['edges']:
             edge = dict(edge); a=edge.pop('source'); b=edge.pop('target'); k=edge.pop('key')
             if a not in obj.graph or b not in obj.graph: raise ValueError('Dangling edge')
