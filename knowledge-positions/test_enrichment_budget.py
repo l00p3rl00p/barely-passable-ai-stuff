@@ -1,5 +1,7 @@
 """Regression tests for the hard three-touch enrichment mutation budget."""
+import tempfile
 import unittest
+from pathlib import Path
 from knowledge_positions import KnowledgePositions
 
 class TestEnrichmentBudget(unittest.TestCase):
@@ -47,6 +49,25 @@ class TestEnrichmentBudget(unittest.TestCase):
         state = k.enrichment_state(newer, cluster_id='topic')
         self.assertEqual(state['touches'], 1)
         self.assertFalse(state['frozen'])
+
+
+    def test_cluster_budget_survives_save_and_reload(self):
+        k = KnowledgePositions('test')
+        a = k.add('cluster-source', 'one', version='v1', position={'line':1},
+                  defer_embedding=True, cluster_id='topic')
+        b = k.add('other-source', 'two', version='v1', position={'line':1},
+                  defer_embedding=True, cluster_id='topic')
+        k.enrich_node(a, {'pass': 2}, cluster_id='topic')
+        k.enrich_node(b, {'pass': 3}, cluster_id='topic')
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'graph.json'
+            k.save(path)
+            loaded = KnowledgePositions.load(path)
+            state = loaded.enrichment_state(a, cluster_id='topic')
+            self.assertEqual(state['touches'], 3)
+            self.assertTrue(state['frozen'])
+            with self.assertRaises(ValueError):
+                loaded.enrich_node(a, {'overflow': True}, cluster_id='topic')
 
 if __name__ == '__main__':
     unittest.main()
