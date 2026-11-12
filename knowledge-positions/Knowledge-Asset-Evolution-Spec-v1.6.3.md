@@ -94,9 +94,9 @@ The system uses several independent hash gates. The note-level enrichment case u
 
 | Gate | Hashes | Fires / controls | When it runs | Status |
 |------|--------|------------------|--------------|--------|
-| **`author_hash`** | content **above** the sentinel only | the enricher runs when the current `author_hash` differs from the **last-enriched baseline** stored for that note | on refresh-on-read, per note | **existing** (proven) |
-| **`file_hash`** | the **whole file** | whether the **catalog/index** should re-index this note | on refresh-on-read, per note | **existing** (proven) |
-| **`machine_hash`** *(optional)* | the `## AI Enrichment` section only | audit / diff / debug of machine output | on demand | **adding** (optional, audit aid) |
+| **`author_hash[]`** | independently addressable author-owned sections above the sentinel | compare each section against its last successfully evaluated baseline; evaluate materiality before changing enrichment | after a changed `file_hash` | **section-scoped refinement; original proof was whole-author-region** |
+| **`file_hash`** | the **whole file** | cheap watchdog: if unchanged, stop; if changed, inspect section hashes without automatically regenerating knowledge | on refresh-on-read, per note | **existing watchdog; unchanged purpose** |
+| **`machine_hash[]`** | each independently addressable AI enrichment section below the sentinel | detect actual machine changes, retain unaffected tags, relationships, and conclusions | after changed `file_hash` and successful machine writes | **required in section-scoped refinement; not part of original two-hash tests** |
 | **`schema_hash`** | approved `schema.yaml` | whether schema state changed (governs the evolution loop) | on observer run | **adding** (evolution layer) |
 | **`suggestion_fingerprint`** | `schema_version` + `note_type` + `observed_field_or_type` + `suggestion_kind` | suppresses **duplicate** suggestions (don't re-file a suggestion already pending/approved/rejected) | before appending to `schema_suggestions/` | **adding** (evolution layer) |
 | **`event_hash`** | one immutable runtime event packet | idempotency and replay safety for high-volume blossom outputs | on event ingestion | **adding** (runtime layer) |
@@ -116,7 +116,7 @@ Two append-only logs sit alongside the gates (they are not hashes, they are ledg
 
 > ¹ The line and test counts describe the reference enricher as recorded in working notes; verify them against the implementation repository before publishing externally.
 
-**What this profile adds:** the optional `machine_hash` for audit, plus the whole evolution layer (`schema_hash` + the two ledgers).
+**Section-scoped refinement:** `machine_hash[]` is required for independently tracked enrichment regions, alongside `author_hash[]`. The original reference proof covered only the two-hash ownership boundary; section-level and materiality behavior require their own tests. The evolution layer retains its separate schema gate and ledgers.
 
 **What v1.6 adds:** an optional runtime event substrate profile. Runtime event packets preserve execution truth before that truth is projected into a KG/index, compiled Wiki, or human-readable audit trail.
 
@@ -145,7 +145,7 @@ OKF requires only a non-empty `type`. `title`, `description`, `resource`, `tags`
 Requirements, not suggestions:
 
 - **Markdown is truth; JSON is a derived cache** (rebuildable anytime, never authoritative).
-- **Refresh-on-read currency:** before answering, re-hash the vault, re-index *only* the files whose `file_hash` changed, then answer. No stale results; cost stays near zero because unchanged files are skipped.
+- **Refresh-on-read currency:** check each file's `file_hash` as a watchdog. Unchanged files stop there; changed files are section-compared. Reindex only changed sections and affected dependencies, preserving unchanged identities, vectors, and enrichment. A changed file does not imply all its knowledge changed.
 - **Deterministic gates:** `build`, `lint`, `doctor` run before commits.
 - **Catalog contract:** one derived JSON record per note.
 
@@ -178,26 +178,41 @@ This is closer to wanderloots than to OKF: OKF separates *human-readable* from *
 ### The two-hash mechanism (why the enricher never loops)
 
 ```text
-author_hash = hash(text ABOVE the sentinel)   # "did the author change anything?"
-file_hash   = hash(WHOLE file)                # "did anything at all change?"
+file_hash        = hash(WHOLE file)             # watchdog: was the file touched?
+author_hash[id]  = hash(author_section[id])    # independent author sections above sentinel
+machine_hash[id] = hash(enrichment_section[id]) # independent machine sections below sentinel
 ```
 
 ```python
-def maybe_enrich(note):
-    if note.author_hash == stored_author_hash(note):
-        return            # author content unchanged -> do NOT enrich (no loop)
-    enrichment = generate_enrichment(note.human_content)
-    write_below_sentinel(note, enrichment)     # touches machine territory only
-    store_author_hash(note, note.author_hash)  # remember what we enriched against
+def maybe_enrich(note, state):
+    if hash_file(note) == state.file_hash:
+        return 'unchanged file'
+    author_delta = compare_stable_sections(note.author_sections, state.author_hashes)
+    machine_delta = compare_stable_sections(note.machine_sections, state.machine_hashes)
+    for section in author_delta:
+        impact = assess_materiality(section, related_enrichment(note, section))
+        if impact == 'material':
+            revise_only_affected_enrichment(section, impact)
+        elif impact == 'uncertain':
+            flag_for_review(section)  # do not silently affirm unsupported claims
+        else:
+            preserve_existing_enrichment(section)
+        # Advance the evaluated author baseline only after successful assessment.
+        record_evaluated_baseline(section)
+    persist_changed_machine_hashes(machine_delta)
+    commit_watchdog_after_success(note)  # persist atomically; never cross ownership boundary
 ```
 
 **The precise proof (three cases):**
 
 1. **Enricher writes below the sentinel** → `author_hash` is unchanged (it only covers *above*) → the enricher does **not** run again. *No loop.* Note: this write **does** change `file_hash`, so it MAY trigger catalog re-indexing — which is correct and desired. The guarantee is narrow and exact: **machine edits below the sentinel may trigger re-indexing, but never trigger another enrichment run.**
-2. **Human edits content above the sentinel** → `author_hash` changes → enricher re-runs exactly once.
-3. **No edits** → both hashes stable → everything skipped.
+2. **Human edits content above the sentinel** → only affected `author_hash[]` entries change. Each changed section is assessed once; an immaterial formatting or presentation edit leaves the enrichment text and `machine_hash[]` untouched. Material evidence changes revise only the affected enrichment; unresolved validity is flagged for review.
+3. **No edits** → `file_hash` remains stable and the watchdog skips section inspection.
 
-These three are the adversarial tests in the reference implementation, and they pass.
+The original three no-self-retrigger cases passed in the historical whole-author-region reference implementation. The section-scoped refinement extends the mechanism and requires distinct acceptance tests for stable section identities, insertions/reordering, formatting-only edits, meaningful changes, multi-section enrichment, dependency invalidation, and failed/uncertain evaluations. A file-level hash remains a watchdog, never a signal to regenerate the entire file's knowledge.
+
+
+**Repository-wide JIT positions:** Each source file has its own stable section identities and section hashes. A single derived repository JSON index can collect those file-local positions and qualified cross-file edges for NetworkX traversal and compatible vector search. Section identities do not rotate when unrelated file content moves. Explicit citations and observed dependencies remain distinct from lexical suggestions; only verified affected dependencies are invalidated. This shared index is a derived navigation artifact, never a replacement for source files or the existing paper-specific JIT index.
 
 ### Backoff
 
@@ -393,9 +408,11 @@ Requirements are scoped by conformance level, so an OKF-only adopter is not accu
 **A Level 2+ implementation MUST also:**
 3. **Implement the sentinel + two-hash enricher:**
    - A sentinel divides human-owned (above) from machine-owned (below).
-   - `author_hash` covers ONLY the region above the sentinel and is compared against the stored last-enriched baseline.
-   - The enricher writes ONLY below the sentinel.
-   - Prove: machine edits below the sentinel may trigger re-indexing but NOT another enrichment run; edit-above → re-enrich once; no-edit → skip.
+   - `file_hash` remains the whole-file watchdog; it does not by itself force re-enrichment.
+   - `author_hash[]` independently covers stable author sections above the sentinel, each compared with its last successfully evaluated baseline.
+   - `machine_hash[]` independently covers machine enrichment sections below the sentinel and is required for section-scoped enrichment.
+   - The enricher writes ONLY below the sentinel and only for materially affected knowledge; mere formatting may require no enrichment change.
+   - Prove: machine edits do not self-trigger; changed author sections are assessed once; unaffected enrichments retain identity/hash; uncertain validity is flagged; no edit skips; unsuccessful assessment does not advance the baseline.
 4. **Make machine writes atomic** (see Trust & Safety).
 
 **A Level 3 implementation MUST also:**
@@ -463,9 +480,9 @@ schema_version: 2
 schema_origin: human_authored
 
 # Gate state (lives in derived JSON; shown here for clarity)
-# author_hash:  <hash of everything above ## End Index Hash>
-# file_hash:    <hash of the whole file>
-# machine_hash: <hash of the ## AI Enrichment section, optional/audit>
+# author_hashes:  <per-stable-section hashes above ## End Index Hash>
+# file_hash:      <whole-file watchdog hash>
+# machine_hashes: <per-enrichment-section hashes below sentinel; required>
 ---
 
 # Refactor the API?
