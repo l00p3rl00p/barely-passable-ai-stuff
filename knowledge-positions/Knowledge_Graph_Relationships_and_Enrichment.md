@@ -164,7 +164,8 @@ The operating rules are deliberately modest:
 
 - **Source remains source.** Keep original text, code, event, and human decisions available. An index or semantic projection is not a substitute for them.
 - **Separate ownership.** Human-authored material and machine-generated enrichment have distinguishable regions or records. Automation may suggest or annotate without silently rewriting a human decision.
-- **Enrich only when relevant content changes.** Independent change fingerprints can prevent enrichment from repeatedly triggering itself; indexing may update separately.
+- **Enrich only when relevant content changes.** Keep a whole-file `file_hash` as the freshness/watchdog check, then independently compare stable author-section `author_hash[]` and machine-enrichment `machine_hash[]` values only for touched files. The sentinel distinguishes ownership, not a single document-wide author unit. A changed author section initiates a materiality assessment, not automatic regeneration: formatting-only changes may leave tags, claims, and relationship hashes unchanged. Uncertain claims require review, not silent acceptance; only qualified affected dependencies need revalidation. The machine's own writes must not retrigger author enrichment.
+- **Navigate across files, not only within one document.** File-local section positions contribute to a single derived repository JSON index: stable section identity, source coordinates and hash, optional vector position, and qualified cross-document edges. NetworkX can traverse the same evidence-linked graph that vector retrieval helps discover. Mere lexical overlap is a candidate relationship, not a verified semantic edge; preserve unaffected section identity and vectors when files elsewhere change.
 - **Preserve qualification.** Store relationship type, direction, origin, evidence, confidence when meaningful, and lifecycle status (`observed`, `proposed`, `reviewed`, `rejected`, `superseded`, or `unresolved`).
 - **Keep history.** Correct a mistaken claim by recording the correction and its source, not by pretending the earlier claim never existed.
 - **Retrieve just in time.** Find the smallest connected set that answers the question; expand to the original source only when needed.
@@ -197,13 +198,13 @@ The service centralizes settings for the application.
 
 **Typed labels above are an application convention in the Markdown body**, not required OKF relationship syntax. A graph indexer can read them and build navigable relationships while the underlying notes remain ordinary, portable Markdown. If a system uses machine-readable typed edges in additional YAML fields, those fields should be documented as an extension rather than attributed to the base specification.
 
-An extended **Knowledge Asset Evolution** profile (version **1.6.3**) describes optional additions for living knowledge: human/machine ownership boundaries, independent hash gates for enrichment and indexing, human-reviewed schema evolution, and the separation of durable execution truth from derived meaning. Its version number belongs to that extension profile, **not to Google's OKF specification**.
+An extended **Knowledge Asset Evolution** profile (version **1.6.3**) describes additions for living knowledge: human/machine ownership boundaries, a whole-file freshness watchdog plus independently hashed author sections and required machine enrichment sections, materiality-sensitive updates, human-reviewed schema evolution, and the separation of durable execution truth from derived meaning. The historical two-hash reference tests establish its original ownership boundary, not yet the generalized section-scoped refinement. Its version number belongs to that extension profile, **not to Google's OKF specification**.
 
 **References**
 
 - [Google — Open Knowledge Format specification (upstream v0.2)](https://github.com/GoogleCloudPlatform/open-knowledge-format/blob/main/SPEC.md)
 - [Google — Knowledge Catalog OKF specification](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md)
-- Companion document: *Knowledge Asset Evolution: An OKF-Compatible Extension Profile*, version 1.6.3 (provided separately).
+- Companion document: [Knowledge Asset Evolution: An OKF-Compatible Extension Profile](Knowledge-Asset-Evolution-Spec-v1.6.3.md), version 1.6.3.
 
 ---
 
