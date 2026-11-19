@@ -11,7 +11,7 @@ This is a portable representation of the research, not a fork of OmniGraph or a 
 
 OKF documents are human-readable Markdown with YAML frontmatter. The schema projects knowledge into OmniGraph; the source document remains authoritative. Domain is optional and explicit, not an access rule. Meaning is contributed by intelligence during work, not calculated at ingestion. No JITK, Rust bulk ingester, extra MCP, provider, or custom permissions included.
 
-Start with [RUNBOOK.md](RUNBOOK.md). Keep original source documents, reviewed findings and evidence; the graph is a reconstructable projection only to the extent those materials survive. No bulk migration or destructive upgrade is included.
+Start with [RUNBOOK.md](RUNBOOK.md) only to install or repair. The skill uses progressive disclosure: reuse, direct access, immediate relations, then discovery; never load the whole cookbook or graph by default. Keep original source documents, reviewed findings and evidence; the graph is a reconstructable projection only to the extent those materials survive. No bulk migration or destructive upgrade is included.
 
 Canonical library: [knowledge_positions.py](../../knowledge_positions.py). The bundled copy in this folder is an unmodified distribution snapshot (source blob 3f6972980a669714dc359ca27df55c1a9e02cb9d), not a second maintained implementation. Refresh it from the canonical file when packaging a new release. The lexical encoder is the established scanner-compatible variant; it is not the distinct capture.py encoder with the same historical space name. Do not mix the two.
 

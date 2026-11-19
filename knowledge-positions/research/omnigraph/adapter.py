@@ -2,7 +2,6 @@
 import argparse
 import hashlib
 import json
-import os
 import subprocess
 import tempfile
 from pathlib import Path
@@ -53,6 +52,7 @@ def source_row(path, domain=None, source_id=None, start=1, end=None, kind="text"
 class Store:
     def __init__(self,target,graph=None,branch="main"):
         self.flags=["--target",target,"--branch",branch]
+        self.last_commit=None
         if graph: self.flags += ["--graph",graph]
     def call(self,*args):
         out=subprocess.run(["omnigraph",*args,*self.flags,"--json"],capture_output=True,text=True)
@@ -66,8 +66,14 @@ class Store:
         result=self.call(*args)
         data=result.get("data",result)
         rows=data.get("rows") if isinstance(data,dict) else None
+        self.last_commit=data.get("graph_commit_id",result.get("graph_commit_id")) if isinstance(data,dict) else None
         if not isinstance(rows,list): raise RuntimeError("Unrecognized native query response; no write attempted")
         return [{key.split(".",1)[-1]:val for key,val in row.items()} for row in rows]
+    def mutate(self,name,params,commit):
+        if not commit: raise RuntimeError("No native read commit; cannot safely enrich")
+        args=["mutate",name,"--params",json.dumps(params),"--if-commit",commit]
+        if "--graph" not in self.flags: args += ["--query",str(Path(__file__).resolve().parent/"queries"/"kp.gq")]
+        return self.call(*args)
     def get(self,kid):
         rows=self.query("item_rows",{"ids":[kid]})
         if len(rows)>1: raise RuntimeError("Unexpected duplicate key")
@@ -124,14 +130,14 @@ def enrich(store,kid,meaning):
     if not meaning.strip(): raise ValueError("Meaning must be nonempty")
     row=store.get(kid)
     if not row: raise KeyError(kid)
+    commit=store.last_commit
     verify_source(row)
     k=library();hydrate(k,row)
     if meaning in k.graph.nodes[kid]["enrichment"].values(): return {"unchanged":True}
     n=k.graph.nodes[kid]
     k.enrich_node(kid,{f"touch_{n['enrichment_touches']+1}":meaning},source_version=row["source_version_sha256"])
-    row.update(enrichment=json.dumps(n["enrichment"],ensure_ascii=False),
-               enrichment_touches=n["enrichment_touches"],enrichment_frozen=n["enrichment_frozen"])
-    return store.write({"type":"KnowledgeItem","data":row})
+    return store.mutate("enrich_item",{"id":kid,"payload":json.dumps(n["enrichment"],ensure_ascii=False),
+        "touches":n["enrichment_touches"],"frozen":n["enrichment_frozen"]},commit)
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)

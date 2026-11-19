@@ -4,7 +4,7 @@ Prerequisites: an ordinary OmniGraph installation (reference API/CLI 0.15), Pyth
 
 ## 1. Copy this folder anywhere
 
-Keep schema.pg, queries/kp.gq, adapter.py, knowledge_positions.py, encoder.py, requirements.txt and tests together. Copy skill/SKILL.md to your agent's normal skill directory under knowledge-positions-omnigraph/SKILL.md; replace the example bundle path in your agent instructions with the actual path. Keep the upstream OmniGraph skill.
+Keep schema.pg, queries/kp.gq, adapter.py, knowledge_positions.py, encoder.py, requirements.txt and tests together. Copy the entire skill/ directory (including references/) to your agent's normal skill directory as knowledge-positions-omnigraph; record the actual bundle location in the agent configuration. Keep the upstream OmniGraph skill.
 
 From the copied directory:
 
@@ -50,11 +50,11 @@ python adapter.py --target ./knowledge.omni enrich ITEM_ID "Actual new understan
 
 For a server/cluster, replace --target ./knowledge.omni with --target YOUR_TARGET --graph YOUR_GRAPH; add --branch YOUR_BRANCH if appropriate. Native stored queries are used there. Direct graph targets use queries/kp.gq. For capture, --start/--end select inclusive source lines; --kind and --heading describe the actual unit. Capture a second actual source before linking. The CLI uses a transient native NDJSON request file, not a parallel knowledge store. No manual JSON authoring.
 
-The adapter is single-writer per graph/branch for read-modify-write enrichment; serialize those calls or use native branches and review merges; no distributed transaction is claimed. Native permissions still govern every operation.
+Enrichment uses native --if-commit conditional mutation. On a conflict, re-read and reconsider; never blindly retry. Native merges remain governed by OmniGraph; cross-branch budget validation is not supplied. Native permissions still govern every operation.
 
 ## 4. Acceptance (real engine, no mock)
 
-Using a dedicated new graph, run Step 3 with two actual documents. Repeat capture with the same file/coordinates/domain and verify the same ID and no new row. Open a new process, locate the ID directly, search by actual terms, follow the relation in both directions, and read the source. Enrich twice with different findings; a third enrichment must fail. Repeat the same finding before freezing: no additional touch. Modify a source only in your own disposable test copy and confirm read refuses the changed hash. Inspect the native graph and ensure the recorded vector has 512 entries and no provider fields, and the native skill can query the new graph. Do not call this accepted if any command fails. No automatic bulk scan, lifecycle reconciliation, concurrent enrichment enforcement, OKF conversion or resonance implementation is supplied by this minimal adapter.
+Using a dedicated new graph, run Step 3 with two actual documents. Repeat capture with the same file/coordinates/domain and verify the same ID and no new row. Open a new process, locate the ID directly, search by actual terms, follow the relation in both directions, and read the source. Enrich twice with different findings; a third enrichment must fail. Repeat the same finding before freezing: no additional touch. Modify a source only in your own disposable test copy and confirm read refuses the changed hash. Inspect the native graph and ensure the recorded vector has 512 entries and no provider fields, and the native skill can query the new graph. Do not call this accepted if any command fails. No automatic bulk scan, lifecycle reconciliation, cross-branch enrichment enforcement, OKF conversion or resonance implementation is supplied by this minimal adapter.
 
 ## 5. Updates
 

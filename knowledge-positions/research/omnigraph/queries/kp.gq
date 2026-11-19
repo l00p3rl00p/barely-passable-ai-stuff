@@ -6,7 +6,7 @@ query search($vq: Vector(512), $tq: String) @description("Discovery without an e
     }
     return { $k.id, $k.heading, $k.kind, $k.domain, $k.source_repo, $k.source_path, $k.start_line, $k.end_line, rrf(nearest($k.vector_lexical_hash_512, $vq), bm25($k.terms, $tq)) as score }
     order { rrf(nearest($k.vector_lexical_hash_512, $vq), bm25($k.terms, $tq)) }
-    limit 20
+    limit 10
 }
 
 // One item with its full location, for evidence resolution.
@@ -27,7 +27,7 @@ query item_rows($ids: [String]) @description("Full rows of the given items, for 
         $k: KnowledgeItem
         $k.id in $ids
     }
-    return { $k.id, $k.kind, $k.entity_type, $k.heading, $k.terms, $k.owner_namespace, $k.source_id, $k.source_address, $k.source_repo, $k.source_commit, $k.source_path, $k.source_version_sha256, $k.observed_source_version, $k.source_precision, $k.position_unit, $k.start_byte, $k.end_byte, $k.start_line, $k.end_line, $k.position_coordinates, $k.span_sha256, $k.ownership, $k.realm, $k.possible_routes, $k.within_path, $k.sibling_index, $k.location_coordinates, $k.location_method, $k.location_basis, $k.location_precision, $k.vector_lexical_hash_512_status, $k.vector_lexical_hash_512, $k.status, $k.status_history, $k.enrichment, $k.enrichment_touches, $k.enrichment_touch_limit, $k.enrichment_frozen }
+    return { $k.id, $k.kind, $k.entity_type, $k.domain, $k.heading, $k.terms, $k.owner_namespace, $k.source_id, $k.source_address, $k.source_repo, $k.source_commit, $k.source_path, $k.source_version_sha256, $k.observed_source_version, $k.source_precision, $k.position_unit, $k.start_byte, $k.end_byte, $k.start_line, $k.end_line, $k.position_coordinates, $k.span_sha256, $k.ownership, $k.realm, $k.possible_routes, $k.within_path, $k.sibling_index, $k.location_coordinates, $k.location_method, $k.location_basis, $k.location_precision, $k.vector_lexical_hash_512_status, $k.vector_lexical_hash_512, $k.status, $k.status_history, $k.enrichment, $k.enrichment_touches, $k.enrichment_touch_limit, $k.enrichment_frozen }
 }
 
 // Outgoing and incoming relationships: one row per relationship, parallel evidence kept.
@@ -55,7 +55,7 @@ query neighbourhood($id: String) @description("Items within three relationship h
         $a <relationship>{1,3} $b
     }
     return { $b.id }
-    limit 500
+    limit 50
 }
 
 query edges_among($ids: [String]) @description("Relationships whose two endpoints are both in the given set.") {
@@ -98,4 +98,8 @@ query relationship_index() @description("All relationships as source, target and
 query by_source($source: String) @description("Locate items by known source identity.") {
     match { $k: KnowledgeItem { source_id: $source } }
     return { $k.id, $k.heading, $k.domain, $k.start_line, $k.end_line, $k.status }
+}
+
+query enrich_item($id: String, $payload: String, $touches: I32, $frozen: Bool) {
+    update KnowledgeItem set { enrichment: $payload, enrichment_touches: $touches, enrichment_frozen: $frozen } where id = $id
 }
