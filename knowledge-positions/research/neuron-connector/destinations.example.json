@@ -1,0 +1,25 @@
+{
+  "outputs": [
+    {
+      "name": "knowledge",
+      "profile": "omnigraph",
+      "base_url": "https://127.0.0.1:8766",
+      "graph": "knowledge",
+      "branch": "main",
+      "token_env": "OMNIGRAPH_TOKEN"
+    },
+    {
+      "name": "ladybug",
+      "profile": "ladybug",
+      "base_url": "http://127.0.0.1:8000"
+    },
+    {
+      "name": "codebase",
+      "profile": "codebase-memory",
+      "binary": "/path/to/experimental/codebase-memory-mcp",
+      "database": "/path/to/existing/project.db",
+      "project": "project",
+      "root": "/path/to/project"
+    }
+  ]
+}
