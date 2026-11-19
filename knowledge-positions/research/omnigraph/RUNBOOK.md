@@ -4,7 +4,7 @@ Prerequisites: an ordinary OmniGraph installation (reference API/CLI 0.15), Pyth
 
 ## 1. Copy this folder anywhere
 
-Keep schema.pg, queries/kp.gq, adapter.py, knowledge_positions.py, encoder.py, requirements.txt and tests together. Copy the entire skill/ directory (including references/) to your agent's normal skill directory as knowledge-positions-omnigraph; record the actual bundle location in the agent configuration. Keep the upstream OmniGraph skill.
+Keep schema.pg, queries/kp.gq, adapter.py, knowledge_positions.py, encoder.py, requirements.txt and tests together. Copy the entire skills/knowledge-positions-omnigraph/ directory (including references/) to your agent's normal skill directory as knowledge-positions-omnigraph; record the actual bundle location in the agent configuration. Keep the upstream OmniGraph skill.
 
 From the copied directory:
 
