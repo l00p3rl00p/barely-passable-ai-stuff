@@ -1,0 +1,141 @@
+// Knowledge Positions -> native OmniGraph schema.
+// A translation of the existing architecture, not a new knowledge model.
+//
+// Authoritative sources (l00p3rl00p/barely-passable-ai-stuff/knowledge-positions @ 14aeb071):
+//   research/paper.md        §2 k = (i, S, p, v, metadata), S = (u, h); §2.2 vector spaces;
+//                            §2.3 directed multigraph; §4 evolving knowledge; §7 epistemic status
+//   CORE_VOCABULARY.md       three positions; twelve first-pass relationships; open extensions
+//   LOCATION_ACCESS.md       location vs access; item_location; location-method order
+//   Knowledge_Graph_Relationships_and_Enrichment.md   qualification and lifecycle
+//   knowledge_positions.py   the implemented node/edge attributes this schema stores
+//   Knowledge-Asset-Evolution-Spec-v1.6.3.md   KG/index is a rebuildable projection; hash-gate
+//                            state, schema ledgers and runtime packets live outside this graph
+//
+// One identity, three positions:
+//   LOCATION  WHERE: source_* and span fields.  WITHIN: within_path and location_* fields.
+//   RELATION  the node itself plus Relationship edges. A node needs no edge to have a graph
+//             position, so nothing here requires an edge (no @card minimum anywhere).
+//   PROXIMITY per-space status + vector columns; an item can sit in several spaces at once.
+
+node KnowledgeItem
+    @description("One admitted knowledge item: one identity with three positions (location, relation, proximity). A derived pointer to original evidence, never a copy of it.")
+    @instruction("Writes are governed by the Knowledge Positions library. Verify span_sha256 against the original source before relying on this row.") {
+
+    // ---- identity ----------------------------------------------------------
+    id: String @key @description("Stable knowledge identity chosen by the producer (library: sha256 of [source, version, position, kind]). Unchanged spans keep their id when other parts of the source change.")
+    kind: String @description("Structural unit kind from the reader, e.g. file, heading_section, knowledge_note, or a Python AST node type. Open vocabulary.")
+    entity_type: String? @description("What the item is about when that differs from kind (library defaults it to kind).")
+    domain: String? @index @description("Explicit subject/work domain; not a permission boundary.")
+    heading: String? @index @description("Heading or title when the source unit has one. Derived, full-text indexed.")
+    terms: String? @index @description("Deterministically extracted lexical terms for full-text discovery. Derived; not the source text and not a privacy boundary.")
+
+    // ---- LOCATION / WHERE: S = (u, h) and span p ---------------------------
+    owner_namespace: String? @description("Owner / authority namespace of the source. Records where authority lies; it is NOT access control.")
+    source_id: String @index @description("Stable source identifier (library `source`).")
+    source_address: String? @description("Resolvable address or opaque locator u (path, URL, message locator).")
+    source_repo: String? @description("Repository coordinate, for repository sources.")
+    source_commit: String? @description("Repository commit the source was observed at, for repository sources.")
+    source_path: String? @index @description("Path inside the repository or source root, for file sources.")
+    source_version_sha256: String? @description("h: digest of the observed source version's bytes. Null only for a locator_only lead.")
+    observed_source_version: String? @description("Newer verified source version reported by a watcher. Differs from source_version_sha256 when the item is out of date.")
+    source_precision: enum(verified, locator_only) @description("verified: the version and span were read from the original. locator_only: an unverified lead (heading, search hit, model clue); its span fields stay null.")
+    position_unit: String? @description("Unit of the span coordinates, e.g. utf8_byte, python_utf8_columns, page_region, time_window, message.")
+    start_byte: I64? @description("Version-scoped UTF-8 start byte of the span.")
+    end_byte: I64? @description("Version-scoped UTF-8 end byte of the span.")
+    start_line: I64? @description("1-based start line of the span.")
+    end_line: I64? @description("1-based end line of the span.")
+    position_coordinates: String? @description("JSON flat map of other adapter-native coordinates (column offsets, page/region, message id, time window, event offset). Not a repeat of the typed span fields.")
+    span_sha256: String? @description("Digest of the exact span text (library content_hash).")
+    ownership: enum(author, machine)? @description("Optional: which ownership region of the source the span lies in, when the source declares one. Location and traceability do not depend on it.")
+
+    // ---- LOCATION / possible access (hints, never permissions) -------------
+    realm: enum(public_web, authenticated_web, provider_private, local_file, ssh_host, cloud_workspace, repository)? @description("Possible-access realm. A hint, never a credential, permission or proof of current access.")
+    possible_routes: String? @description("JSON list of {environment, via} route hints. Actual discover/read/write access is checked by the current environment and is never stored here.")
+
+    // ---- LOCATION / WITHIN: item_location ----------------------------------
+    within_path: [String]? @description("Ordered structural path inside the source. Parent path and depth are derived from it.")
+    sibling_index: I32? @description("Order among siblings under the same parent, when the reader supplies it.")
+    location_coordinates: String? @description("JSON flat map of complementary within-item coordinates (library item_location.coordinates).")
+    location_method: String? @description("native_structure | stable_anchor | source_span | observed_locator, or a registered LocationMethod name (custom:<slug>).")
+    location_basis: enum(parser, reader, observation)? @description("Who supplied the within-item position.")
+    location_precision: enum(parsed, locator_only)? @description("parsed only when a deterministic reader/parser verified it against the original; an observation is always locator_only.")
+
+    // ---- PROXIMITY ---------------------------------------------------------
+    // One column pair per model-identified embedding space. An item may be a member of
+    // several spaces at once; its identity never depends on them. Status null = not a member
+    // of that space; unknown = member with a deferred vector; known = vector present.
+    // A Vector(N) column holds exactly one space, so incompatible vectors are never compared.
+    // Adding a space = add a nullable status + vector pair (in-place migration).
+
+    // Deterministic lexical proximity; no external encoder or semantic provider.
+    vector_lexical_hash_512_status: enum(known, unknown)? @description("Membership/status in space lexical-hash-512 (deterministic lexical space).")
+    vector_lexical_hash_512: Vector(512)? @index @description("Space lexical-hash-512 as produced by the JITK Rust scanner: sha256-hashed, stop-word-filtered lexical vector, unit-normalised. Not a semantic embedding; similarity is a discovery lead, never a fact.")
+
+    // ---- lifecycle ---------------------------------------------------------
+    status: enum(current, stale, deprecated) @index @description("current | stale (source or a dependency changed: review required, not disproved) | deprecated (historical; never silently revived).")
+    status_history: [String]? @description("Append-only JSON entries {status, reason}.")
+
+    // ---- enrichment (three-touch mutation budget) --------------------------
+    enrichment: String? @description("JSON machine enrichment payload. Not authoritative source evidence. Frozen when the budget is spent; later discoveries grow outward as new items and relationships.")
+    enrichment_touches: I32 @description("Semantic payload mutations so far; admission is touch 1.")
+    enrichment_touch_limit: I32 @description("Touch ceiling (library default 3).")
+    enrichment_frozen: Bool @description("True once touches reach the limit, until a verified source-version change starts a new epoch.")
+
+    @range(enrichment_touches, 1..3)
+    @range(enrichment_touch_limit, 3..3)
+}
+
+node EnrichmentCluster
+    @description("Explicit cluster sharing one enrichment mutation budget (library graph-level enrichment_budgets).") {
+    id: String @key @description("Cluster id chosen by the caller.")
+    touches: I32 @description("Semantic payload mutations spent by the cluster; creation is touch 1.")
+    touch_limit: I32 @description("Touch ceiling (library default 3).")
+    frozen: Bool @description("True once the cluster budget is spent.")
+    source_versions: String? @description("JSON map source -> version. A changed version starts a new enrichment epoch.")
+
+    @range(touches, 1..)
+    @range(touch_limit, 1..)
+}
+
+node LocationMethod
+    @description("A registered novel location convention (library location_methods registry). The four canonical methods are built in and are not rows.")
+    @instruction("Reuse an existing method before registering one. Registration never grants parser-verified status.") {
+    name: String @key @description("custom:<short-slug>")
+    source_kind: String @description("Kind of source the convention applies to.")
+    description: String @description("How the coordinate is expressed.")
+    verification: String @description("How a reader verifies it against the original.")
+    status: enum(provisional) @description("Novel conventions stay provisional until a verified adapter exists.")
+
+    @check(name, "^custom:[a-z][a-z0-9_-]{1,47}$")
+}
+
+edge InEnrichmentCluster: KnowledgeItem -> EnrichmentCluster @card(0..1)
+    @description("Item shares its enrichment budget with an explicit cluster (library enrichment_cluster).") {
+    @key(@src, @dst)
+}
+
+// One edge type carries every knowledge relationship, exactly as the library's directed
+// multigraph does: the relationship type is the `relation` label, which is an open
+// vocabulary. The twelve Core labels are the first-pass vocabulary; extensions such as
+// contains, next_section, derived_from, depends_on, superseded_by, precedes, supports and
+// contradicts use the same edge with their own label.
+//
+// Identity: @key(@src, @dst, relation, evidence_key), where evidence_key is the library edge
+// key sha256([relation, evidence]). Parallel relationships between the same two items with
+// different labels or different evidence stay distinct (multigraph); writing the same
+// relationship twice converges instead of duplicating.
+edge Relationship: KnowledgeItem -> KnowledgeItem
+    @description("A qualified, directed relationship between two knowledge items. Direction follows the label's documented meaning, e.g. requires: dependent -> prerequisite.")
+    @instruction("Writes are governed by the Knowledge Positions library (vocabulary, evidence, qualification, lifecycle). Read the label as written; do not infer symmetry or transitivity.") {
+    relation: String @description("Relationship label (open vocabulary). Do not infer symmetry or transitivity from it.")
+    evidence_key: String @description("sha256([relation, evidence]): the library edge key. Part of the edge identity.")
+    evidence: String? @description("JSON evidence supporting the relationship, or null.")
+    qualification: String? @description("Producer qualification, e.g. source_structure for parser-derived edges, candidate for discovery leads.")
+    status: enum(observed, proposed, reviewed, rejected, superseded, unresolved)? @description("Relationship lifecycle. Null when the producer recorded none.")
+    origin: String? @description("Who or what asserted the relationship (parser, human, model, ...).")
+    confidence: F64? @description("Asserted confidence, only when meaningful. Never a similarity score.")
+    cost: F64? @description("Justified nonnegative traversal cost for weighted views; null when none is justified.")
+    weight: F64? @description("Algorithm weight, when one is used.")
+
+    @key(@src, @dst, relation, evidence_key)
+}

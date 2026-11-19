@@ -1,0 +1,10 @@
+version: 1
+metadata:
+  name: knowledge-positions
+state:
+  backend: cluster
+  lock: true
+graphs:
+  knowledge:
+    schema: schema.pg
+    queries: queries/
