@@ -1,0 +1,28 @@
+# EXAMPLE for a cluster with both knowledge and an existing native dev graph.
+# Merge into the actual cluster configuration; do not replace unrelated settings.
+# Requires existing dev-graph/schema.pg and dev-graph/queries/ from the native cookbook.
+version: 1
+state: { backend: cluster, lock: true }
+
+# No semantic embedding provider. Lexical proximity is supplied by the reader.
+
+graphs:
+  knowledge:
+    schema: schema.pg
+    queries: queries/
+  # Agent coordination: the developer's dev-graph cookbook (ModernRelay omnigraph-cookbooks
+  # @ c13bac1, MIT), schema and queries unchanged. Kept apart from the knowledge schema.
+  dev:
+    schema: dev-graph/schema.pg
+    queries: dev-graph/queries/
+
+policies:
+  graph-access:
+    file: graph.policy.yaml
+    applies_to: [knowledge]
+  dev-access:
+    file: dev-graph/dev.policy.yaml
+    applies_to: [dev]
+  server-access:
+    file: server.policy.yaml
+    applies_to: [cluster]

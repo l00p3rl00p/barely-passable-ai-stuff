@@ -59,3 +59,13 @@ Using a dedicated new graph, run Step 3 with two actual documents. Repeat captur
 ## 5. Updates
 
 Keep these files separate from OmniGraph engine installation. After an engine upgrade, follow native upgrade instructions, rerun lint/plan and acceptance; copy or redeploy the schema and queries only if needed. Never initialize over live data. Preserve reviewed meaning and relationship evidence before rebuilding. No installer or batch file.
+
+## Native permission configuration and semantic-provider removal
+
+The bundle includes the deployment-policy examples `graph.policy.yaml`, `server.policy.yaml`, and `dev-graph/dev.policy.yaml`. They are optional deployment configuration, not required for standalone graphs or an alternate permission estate. They use the agreed working-agent, maintenance, human steward and admin capability split. Map the example actor identities to actual authenticated principals; preserve unrelated rules, realm boundaries and credentials. Do not grant rights by merely naming an actor.
+
+For an existing cluster, copy/merge these three files into the configuration directory referenced by its actual cluster.yaml, preserving the exact paths in the policies declarations. See `cluster.example.yaml` (knowledge only) and `cluster.knowledge-dev.example.yaml` (knowledge plus an existing native dev graph). The latter requires the native dev schema and queries already installed; it does not overwrite them. These are examples, never wholesale replacements for a live configuration.
+
+Remove the knowledge graph's `embedding_provider` binding and the now-unused `providers.embedding.default` block from the real cluster.yaml. Preserve any other graph's independently required provider; do not bind the knowledge graph to one. Use the provider-free schema and queries in this bundle; review any populated legacy vector columns before migrating. No semantic toggle or skip flag is needed. Validate, plan and apply with an authorized administrator using the native workflow above. Verify effective access under the actual principals. Configuration migration is not a credential reset.
+
+Rust build dependencies are documented separately in [rust-dependencies/README.md](rust-dependencies/README.md). Install/fetch them before building the Rust ingestion utility; the representation itself does not depend on Rust.
