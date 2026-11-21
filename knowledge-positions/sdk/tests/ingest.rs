@@ -54,3 +54,26 @@ fn fail_closed_when_source_unreadable(){
     let tmp=tempfile::tempdir().unwrap();
     assert!(scan_directory(&tmp.path().join("missing"),"repo:x").is_err());
 }
+
+#[test]
+fn code_native_parser_and_structural_graph() {
+    let tmp=tempfile::tempdir().unwrap();
+    fs::write(tmp.path().join("app.py"),"def greet(name):\n    return name\n").unwrap();
+    fs::write(tmp.path().join("engine.rs"),"fn run() -> u32 { 42 }\n").unwrap();
+    fs::write(tmp.path().join("model.ts"),"function calculate(x: number) { return x * 2; }\n").unwrap();
+    let scan=scan_directory(tmp.path(),"repo:code-fixture").unwrap();
+    verify_scan(&scan).unwrap();
+    assert_eq!(scan.files_seen,3);
+    for (path,kind) in [("app.py","function_definition"),
+                        ("engine.rs","function_item"),
+                        ("model.ts","function_declaration")] {
+        let file=scan.records.iter().find(|r|r.source["key"]==path && r.kind=="file").unwrap();
+        let nodes=file.native["nodes"].as_array().unwrap();
+        assert!(!nodes.is_empty(),"native AST is required for {path}");
+        assert_eq!(file.native["has_error"],false);
+        assert!(nodes.iter().any(|n|n["kind"]==kind),"native {kind} missing from {path}");
+        let symbol=scan.records.iter().find(|r|r.source["key"]==path && r.kind==kind).unwrap();
+        assert_eq!(symbol.location["unit"],"utf8_byte");
+        assert!(scan.edges.iter().any(|e|e.to==symbol.id && e.relation=="contains"));
+    }
+}
