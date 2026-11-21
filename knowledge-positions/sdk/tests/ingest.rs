@@ -17,6 +17,9 @@ fn cold_mixed_source_roundtrip(){
     assert_eq!(run.edges.iter().filter(|e|e.relation=="contains").count(),2);
     assert_eq!(run.edges.iter().filter(|e|e.relation=="next_section").count(),1);
     assert!(run.records.iter().any(|r|r.source["key"]=="opaque.wasm" && r.native.is_null()));
+    let binary=run.records.iter().find(|r|r.source["key"]=="opaque.wasm").unwrap();
+    assert!(binary.values["terms"].as_str().unwrap().contains("opaque"));
+    assert_eq!(binary.proximity["vector"].as_array().unwrap().len(),512);
     let md=run.records.iter().find(|r|r.source["key"]=="docs/m.md" && r.kind=="file").unwrap();
     assert!(md.native.as_array().unwrap().iter().any(|v|v["event"].as_str().unwrap().contains("Link")));
     let csv=run.records.iter().find(|r|r.source["key"]=="data.csv").unwrap();
