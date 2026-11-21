@@ -99,7 +99,7 @@ fn line_at(raw: &[u8], byte: usize) -> usize {
 }
 fn headline(text: &str) -> String { text.trim().chars().take(200).collect() }
 
-fn parser_report(ext: &str, raw: &[u8]) -> (String, Value, Vec<(usize, usize, String)>) {
+fn parser_report(ext: &str, raw: &[u8]) -> (String, Value, Vec<(usize, usize, String, String)>) {
     let Ok(text) = std::str::from_utf8(raw) else {
         return ("none:non-utf8".into(), Value::Null, vec![]);
     };
@@ -109,7 +109,7 @@ fn parser_report(ext: &str, raw: &[u8]) -> (String, Value, Vec<(usize, usize, St
             // Event debug strings preserve the exact events yielded by pulldown-cmark;
             // no DOM, AST or semantic relationships are invented from them.
             let mut tokens = Vec::new();
-            let mut headings: Vec<(usize, usize, String)> = Vec::new();
+            let mut headings: Vec<(usize, usize, String, String)> = Vec::new();
             let mut active: Option<(usize, u8, String)> = None;
             for (evt, span) in Parser::new_ext(text, Options::all()).into_offset_iter() {
                 let description = format!("{evt:?}");
@@ -128,7 +128,7 @@ fn parser_report(ext: &str, raw: &[u8]) -> (String, Value, Vec<(usize, usize, St
                     }
                     Event::End(TagEnd::Heading(_)) => {
                         if let Some((start, _, title)) = active.take() {
-                            headings.push((start, span.end, headline(&title)));
+                            headings.push((start, span.end, headline(&title), "heading_section".into()));
                         }
                     }
                     _ => {}
@@ -136,6 +136,60 @@ fn parser_report(ext: &str, raw: &[u8]) -> (String, Value, Vec<(usize, usize, St
                 tokens.push(json!({"start_byte":span.start,"end_byte":span.end,"event":description}));
             }
             ("pulldown-cmark/0.12".to_string(), json!(tokens), headings)
+        }
+        "py" | "rs" | "js" | "jsx" | "mjs" | "cjs" | "ts" | "tsx" => {
+            // Tree-sitter is the native code parser on this boundary, not an
+            // enrichment stage or a translation of another AST.
+            let language: tree_sitter::Language = match ext {
+                "py" => tree_sitter_python::LANGUAGE.into(),
+                "rs" => tree_sitter_rust::LANGUAGE.into(),
+                "js" | "jsx" | "mjs" | "cjs" => tree_sitter_javascript::LANGUAGE.into(),
+                "ts" => tree_sitter_typescript::LANGUAGE_TYPESCRIPT.into(),
+                _ => tree_sitter_typescript::LANGUAGE_TSX.into(),
+            };
+            let mut parser = tree_sitter::Parser::new();
+            if let Err(e) = parser.set_language(&language) {
+                return (format!("tree-sitter:{ext}:language-error:{e}"), Value::Null, vec![]);
+            }
+            let Some(tree) = parser.parse(raw, None) else {
+                return (format!("tree-sitter:{ext}:parse-unavailable"), Value::Null, vec![]);
+            };
+            let mut nodes = Vec::new();
+            let mut symbols = Vec::new();
+            let mut stack = vec![(tree.root_node(), None::<usize>, None::<String>)];
+            while let Some((node, parent, field)) = stack.pop() {
+                let index = nodes.len();
+                // Flat pre-order preserves the complete native child tree,
+                // token kinds, original byte spans and field names. Parent
+                // indices reconstruct the hierarchy without lossy summaries.
+                nodes.push(json!({"kind":node.kind(),"start_byte":node.start_byte(),
+                    "end_byte":node.end_byte(),"named":node.is_named(),
+                    "missing":node.is_missing(),"error":node.is_error(),
+                    "parent":parent,"field":field}));
+                let is_symbol = matches!(node.kind(),
+                    "function_definition" | "class_definition" | "function_item" |
+                    "struct_item" | "enum_item" | "trait_item" | "mod_item" |
+                    "function_declaration" | "class_declaration" | "method_definition" |
+                    "interface_declaration" | "type_alias_declaration" | "enum_declaration");
+                if is_symbol {
+                    if let Some(name) = node.child_by_field_name("name") {
+                        if let Ok(label) = name.utf8_text(raw) {
+                            symbols.push((node.start_byte(), node.end_byte(),
+                                headline(label), node.kind().to_string()));
+                        }
+                    }
+                }
+                for i in (0..node.child_count()).rev() {
+                    if let Some(child) = node.child(i) {
+                        stack.push((child, Some(index),
+                            node.field_name_for_child(i as u32).map(str::to_string)));
+                    }
+                }
+            }
+            symbols.sort_by_key(|symbol| symbol.0);
+            (format!("tree-sitter/{ext}/0.24"),json!({
+                "has_error":tree.root_node().has_error(),"nodes":nodes
+            }),symbols)
         }
         "json" => match serde_json::from_str::<Value>(text) {
             Ok(v) => ("serde_json".into(), v, vec![]),
@@ -224,17 +278,17 @@ fn scan_file(root: &Path, path: &Path, authority: &str) -> Result<(Vec<Record>,V
     let mut ordinal = BTreeMap::<String,usize>::new();
     // Only meaningful section headings get their own knowledge identities.
     // Full native token/event output stays on the file record: no 400 nodes/file explosion.
-    for (i,(start,_end,title)) in headings.iter().enumerate() {
-        let end = headings.get(i+1).map(|h|h.0).unwrap_or(raw.len());
+    for (i,(start,native_end,title,kind)) in headings.iter().enumerate() {
+        let end = if kind == "heading_section" { headings.get(i+1).map(|h|h.0).unwrap_or(raw.len()) } else { *native_end };
         let n = ordinal.entry(title.clone()).or_insert(0); *n+=1;
-        let unit=format!("heading:{title}:{}",*n);
-        let heading=record(&raw,authority,&rel,(*start,end),"heading_section",&unit,
+        let unit=format!("{kind}:{title}:{}",*n);
+        let heading=record(&raw,authority,&rel,(*start,end),kind,&unit,
                            Some(title.clone()),&parser_name,json!({"parser_output":"stored_in_file_record","unit_key":unit}))?;
         edges.push(Edge{from:records[0].id.clone(),to:heading.id.clone(),relation:"contains".into(),
-            origin:"native:markdown-heading".into(),evidence_key:sha(unit.as_bytes())});
+            origin:format!("native:{kind}"),evidence_key:sha(unit.as_bytes())});
         if let Some(old)=previous {
-            edges.push(Edge{from:old,to:heading.id.clone(),relation:"next_section".into(),
-                origin:"native:markdown-order".into(),evidence_key:sha(format!("{unit}:next").as_bytes())});
+            edges.push(Edge{from:old,to:heading.id.clone(),relation:if kind=="heading_section"{"next_section".into()}else{"next_symbol".into()},
+                origin:format!("native:{kind}-order"),evidence_key:sha(format!("{unit}:next").as_bytes())});
         }
         previous=Some(heading.id.clone());
         records.push(heading);
