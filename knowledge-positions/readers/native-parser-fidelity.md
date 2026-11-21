@@ -2,21 +2,7 @@
 
 **NEVER skip the middle column.** A source example followed by hand-written metadata is not an executable parser specification. An SDK author MUST see (1) the exact source bytes, (2) the actual selected parser and its raw returned values, (3) the mechanical field-to-field mapping into the ONE shared OKF-compatible record, and (4) which retrieval methods consume those fields. This section records a real local parser audit of the seven examples below. It is **not** a claim that the original OpenKC script itself implements every adapter. The complete native parser-output snapshot from this audit is independently saved as an artifact; any implementation MUST be able to regenerate its own test evidence from the literal fixture bytes.
 
-**Reproduce this parser audit:** Run [native_parser_fidelity.py](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/main/knowledge-positions/conformance/probes/native_parser_fidelity.py) with real installed markdown-it-py and Python standard-library parsers. It prints the full native parse output, source hashes, parser origin annotations and assertions, rather than a prettified reconstruction:
-
-~~~sh
-python3 knowledge-positions/conformance/probes/native_parser_fidelity.py --out ukc-native-output.json
-~~~
-
-To verify against the **actual, unchanged Scratchpad OpenKC code**, also supply the file's checkout path:
-
-~~~sh
-python3 knowledge-positions/conformance/probes/native_parser_fidelity.py \
-  --original-openkc-script /path/to/quatrus-scratchpad/experiments/openkc-ast-okf-yanp/openkc_etl.py \
-  --out ukc-original-openkc-parser-output.json
-~~~
-
-The second command explicitly **fails** if the original source file is not available. The independent local parser audit has been executed; the newly committed GitHub runner has not yet been executed from a fresh checkout. Both modes are a parser-fidelity test, not proof of the entire SDK.
+**Evidence status:** The parser observations below record an earlier local audit, but the referenced `conformance/probes/native_parser_fidelity.py` runner is **not present on `main`**. The audit is therefore not reproducible from this SDK checkout as written. Treat the observations as recorded characterization, not a passing current SDK conformance run. The required future test remains: replay the literal inputs with the declared native parsers and preserve their full raw outputs, parser versions, source bytes, and crosswalk evidence.
 
 **Parser identity and positions cannot be hand-waved.** Specify parser name, grammar/mode, version at run time, original source hash, each returned field, and the coordinate convention. A parser token's map in lines is **not** a byte span; an HTMLParser event position is **not** a DOM node's byte span; a decoded CSV number is still originally a string. When a field is not emitted by the parser, DO NOT assert it came from the parser. Capture available source-path/byte metadata **separately** from actual parser observations. An adapter may deterministically add a value by reading the original bytes; label that operation as an adapter extraction, not raw parser output.
 
@@ -102,7 +88,7 @@ heading_open  tag='h1' map=[0,1]
 inline        map=[0,1] content='Chapter 2: The Harbor'
 paragraph_open tag='p' map=[1,3]
 inline        map=[1,3]
-  content='See [Chapter 3](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/main/knowledge-positions/chapter3.md).\nThe boat reached the harbor at dawn.'
+  content='See [Chapter 3](chapter3.md).\nThe boat reached the harbor at dawn.'
   children:
     text('See ')
     link_open(tag='a', attrs={'href':'chapter3.md'})
