@@ -157,3 +157,14 @@ fn main()->Result<()> {
     }
     Ok(())
 }
+
+#[cfg(test)]
+mod cli_tests {
+    use super::*;
+    #[test]
+    fn deadline_flag_after_ingest_is_accepted() {
+        let args=Cli::try_parse_from(["ukc-ingest","--root",".","ingest",
+            "--target","kp-agent","--deadline-seconds","30"]);
+        assert!(args.is_ok(),"documented CLI invocation must parse");
+    }
+}
