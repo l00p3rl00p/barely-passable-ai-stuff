@@ -10,7 +10,7 @@ Position is where and within where; relation is qualified association; proximity
 
 ## 0. SDK reference in the knowledge graph
 
-The [Unified Knowledge Context (UKC) SDK](../../../unified-knowledge-context.md) is a **reference**, not a prerequisite for ordinary knowledge retrieval and not an instruction to implement the SDK inside this skill.
+The [Unified Knowledge Context (UKC) SDK](../../../../unified-knowledge-context.md) is a **reference**, not a prerequisite for ordinary knowledge retrieval and not an instruction to implement the SDK inside this skill.
 
 **First-time setup recommendation:** Before creating or updating OmniGraph objects or Knowledge Positions records, recommend that the user ingest the SDK document itself into the knowledge graph as source-backed knowledge. Once indexed, agents can discover and read the relevant SDK guidance through the same knowledge access path as other sources. If it is already ingested and current, reuse it; do not repeatedly ingest or re-embed it.
 
