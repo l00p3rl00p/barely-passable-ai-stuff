@@ -100,7 +100,7 @@ fn parser_report(ext: &str, raw: &[u8]) -> (String, Value, Vec<(usize, usize, St
                 }
                 tokens.push(json!({"start_byte":span.start,"end_byte":span.end,"event":description}));
             }
-            (format!("pulldown-cmark/{}", env!("CARGO_PKG_VERSION")), json!(tokens), headings)
+            ("pulldown-cmark/0.12".to_string(), json!(tokens), headings)
         }
         "json" => match serde_json::from_str::<Value>(text) {
             Ok(v) => ("serde_json".into(), v, vec![]),
@@ -160,16 +160,19 @@ fn record(raw: &[u8], authority: &str, rel: &str, span: (usize, usize),
     let id = canonical_id(authority, rel, &source_sha, kind, unit);
     let text = std::str::from_utf8(&raw[span.0..span.1]).unwrap_or("");
     let filename = Path::new(rel).file_name().unwrap_or_default().to_string_lossy().into_owned();
+    // A binary or empty source has no parsed content; its actual filename remains a
+    // legitimate lexical discovery surface without claiming any content semantics.
+    let proximity_text = if text.trim().is_empty() { filename.as_str() } else { text };
     let start_line = line_at(raw,span.0);
     let end_line = line_at(raw,span.1);
     let values = json!({"name":title.as_deref().unwrap_or(&filename),"filename":filename,
-        "title":title,"terms":words(text)});
+        "title":title,"terms":words(proximity_text)});
     let source = json!({"authority":authority,"key":rel,"version":source_sha,
         "original_bytes":raw.len(),"original_sha256":source_sha});
     let location = json!({"unit":"utf8_byte","start_byte":span.0,"end_byte":span.1,
         "start_line":start_line,"end_line":end_line,"basis":"reader","precision":"parsed"});
     let proximity = json!({"space":"lexical-hash-512/rust-scanner-v1",
-        "status":"known","vector":lexical_hash_512(text)});
+        "status":"known","vector":lexical_hash_512(proximity_text)});
     let evidence = json!({"span_sha256":span_sha,"parser":parser_name,
         "source_sha256":source_sha,"native_payload_digest":sha(native.to_string().as_bytes())});
     Ok(Record {schema:"ukc/1".into(),id,source,kind:kind.into(),location,
