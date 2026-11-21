@@ -237,6 +237,22 @@ A “knowledge graph” with an OKF note containing only a generated summary but
 
 **NEVER skip the middle column.** A source example followed by hand-written metadata is not an executable parser specification. An SDK author MUST see (1) the exact source bytes, (2) the actual selected parser and its raw returned values, (3) the mechanical field-to-field mapping into the ONE shared OKF-compatible record, and (4) which retrieval methods consume those fields. This section records a real local parser audit of the seven examples below. It is **not** a claim that the original OpenKC script itself implements every adapter. The complete native parser-output snapshot from this audit is independently saved as an artifact; any implementation MUST be able to regenerate its own test evidence from the literal fixture bytes.
 
+**Reproduce this parser audit:** Run [native_parser_fidelity.py](conformance/probes/native_parser_fidelity.py) with real installed markdown-it-py and Python standard-library parsers. It prints the full native parse output, source hashes, parser origin annotations and assertions, rather than a prettified reconstruction:
+
+~~~sh
+python3 knowledge-positions/conformance/probes/native_parser_fidelity.py --out ukc-native-output.json
+~~~
+
+To verify against the **actual, unchanged Scratchpad OpenKC code**, also supply the file's checkout path:
+
+~~~sh
+python3 knowledge-positions/conformance/probes/native_parser_fidelity.py \
+  --original-openkc-script /path/to/quatrus-scratchpad/experiments/openkc-ast-okf-yanp/openkc_etl.py \
+  --out ukc-original-openkc-parser-output.json
+~~~
+
+The second command explicitly **fails** if the original source file is not available. The independent local parser audit has been executed; the newly committed GitHub runner has not yet been executed from a fresh checkout. Both modes are a parser-fidelity test, not proof of the entire SDK.
+
 **Parser identity and positions cannot be hand-waved.** Specify parser name, grammar/mode, version at run time, original source hash, each returned field, and the coordinate convention. A parser token's map in lines is **not** a byte span; an HTMLParser event position is **not** a DOM node's byte span; a decoded CSV number is still originally a string. When a field is not emitted by the parser, DO NOT assert it came from the parser. Capture available source-path/byte metadata **separately** from actual parser observations. An adapter may deterministically add a value by reading the original bytes; label that operation as an adapter extraction, not raw parser output.
 
 #### Actual native parser observation 1: Python AST
@@ -754,6 +770,7 @@ Implementations MUST publish a language-neutral fixture runner and real, inspect
 | **UKC-16 PARSER AND ON-TOUCH ENRICHMENT** | Admit Woburn fixture through unchanged generic CommonMark parser: full text/AST survives, but postal code and coordinates are not individually labeled. Touch the same record for a location task and run a separately declared location-aware parser or evidence-grounded LLM enricher: append the recognized existing location facts and any justified relationships to **that same ID**; do not rewrite original text, require full-corpus enrichment, or imply the original parser extracted those fields. A native location parser may capture the same fields immediately. Repeat enrichment without duplication. |
 | **UKC-17 GENERAL SOURCE EXAMPLES** | Run the seven-source reference characterization against actual language-native parsers and its recorded bytes: code, two webpages, cookbook, chapter, CSV, opaque binary. All seven preserve one source identity, exact source position, observed containment/links and available lexical proximity input; queries select from the same records, with zero mandatory model calls or vector generation. |
 | **UKC-18 COLD CONTEXT AND RECOVERY** | Hold sources and accepted findings constant, clear all derived indexes, reconstruct, ask an evidence-backed question twice in independent cold runs; verify useful evidence/identity recovery without asserting word-for-word answer identity. Then show an on-touch qualified discovery changes future knowledge while untouched sources and records remain unchanged. |
+| **UKC-19 NATIVE PARSER FIDELITY** | For each declared fixture, record the **actual returned parser tokens/events/AST/rows**, the exact parser and version, source bytes/hash and coordinate system. Verify native fields and original bytes survive common-record mapping. Distinguish raw parser output from filesystem metadata, adapter extraction and on-touch enrichment. In particular: CommonMark chapter link is an inline child; HTMLParser is an event stream; CSV cells are strings; opaque binary needs no content parser. |
 | **UKC-15 ORIGINAL PROOFS** | Re-execute real OpenKC lossless translation/observed-edge proof and GPS source navigation replay, recording what was actually tested. |
 
 **Core certification requires UKC-01 through UKC-08, UKC-10, UKC-11, UKC-13 and UKC-14.** UKC-09 and UKC-15 are required end-to-end demonstration evidence; do not substitute a mocked trace for the original recorded experiments. **UKC-12 is required to claim parity between two language implementations.** If the conformance fixtures/runner do not yet exist, this spec is a defined contract, **not a claim of certified SDK completion**.
