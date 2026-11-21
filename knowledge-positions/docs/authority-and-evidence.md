@@ -89,7 +89,7 @@ The real read function additionally verifies the original source version and spa
 
 ### 1.2 Woburn GPS characterization — actual original code, not a hypothetical example
 
-A small reproducible source is [conformance/fixtures/woburn-gps.md](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/main/knowledge-positions/conformance/fixtures/woburn-gps.md):
+The following literal Woburn fixture is reproduced inline. The separately referenced `conformance/fixtures/woburn-gps.md` is **not present on `main`**; the inline text is the available source for this illustrative example:
 
 ~~~markdown
 # Woburn, Massachusetts
@@ -98,7 +98,7 @@ A small reproducible source is [conformance/fixtures/woburn-gps.md](https://gith
 - Longitude (illustrative city point): -71.152278
 ~~~
 
-The coordinates identify **an illustrative point**, not an exact universal location of the entire city. The probe at [conformance/probes/original_openkc_gps_probe.py](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/main/knowledge-positions/conformance/probes/original_openkc_gps_probe.py) **imports the original Scratchpad openkc_etl.py** and invokes its actual ast_from_bytes, ast_to_okf, split_note and okf_to_ast functions. It does not replace that code with a mock translation.
+The coordinates identify **an illustrative point**, not an exact universal location of the entire city. An earlier characterization used the original Scratchpad `openkc_etl.py` functions (`ast_from_bytes`, `ast_to_okf`, `split_note`, `okf_to_ast`), not a substitute translation. Its associated `conformance/probes/original_openkc_gps_probe.py` runner is **not present on `main`**, so the observation cannot currently be rerun from this SDK checkout.
 
 **Characterization observed with the same original functions:**
 - Original source bytes preserved: **PASS**.
@@ -115,17 +115,7 @@ The original code did exactly what the early proof promised: **losslessly preser
 
 Those are **not three different knowledge records**, and copying these fields is **not** an AST→graph→vector conversion. The already observed values sit beside the source, and geographic/structural/graph/lexical consumers may use them directly if applicable. An adapter that does not recognize the field convention MUST report it unsupported rather than pretend it produced a complete named-value crosswalk.
 
-Run this characterization against an actual checkout of the original Scratchpad script:
-
-~~~bash
-python knowledge-positions/conformance/probes/original_openkc_gps_probe.py \
-  --openkc-script /path/to/quatrus-scratchpad/experiments/openkc-ast-okf-yanp/openkc_etl.py
-# The original byte/AST preservation should pass and reports missing named GPS fields.
-python knowledge-positions/conformance/probes/original_openkc_gps_probe.py \
-  --openkc-script /path/to/quatrus-scratchpad/experiments/openkc-ast-okf-yanp/openkc_etl.py \
-  --require-field-crosswalk
-# Expected to fail on the untouched original code, revealing the exact missing mapping.
-~~~
+**Reproduction status:** No executable command is supplied here because the referenced probe is not checked into this branch. Reproduction requires an available probe or equivalent independently verified run against the unchanged original Scratchpad code. The results above are historical characterization claims, not current executable proof.
 
 Do **not** report this characterization as a completed UKC SDK conformance run. It identifies the missing SDK behavior with an actual original implementation and a new literal source fixture. A future implementation must pass a separate assertion that its declared field adapter writes and retrieves those labeled values from the same common record, not merely from a reparse of the raw source.
 
