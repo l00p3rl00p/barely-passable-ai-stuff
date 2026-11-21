@@ -1,8 +1,8 @@
----
-name: knowledge-positions-omnigraph
-description: Primary Knowledge Positions workflow for reuse, discovery, and source-backed contribution. Delegate OmniGraph engine operations to the official omnigraph skill; both are intended to be available at session start.
----
-# Knowledge Positions — just in time
+# Agent knowledge workflow — optional OmniGraph profile
+
+This is descriptive SDK integration guidance extracted from the original Knowledge Positions skill; it is **not** part of the language-neutral UKC/1 conformance contract.
+
+**Knowledge Positions — just in time**
 
 **Knowledge = { Position. Relation. Proximity. Resonance. }**
 
