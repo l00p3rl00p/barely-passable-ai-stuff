@@ -24,6 +24,41 @@ pub struct Record {
     pub native: Value,
     pub evidence: Value,
 }
+/// OKF-compatible frontmatter: upstream `type` and `title`, with producer-defined
+/// `x_ukc` carrying the complete unchanged logical source record. The exact parser
+/// payload remains native; this is deterministic field copying, not enrichment.
+/// The function produces an interchange value and performs no parsing or I/O.
+pub fn export_okf(record: &Record) -> Result<Value> {
+    if record.schema != "ukc/1" || record.id.trim().is_empty() {
+        return Err(anyhow!("cannot export a non-UKC/1 knowledge identity"));
+    }
+    let title = record.values["title"].as_str()
+        .or_else(|| record.values["name"].as_str())
+        .unwrap_or("");
+    Ok(json!({"type":"SourceUnit","title":title,"x_ukc":record}))
+}
+
+/// Import the same record without generating new IDs, relations, titles, vectors or
+/// classifications. Reject mismatched producer wrappers rather than silently fixing.
+pub fn import_okf(asset: &Value) -> Result<Record> {
+    if asset.get("type").and_then(Value::as_str) != Some("SourceUnit") {
+        return Err(anyhow!("unsupported OKF type for this SDK record"));
+    }
+    let record: Record = serde_json::from_value(
+        asset.get("x_ukc").cloned().ok_or_else(|| anyhow!("missing x_ukc record"))?
+    ).context("invalid x_ukc record")?;
+    if record.schema != "ukc/1" || !record.id.starts_with("ukc:v1:") {
+        return Err(anyhow!("invalid UKC/1 identity"));
+    }
+    let expected_title = record.values["title"].as_str()
+        .or_else(|| record.values["name"].as_str())
+        .unwrap_or("");
+    if asset.get("title").and_then(Value::as_str) != Some(expected_title) {
+        return Err(anyhow!("OKF title differs from source-backed record"));
+    }
+    Ok(record)
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Edge {
     pub from: String,
