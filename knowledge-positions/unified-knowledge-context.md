@@ -403,6 +403,86 @@ It can additionally compute SHA-256 over those exact bytes, preserve the raw byt
 5. The expected test value is the **actual parser result** for the declared parser, grammar/mode and version. A deliberately simplified common-record view is acceptable **only if it is labeled a selection** and an exact full native record remains accessible.
 6. Test passing means byte/AST/field equality where declared, not a marketing assertion of “99.999% accuracy.” A parser that returns different grammar structures from another parser can still conform by faithfully preserving its own **actual** observations, without claiming the token sequences are identical.
 
+### 3.2.2 Recovered native-to-common translation contract (mandatory; from working code and original research)
+
+**Do not stop at "use OKF."** Every declared reader/parser MUST publish its field crosswalk into the same UKC common-record vocabulary **before** advertising that reader as supported. The crosswalk is implemented at the existing input boundary: no per-search retranslation, no AST→graph→vector knowledge pipeline, no mandatory global ontology. Preserve **all native fields** even when only a subset is directly indexed. A missing recognized field is represented as unsupported or unknown, never invented.
+
+The following is the binding vocabulary for all SDK implementations; the field paths are under producer-defined x_ukc (OKF itself standardizes only its own frontmatter fields and extension convention). **These are named semantic field families in one logical record, not additional objects or completion slots.**
+
+| Common x_ukc field | Native source that supplies it | Invariant |
+|---|---|---|
+| id, source.authority, source.key, source.version | Source resolver, filesystem/provider/repository, content hash | One identity for all search methods; source route and current access are separate |
+| kind, values, native | Exact native reader/parser output, including unknown keys | Retain original casing, types, structure and payload; never discard unrecognized fields |
+| values.name / title / typed attributes | Native filename, explicit heading, symbol, column name, literal metadata | Record provenance per field; file name from filesystem ≠ AST-produced name |
+| location.source_locator, source_version, spans | Filesystem/URI/provider, native span or qualified locator | Version and coordinate units mandatory; original source recoverable when access permits |
+| location.item_path, parent_path, sibling_index, depth | Actual AST, DOM, document tree, workbook sheet/cell or native hierarchy | Structural position is distinct from external source location; **do not invent a tree** |
+| relations[].{subject,predicate,target,direction,origin,evidence} | Actual parser child/parent, DOM href, imports, document links, filesystem containment, qualified delta | Exact direction and observed-vs-proposed status; native edges are graph-ready |
+| proximity inputs | Existing names, literals, content, coordinates or vectors with declared encoder | Lexical/fuzzy similarity can work without an embedding; computed vector is a derived indexable value, not new source truth |
+| evidence / native original | Original bytes or accessible hash-addressed original, parser version, source-hash and span hashes | The full parse/source can be checked and reconstructed; illustrative excerpts are never substitutes |
+
+**The exact inherited OpenKC field crosswalk (from Scratchpad MAPPING.md and actual openkc_etl.py):**
+
+| Native input | Actual historic destination | UKC common-record field / required preservation |
+|---|---|---|
+| Original source filename/path | AST path; OKF openkc_id path suffix | source.key; native.path; filename in values when supplied |
+| Actual original bytes | AST source_base64; OKF note body | native source reference + source bytes and source hash; exact byte roundtrip |
+| hashlib SHA-256 over raw bytes | AST source_sha256; OKF openkc_source_sha256 | source.version/evidence.source_sha256; preserve original field |
+| Real CommonMark tokens | AST tokens copied wholesale into openkc_ast | native.parser_output; real hierarchy, values and token attributes; preserve the entire AST |
+| CommonMark token map | token.map inside embedded AST | parser-native location spans **in source line units** (zero-based, end-exclusive); not fabricated byte offsets |
+| Heading from heading_open followed by inline text | OKF title only when heading exists | values.title with origin=source_heading; do not generate a source title without evidence |
+| YANP conversion date, author, status | YANP-only projection metadata | generated-projection fields **not source facts**; distinguish on import/export |
+
+**Mandatory parser-specific adapters.** Map *what was actually returned*, not what a different parser might have returned:
+
+| Reader | Native observation → UKC field(s) | Important negative proof |
+|---|---|---|
+| Python ast.parse | Module.body, FunctionDef.name, ImportFrom.module, lineno/col_offset/end positions → native + values, hierarchy, relations and native-coordinate location | Python AST does not return the filesystem filename; its UTF-8 column semantics are not CommonMark line maps |
+| markdown-it-py CommonMark | full token attributes and children, heading_open/inline, link_open.attrs.href, map → native + actual hierarchy/link relations + source-line location | A recipe ingredient is an inline text token, **not** a parser-extracted numeric ingredient entity |
+| Python html.parser.HTMLParser | handle_starttag, attrs, handle_data, getpos → native event stream + named attributes/observed href + event position | HTMLParser **does not produce a DOM tree**; a separate DOM parser may, but must declare which produced the hierarchy |
+| csv.DictReader | fieldnames, rows, literal strings → native table and values; source file/row sequence → location and containment | The row values remain strings unless an explicit, qualified schema/adapter converts types; size units are unknown |
+| Filesystem/no content parser | filename, extension, parent, path, byte count and actual content digest → values + source locator + containment edge + literal proximity | An opaque .wasm is discoverable before any WebAssembly parse; content semantics are **not** claimed |
+| JSON/XML/TS/Rust/Word/Excel/etc. | Relevant native parser's real fields/coordinates mapped into the same common vocabulary | An unimplemented reader MUST report not_supported; naming an adapter is not evidence that it works |
+
+**The parser’s actual output is the test oracle.** For every adapter: store original input bytes and parser identity/version; keep real original token/AST/event/row output; declare each copying/normalization rule and its coordinate basis; list native fields it intentionally exposes for direct lookup; verify lossless round-trip including all fields it does **not** expose directly. Verify representative relations and text/filename similarity against that *same* record. Cross-language conformity is evaluated against shared canonical input/expected-field fixtures, not vaguely similar examples.
+
+**Do not over-claim compatibility with the existing Python library.** Current knowledge_positions.py is a working **NetworkX MultiDiGraph** implementation with add(source,text,version,position), source-hashed node identity, link, graph views, source location methods, optional/deferred vector, and an enrichment budget. Its **existing node hash differs from proposed UKC-ID-1**. Its add() requires nonempty text; opaque binary admission as such is an SDK requirement, not yet a demonstrated method on that existing class. Its nodes store text hashes and graph/position data, **not** an automatic full universal OKF record. The historic OpenKC script separately demonstrated exact AST/OKF round-trip for CommonMark. The shared SDK maps and coordinates these proven capabilities; do not falsely certify the legacy library as a complete UKC/1 implementation.
+
+### 3.2.3 Recovered graph contract: ten algorithms, two additional operations, ten views
+
+The original CORE_VOCABULARY.md records **ten graph algorithms** from the user-supplied reference picture, **plus** Ancestors/Descendants and Neighborhood/Subgraph. The actual Python KnowledgePositions.GRAPH_VIEWS provides the ten named views below. This SDK MUST make every algorithm **invocable on the appropriate view** of the same graph records, using ordinary algorithms, without reconstructing new knowledge or fabricating missing edges.
+
+| Required algorithm | Necessary input/view | Honest outcome when conditions do not hold |
+|---|---|---|
+| DFS | directed adjacency; chosen root | Reachable nodes, possibly only the root |
+| BFS | directed adjacency; chosen root | Reachable breadth-first tree, possibly only the root |
+| Topological sort | selected directed acyclic dependency graph | Cycle diagnostic / not applicable, never delete edges to force an order |
+| Union-find / DSU | undirected connectivity view | Existing components; isolated node is its own set |
+| Cycle detection | selected directed or declared undirected view | Cycles or correctly empty result |
+| Connected components | undirected or explicitly weak/strong-directed view | Actual components, including isolated nodes |
+| Bipartite check | declared undirected view | True/false about the view, not a forced partition |
+| Flood fill | selected connectivity view and seed | Actual reachable component |
+| Minimum spanning tree/forest | undirected weighted view; explicit finite costs or declared unit-cost policy | Forest/disconnected results; missing costs flagged, not invented |
+| Shortest path | graph and endpoints; declared cost or hop policy | Path or no-path, never fabricated |
+| Ancestors / descendants | directed view, native edge direction | Actual predecessors/successors with selected semantics |
+| Neighborhood / subgraph | selected seed, relations and radius/selector | Real bounded neighborhood, including empty edge set |
+
+**Actual implemented view names:** directed, undirected, weighted, multigraph, tree, forest, dag, bipartite, similarity, neighborhood. The source graph is a MultiDiGraph; the library’s graph_view() returns detached **derived views**, not ten distinct knowledge stores. Minimum spanning tree, topological sort, union-find and bipartite tests operate on their mathematically appropriate views. Direction, parallel-edge evidence, weighting aggregation and any unit-cost assumption MUST be disclosed rather than silently modified. Similarity-view edges are explicitly candidates, not factual causation. An isolated binary with a known parent still has graph position and filename proximity even if no semantic edge exists.
+
+The first ten are exercised by current KnowledgePositions.core_algorithms(root,target) (source: knowledge_positions.py), while the additional two use standard NetworkX ancestor/descendant and neighborhood/subgraph operations. **Do not claim all twelve have passed a new UKC integration suite merely because the original code has the operations.**
+
+### 3.2.4 Existing location, evolution and recovery: selective behavior, not another ingestion phase
+
+**Location:** Preserve the distinct source locator/authority/version and *internal item* position from LOCATION_ACCESS.md. Reuse existing method priority native_structure → stable_anchor → source_span → observed_locator; preserve complementary verified coordinates. The first three need real reader/parser confirmation; observed_locator is an investigational lead. An exact coordinate is not proof of access. The original class exposes register_location_method(), location_method_catalog(), and record_item_position(), including parser/reader-vs-observation precision. These are capabilities of the existing Python implementation, not requirements to expose identical function spellings in Rust/TS.
+
+**Enrichment:** Initial admission is touch 1; the existing per-node/cluster payload budget is three touches. After touch 3 the payload freezes, while newly supported findings can grow outward via new records/qualified links. When the original source changes, a new version/epoch can be evaluated. This is a bounded mutation rule, **not** a three-hop navigation limit and **not** a license to infer missing values at ingest. The separate Evolution profile also distinguishes human-owned sections from machine enrichment and uses independent author/file/machine hashes to prevent self-triggering; it scopes expensive re-evaluation to affected content. Do not confuse its documented reference proof with newer section-scoped behavior that still needs distinct tests.
+
+**Relations:** Import, parent/child, href and original containment are observed source relationships. A hypothesis such as related_to, causes, fixes, contradicts or implements needs explicit source evidence and qualification if not present literally. Preserve native edge labels, and support source-backed common relationship families from Knowledge_Graph_Relationships_and_Enrichment.md; never normalize distinct semantics into false synonyms. A discovered absence/unresolved target is an honest finding rather than a made-up target node.
+
+**Reconstruction:** Original sources, session transcripts, accepted qualified findings and their evidence are durable; graph, vectors, token indexes and derived views may be erased. On cold rebuild, deterministic scan and mapping recover native values/relations quickly, then admitted discoveries are replayed without an expensive repeat of interpretation. In the GPS experiment the first approximate lead was allowed to be wrong as long as the route reached exact source. The evolving experiment adds newly evidenced relations when useful work touches content, **not** a mandatory global precomputation. Source-preservation and field-mapping parity are measured independently of ranking quality.
+
+**Cherry-pick provenance / exclusion rule:** The above requirements derive from observed source code, the original OpenKC mapping, CORE_VOCABULARY, LOCATION_ACCESS, and the Relationships/Evolution profiles. They do **not** import unrelated runtime workers, event-scheduler architecture, tool-specific servers, mandatory LadybugDB/NetworkX deployment, legacy “three slots to fill” language, or new semantic extraction prerequisites. They preserve the *functionality* and leave the runtime replaceable.
+
+
 ### 3.3 Source → common OKF record → Location / Relation / Proximity: executable examples
 
 **This section is normative by example.** An implementation in any language must recognize what the source actually supplies, copy useful values into *one* source-backed record, retain the original, and make its methods consume those common values. **The method is a reader, not the author of another knowledge representation.** Example identities prefixed fixture: below are human-readable test IDs; they are **not** a substitute for the canonical hash IDs defined in §4. Each x_ukc mapping below is an **OKF producer-defined extension**, not an upstream standard field. The actual asset bytes, SHA and native parser output must be preserved/referenced even when only selected fields are shown here.
@@ -771,9 +851,10 @@ Implementations MUST publish a language-neutral fixture runner and real, inspect
 | **UKC-17 GENERAL SOURCE EXAMPLES** | Run the seven-source reference characterization against actual language-native parsers and its recorded bytes: code, two webpages, cookbook, chapter, CSV, opaque binary. All seven preserve one source identity, exact source position, observed containment/links and available lexical proximity input; queries select from the same records, with zero mandatory model calls or vector generation. |
 | **UKC-18 COLD CONTEXT AND RECOVERY** | Hold sources and accepted findings constant, clear all derived indexes, reconstruct, ask an evidence-backed question twice in independent cold runs; verify useful evidence/identity recovery without asserting word-for-word answer identity. Then show an on-touch qualified discovery changes future knowledge while untouched sources and records remain unchanged. |
 | **UKC-19 NATIVE PARSER FIDELITY** | For each declared fixture, record the **actual returned parser tokens/events/AST/rows**, the exact parser and version, source bytes/hash and coordinate system. Verify native fields and original bytes survive common-record mapping. Distinguish raw parser output from filesystem metadata, adapter extraction and on-touch enrichment. In particular: CommonMark chapter link is an inline child; HTMLParser is an event stream; CSV cells are strings; opaque binary needs no content parser. |
+| **UKC-20 FIELD CROSSWALK AND GRAPH READINESS** | For each reader, compare real native parser fields to a declared versioned x_ukc crosswalk; preserve fields not directly searchable; verify source-vs-parser provenance and original coordinate units. Exercise twelve graph algorithms on source-backed topology using their mathematically correct detached views; record valid empty/no-path/cycle/not-applicable outcomes without fabricating edges or weights. Repeat against new-language implementation using the same fixture. |
 | **UKC-15 ORIGINAL PROOFS** | Re-execute real OpenKC lossless translation/observed-edge proof and GPS source navigation replay, recording what was actually tested. |
 
-**Core certification requires UKC-01 through UKC-08, UKC-10, UKC-11, UKC-13 and UKC-14.** UKC-09 and UKC-15 are required end-to-end demonstration evidence; do not substitute a mocked trace for the original recorded experiments. **UKC-12 is required to claim parity between two language implementations.** If the conformance fixtures/runner do not yet exist, this spec is a defined contract, **not a claim of certified SDK completion**.
+**Core certification requires UKC-01 through UKC-08, UKC-10, UKC-11, UKC-13, UKC-14, UKC-19 and UKC-20.** UKC-09 and UKC-15 are required end-to-end demonstration evidence; do not substitute a mocked trace for the original recorded experiments. **UKC-12 is required to claim parity between two language implementations.** If the conformance fixtures/runner do not yet exist, this spec is a defined contract, **not a claim of certified SDK completion**.
 
 Maintain portable actual fixtures, expected IDs, encoded hash input bytes, original blobs, expected relations, encoder outputs and test reports under a shared **conformance/** directory. A future language must run the same fixtures rather than invent new “equivalent” ones. No pinning of a specific language implementation is required.
 
