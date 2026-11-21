@@ -8,7 +8,7 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
-use std::{collections::{BTreeMap, HashSet}, fs, path::{Path,PathBuf}, time::Instant};
+use std::{collections::{BTreeMap, HashSet}, fs, path::Path, time::Instant};
 use walkdir::{DirEntry, WalkDir};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -251,7 +251,7 @@ fn record(raw: &[u8], authority: &str, rel: &str, span: (usize, usize),
     let filename = Path::new(rel).file_name().unwrap_or_default().to_string_lossy().into_owned();
     // A binary or empty source has no parsed content; its actual filename remains a
     // legitimate lexical discovery surface without claiming any content semantics.
-    let proximity_text = if text.trim().is_empty() { filename.as_str() } else { text };
+    let proximity_text = if text.trim().is_empty() || text.as_bytes().contains(&0) { filename.as_str() } else { text };
     let start_line = line_at(raw,span.0);
     let end_line = line_at(raw,span.1);
     let values = json!({"name":title.as_deref().unwrap_or(&filename),"filename":filename,
