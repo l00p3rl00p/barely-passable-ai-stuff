@@ -20,11 +20,4 @@ The seven literal fixtures above were run locally through real Python ast.parse,
 
 **What this output means:** Exact location found the opaque binary. The observed graph edge found the chapter pointing to Chapter 3. An approximate query “flatbread flour” returned both the webpage and the recipe, using the stored source/name values without converting one retrieval representation into another. The third, zero-score candidate is merely the tail of a three-item diagnostic; production search must not present it as meaningfully similar. All seven source-byte digests and end-exclusive byte bounds were checked. **What is not yet demonstrated:** complete OKF v0.3 serialization, full UKC-ID-1 canonical hash parity, Rust/TypeScript implementation, a persistent vector index or model-driven enrichment. Keep that boundary explicit.
 
-**Reproduction:** Run the checked-in [seven-source characterization](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/main/knowledge-positions/conformance/probes/shared_record_examples.py) from any Python 3 standard-library environment:
-
-~~~sh
-python3 knowledge-positions/conformance/probes/shared_record_examples.py
-~~~
-
-It emits the original seven capture records and their source SHA-256 values, not just a green status. This runner is a **small language-independent behavior demonstration implemented in Python**, not the only permitted SDK implementation. Other-language authors must recreate its behavior using their native parsers; they MUST NOT be required to invoke Python in production. The separate [original Scratchpad OpenKC GPS probe](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/main/knowledge-positions/conformance/probes/original_openkc_gps_probe.py) still characterizes the actual historical OKF roundtrip.
-
+**Reproduction status:** The previously referenced `conformance/probes/shared_record_examples.py` and `conformance/probes/original_openkc_gps_probe.py` are **not present on `main`**. Therefore this historical characterization is not reproducible by the advertised commands from this SDK checkout, and it is not a completed UKC/1 conformance run. Retain the recorded results above as evidence claims with this limitation. A future executable fixture runner must emit the original capture records, source digests, parser observations, and method results; implementations in other languages must reproduce the contract using native parsers, not Python as a production prerequisite.
