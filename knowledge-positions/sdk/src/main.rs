@@ -183,6 +183,16 @@ fn main()->Result<()> {
 mod cli_tests {
     use super::*;
     #[test]
+    fn slow_ingestion_warns_without_stopping() {
+        let start=Instant::now()-Duration::from_secs(31);
+        let mut warned=false;
+        warn_if_slow(start,Duration::from_secs(30),&mut warned,"test scan");
+        assert!(warned);
+        warn_if_slow(start,Duration::from_secs(30),&mut warned,"test loading");
+        assert!(warned);
+        // No error, cancellation, or process termination is triggered by timing.
+    }
+    #[test]
     fn performance_target_flag_after_ingest_is_accepted() {
         let args=Cli::try_parse_from(["ukc-ingest","--root",".","ingest",
             "--target","kp-agent","--target-seconds","30"]);
