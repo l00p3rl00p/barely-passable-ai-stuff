@@ -1,4 +1,6 @@
-## 0. Available knowledge positions and composable traversal
+# Agent capability selection and composable traversal (non-normative profile)
+
+This section helps an agent select available algorithms; it does not mandate a specific library, engine, graph radius or ranking policy for a UKC/1 SDK implementation.
 
 **At the point of use, identify which access methods and original values are actually available for the same knowledge identity.** Do not assume all three are populated, do not require them to be used in sequence, and do not create substitute stores or independent identities.
 
