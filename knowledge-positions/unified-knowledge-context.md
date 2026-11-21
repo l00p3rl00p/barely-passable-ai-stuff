@@ -29,6 +29,19 @@ The UKC/1 specification is organized into the component documents below. The ori
 - [12. Implementer's exact procedure](docs/implementer-guide.md)
 - [13. Future fourth position: Resonance](docs/resonance.md)
 
+## Existing agent-skill guidance, organized by SDK component
+
+The following documents preserve guidance copied from the existing [Knowledge Positions OmniGraph skill](research/omnigraph/skills/knowledge-positions-omnigraph/SKILL.md). They describe agent/host use of the SDK and are not additional UKC/1 conformance requirements. The original skill remains unchanged.
+
+- [Skill overview and knowledge vocabulary](docs/agent-knowledge-overview.md)
+- [Agent startup and official OmniGraph delegation](adapters/omnigraph/agent-startup.md)
+- [SDK reference and graph-ingestion recommendation](docs/sdk-reference-usage.md)
+- [Position, tree/AST, graph and vector capability selection](methods/agent-capabilities.md)
+- [Knowledge access gates and agent coordination](methods/agent-knowledge-access.md)
+- [JITK host contract](adapters/omnigraph/jitk-host-contract.md)
+- [Local discovery priority](methods/local-discovery-priority.md)
+- [Contribution and progressive disclosure](core/agent-contribution.md)
+
 ## Language locations
 
 - [Rust](languages/rust/README.md)
