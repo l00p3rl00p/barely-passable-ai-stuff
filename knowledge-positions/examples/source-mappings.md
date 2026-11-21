@@ -131,7 +131,7 @@ Mix flour and water.
 
 ~~~markdown
 # Chapter 2: The Harbor
-See [Chapter 3](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/main/knowledge-positions/chapter3.md).
+See [Chapter 3](chapter3.md).
 The boat reached the harbor at dawn.
 ~~~
 
