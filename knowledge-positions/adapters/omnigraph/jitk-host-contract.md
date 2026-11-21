@@ -1,4 +1,6 @@
-## 2. Automatic JITK contract (host responsibility)
+# OmniGraph automatic JITK host integration (non-normative profile)
+
+These prompt-triggered behavior rules apply only when an OmniGraph agent host opts into this integration; they are not required of every UKC/1 SDK implementation.
 
 When a host implements prompt-triggered JITK:
 
@@ -10,5 +12,5 @@ When a host implements prompt-triggered JITK:
 
 With a relevant packet, even a fresh session starts at gate 1 with useful knowledge. Do not repeat the host's discovery. An empty or bypassed packet does not establish that knowledge does not exist; use the gates when the task warrants it.
 
-This is the host integration contract, not an assertion that a prompt hook is installed. The portable OmniGraph representation and this skill work without automatic JITK. Do not simulate an automatic lookup or claim it ran when no host packet exists.
+This is the host integration contract, not an assertion that a prompt hook is installed. OmniGraph and the Knowledge Positions skill work without automatic JITK. Do not simulate an automatic lookup or claim it ran when no host packet exists.
 
