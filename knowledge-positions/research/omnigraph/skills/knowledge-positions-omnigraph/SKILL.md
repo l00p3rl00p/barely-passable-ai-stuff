@@ -1,12 +1,20 @@
 ---
 name: knowledge-positions-omnigraph
-description: Reuse, coordinate, discover and contribute source-backed knowledge in native OmniGraph. First local knowledge-discovery tool; load only when relevant.
+description: Primary Knowledge Positions workflow for reuse, discovery, and source-backed contribution. Delegate OmniGraph engine operations to the official omnigraph skill; both are intended to be available at session start.
 ---
 # Knowledge Positions — just in time
 
 **Knowledge = { Position. Relation. Proximity. Resonance. }**
 
 Position is where and within where; relation is qualified association; proximity is clustering in a declared space; resonance is importance learned through use (research, not implemented).
+
+## 0. Primary skill and startup context
+
+**This is the primary knowledge-behavior skill.** It decides whether existing context is sufficient, whether to access a known source, whether to explore associations, and whether fresh discovery or source-backed contribution is needed. It does **not** duplicate the database engine's operational instructions.
+
+**Host startup contract:** Make both this `knowledge-positions-omnigraph` skill and the official `omnigraph` skill available in agent context at session start, with this skill as the primary knowledge workflow. The host/harness is responsible for loading them; editing this file alone does not install or inject either skill. Startup loading is context availability, **not** an instruction to run a scan, open a connection, search, ingest, mutate a graph, or re-read the SDK.
+
+**Delegation:** When the task needs OmniGraph CLI/MCP commands, graph configuration, schema or query authoring, bulk loading, branching, commits, permissions, recovery, or migrations, use the official [OmniGraph skill](https://github.com/ModernRelay/omnigraph/blob/main/skills/omnigraph/SKILL.md). Prefer the version-matched skill exported by the installed OmniGraph CLI when appropriate. This skill controls *why, when and which knowledge* is needed; the official skill controls *how the database operation works*. Do not invent commands from this skill or override native policy.
 
 ## 0. SDK reference in the knowledge graph
 
@@ -57,4 +65,4 @@ Use other local tools to verify, read, or extend initially discovered knowledge,
 
 Read and verify relevant original evidence before relying on it. After meaningful work, preserve useful findings and qualified relationships without waiting for the human to request writeback. Do not manufacture a contribution. Admission is touch 1; two refinements are permitted, then grow outward. Do not use synthetic semantic inference or an embedding provider.
 
-Use the native OmniGraph skill only for the engine operation needed. Read [capture and contribution](references/capture.md) when invoking the adapter; [native operations](references/operations.md) only for configuration, branches or recovery; the bundle RUNBOOK.md only for installation or repair. Native policies and collaboration remain authoritative.
+For knowledge contributions, consult [capture and contribution](references/capture.md) only when the Knowledge Positions adapter is needed. For native database operations, delegate to the official `omnigraph` skill rather than maintaining competing instructions here. Native policies, access controls and collaboration remain authoritative.
