@@ -1,4 +1,6 @@
-## 3. Local discovery priority
+# OmniGraph-first discovery policy (non-normative profile)
+
+This is an agent deployment preference for hosts that select OmniGraph, not a requirement for other SDK consumers, languages or storage engines.
 
 OmniGraph is the **first point of local knowledge discovery**, using its available structural/position, graph/relation or proximity capabilities—not necessarily vector search first. Do not default to grep, glob, broad filesystem scans or other local research tools. This does not require a graph call when gate 1 already suffices or a known source can be accessed directly at gate 2.
 
