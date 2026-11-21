@@ -6,11 +6,13 @@
 
 **ONE KNOWLEDGE IDENTITY. THREE POSITIONS: LOCATION · RELATION · PROXIMITY.**
 
-**Every item of knowledge is represented by these three positions of the SAME knowledge.** They are not three pieces of knowledge, three databases, three processing stages, or three interpretations. The fourth position, **RESONANCE**, is the planned extension; it will be another position of the same knowledge, not a new knowledge system.
+**Every item of knowledge is addressable through three positions of the SAME knowledge.** This does **not** mean all three values must be calculated or populated at admission. They are not three pieces of knowledge, three databases, three processing stages, or three interpretations. The fourth position, **RESONANCE**, is the planned extension; it will be another position of the same knowledge, not a new knowledge system.
 
 Capture what the source already knows: literal values, structure, identity, locations, links, parent/child relationships, order, named references and available proximity values. Keep these values **together**, in one shared, source-backed, OKF-compatible knowledge representation. An AST is already a graph: parent, child, sibling and containment are actual relationships. A webpage, conversation, book, document, event or language parse likewise offers whatever structure it truly contains. No intelligence is required to turn an observed relationship into a graph-accessible edge.
 
 **The retrieval method changes. The knowledge does not.** Structural/AST-style navigation uses position; NetworkX or another graph algorithm uses relations; fuzzy/lexical/vector search uses proximity or literal content. Each method returns the same knowledge identity and can lead to the same exact source evidence. The caller may switch methods freely. The number of fields or methods is not fixed: preserve the available values a different method may later need.
+
+**Capture sequencing: use the fastest faithful native method first; make its known values usable immediately.** Establish the shared identity and the positional slots, mark uncomputed positions unknown, and extend the *same record* as additional position values become available. No method has to wait for the others. The three positions describe interoperability, **not a three-position completion barrier or a fixed processing order**.
 
 **Ingestion is deterministic, not semantic interpretation.** Same source, version, observations and declared rules produce the same IDs, recorded values, edges and positions. Use ordinary parsers, algorithms, hashes and indexes. Do not run an LLM to invent names, meanings, semantic layers or links already explicit in the source. If a relationship is **not** known, leave it unknown. When a human or intelligence later investigates and establishes a genuinely new, evidence-backed relationship, append only that discovery as an enrichment delta. Cheap, imperfect hashed proximity is valuable because it can lead to a node, its neighbors and an exact original passage. Vector calculation can happen independently and does not block use.
 
@@ -45,7 +47,7 @@ The OpenKC experiment proved source-preserving AST–OKF round trips and observe
 | **PROXIMITY** | Declared lexical/fuzzy signals and zero or more specifically identified vector spaces. Unknown/queued vectors remain unknown. | Approximate candidate lookup and similarity. |
 | **RESONANCE** (future) | Evidence-supported activity→knowledge→observed-consequence position. | Conditional importance from experience; not an implemented requirement of UKC/1. |
 
-A position is **addressable information about an item**, not an instruction to construct a new semantic model. No position is the prerequisite processing output of another. Each position has status **known**, **unknown**, or **not_applicable** with a reason. A known empty set is different from an unknown set. No vector is different from a known zero vector.
+A position is **addressable information about an item**, not an instruction to construct a new semantic model. No position is the prerequisite processing output of another, and no order of filling positions is mandatory. The source's most immediately available capture method goes first; later work extends only what is missing. Each position has status **known**, **unknown**, or **not_applicable** with a reason. A known empty set is different from an unknown set. No vector is different from a known zero vector.
 
 A tree is a graph from the moment its actual nodes and native edges are available. Existing title, identifier, href, message order and declared dependency values can support literal lookup and relation navigation immediately. The same record may also have native structured attributes not listed above. They must be preserved, not trimmed to three fields.
 
@@ -53,7 +55,7 @@ A vector never creates a causal or semantic relation by itself. Fuzzy overlap ma
 
 ## 3. One logical record: the representation contract
 
-Every successfully admitted knowledge item has exactly one logical record identity and all three position slots. A single source can contain many items. The natural grain is source-adapter-defined: file, symbol, AST/DOM node, document section, message, event, paragraph, observed relation or qualified finding.
+Every successfully admitted knowledge item has exactly one logical record identity and all three **addressable position slots**, not necessarily three computed values. At admission, capture only the available values faithfully; represent the rest explicitly as unknown. Later deterministic work fills them on the same identity without re-ingesting or reinterpreting existing knowledge. A single source can contain many items. The natural grain is source-adapter-defined: file, symbol, AST/DOM node, document section, message, event, paragraph, observed relation or qualified finding.
 
 **Minimum UKC/1 logical fields** (not a mandated programming-language struct or physical DB schema):
 
@@ -250,16 +252,16 @@ A claimed UKC SDK **fails** when:
 
 Admission MUST be idempotent. A source version change must preserve evidence and supersession history and update only affected positions/edges. Concurrent writers must use transactions or a coherent serialization strategy, not silently overwrite accepted deltas. Unknown or ambiguous source read failures remain visible.
 
-**Deterministic ingestion is the fast path.** Hash, parse, map observed fields, record identities, materialize native edges and make the record searchable. Compute expensive vectors or optional new relationships separately as needed. Reuse unchanged hashes, records and positions. A large folder scan is not a whole-corpus intelligence job. Rebuild indexes instead of designing expensive recovery machinery whenever source reconstruction is faster and preserves all accepted knowledge.
+**Deterministic ingestion is the fast path, not a compulsory checklist of every possible computation.** Capture by the quickest suitable faithful source-native method; establish identity, preserve available fields and observed edges, and make the item searchable through whatever methods are already supported. Fill other positional values when available or useful, against the same identity. Compute expensive vectors or optional new relationships separately as needed. Reuse unchanged hashes, records and positions. A large folder scan is not a whole-corpus intelligence job. Rebuild indexes instead of designing expensive recovery machinery whenever source reconstruction is faster and preserves all accepted knowledge.
 
 Do not invent a benchmark threshold: measure with real input size, wall time, memory, store size, and LLM-call count. The zero-required-LLM-call condition for ordinary ingestion is normative.
 
 ## 12. Implementer's exact procedure
 
 1. Read and implement **First Law**. No parser, DB or language choice changes it.
-2. Write a source-native deterministic adapter returning literal values, actual relationships, original structure and source positions.
-3. Produce the shared logical record with all three slots, true unknowns and one canonical ID.
-4. Expose immediate exact structural, source and graph queries over the recorded values.
+2. Use the fastest suitable faithful native capture method to obtain available literal values, relationships, structure and positions; do not wait for other representations.
+3. Establish one canonical ID and the three addressable slots; retain supplied values and mark not-yet-known values unknown.
+4. Make the captured knowledge usable immediately by whichever retrieval methods its present values support; extend other positions incrementally without recomputing the first.
 5. Prove complete lossless OKF-compatible import/export; preserve native extension values.
 6. Add cheap lexical/fuzzy discovery and declared compatible vectors independently of record admission.
 7. Implement qualified on-touch enrichment as **additive evidence-backed deltas**, not a mandatory scan phase.
