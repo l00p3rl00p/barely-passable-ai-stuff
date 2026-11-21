@@ -42,6 +42,16 @@ The following documents preserve guidance copied from the existing [Knowledge Po
 - [Local discovery priority](methods/local-discovery-priority.md)
 - [Contribution and progressive disclosure](core/agent-contribution.md)
 
+## SDK package and existing implementations
+
+- [Component and capability map](docs/component-and-capability-map.md) — existing code, actual entry points, public-operation coverage, and verified gaps.
+- [Python library entry point](languages/python/README.md) — current installable package and API.
+- [Rust existing components](languages/rust/README.md) — native scanner/ingester source located in its current workspace.
+- [TypeScript entry point](languages/typescript/README.md) — reserved language location; no existing binding claimed.
+- [Adapter catalog](adapters/README.md) — reuse the existing OmniGraph adapter and native engine operations.
+
+This index and the contract documents **do not themselves implement an executable UKC/1 SDK**. Existing components remain under their original ownership; certification requires the shared conformance contract. No new runtime, scanner, graph store or API service is introduced by this package map.
+
 ## Language locations
 
 - [Rust](languages/rust/README.md)
