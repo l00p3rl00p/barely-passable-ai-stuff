@@ -1,5 +1,5 @@
 use std::{fs,collections::HashSet};
-use ukc_ingest::{scan_directory,verify_scan,canonical_id,omnigraph_records,lexical_hash_512};
+use ukc_ingest::{scan_directory,verify_scan,canonical_id,omnigraph_records,lexical_hash_512,export_okf,import_okf};
 
 #[test]
 fn cold_mixed_source_roundtrip(){
@@ -29,6 +29,11 @@ fn cold_mixed_source_roundtrip(){
     let recovered:Vec<ukc_ingest::Record>=serde_json::from_str(&payload).unwrap();
     assert_eq!(recovered.len(),run.records.len());
     assert_eq!(recovered[0].native,run.records[0].native);
+    let okf=export_okf(&run.records[0]).unwrap();
+    assert_eq!(okf["type"],"SourceUnit");
+    let imported=import_okf(&okf).unwrap();
+    assert_eq!(serde_json::to_value(&imported).unwrap(),serde_json::to_value(&run.records[0]).unwrap());
+    assert!(import_okf(&serde_json::json!({"type":"SourceUnit","title":"fake"})).is_err());
     let rows=omnigraph_records(&run,tmp.path());
     assert_eq!(rows.len(),run.records.len()+run.edges.len());
     assert!(rows.iter().all(|s|serde_json::from_str::<serde_json::Value>(s).is_ok()));
