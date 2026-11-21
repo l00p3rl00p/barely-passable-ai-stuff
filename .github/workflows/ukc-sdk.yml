@@ -1,0 +1,15 @@
+name: UKC SDK native-ingester
+# Explicitly manual. No push, pull_request, schedule, or reusable-workflow triggers.
+on:
+  workflow_dispatch:
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: knowledge-positions/sdk
+      - name: SDK source fidelity tests
+        run: cargo test --manifest-path knowledge-positions/sdk/Cargo.toml --all-targets
