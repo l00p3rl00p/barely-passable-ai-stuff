@@ -465,6 +465,14 @@ The seven literal fixtures above were run locally through real Python ast.parse,
 
 **What this output means:** Exact location found the opaque binary. The observed graph edge found the chapter pointing to Chapter 3. An approximate query “flatbread flour” returned both the webpage and the recipe, using the stored source/name values without converting one retrieval representation into another. The third, zero-score candidate is merely the tail of a three-item diagnostic; production search must not present it as meaningfully similar. All seven source-byte digests and end-exclusive byte bounds were checked. **What is not yet demonstrated:** complete OKF v0.3 serialization, full UKC-ID-1 canonical hash parity, Rust/TypeScript implementation, a persistent vector index or model-driven enrichment. Keep that boundary explicit.
 
+**Reproduction:** Run the checked-in [seven-source characterization](conformance/probes/shared_record_examples.py) from any Python 3 standard-library environment:
+
+~~~sh
+python3 knowledge-positions/conformance/probes/shared_record_examples.py
+~~~
+
+It emits the original seven capture records and their source SHA-256 values, not just a green status. This runner is a **small language-independent behavior demonstration implemented in Python**, not the only permitted SDK implementation. Other-language authors must recreate its behavior using their native parsers; they MUST NOT be required to invoke Python in production. The separate [original Scratchpad OpenKC GPS probe](conformance/probes/original_openkc_gps_probe.py) still characterizes the actual historical OKF roundtrip.
+
 ### 3.6 On-touch enrichment and cold reconstruction — essential operational example
 
 **Question: “What's wrong with SOUP?”** A cold intelligence need not be handed the answer, and ingestion need not have extracted every entity. It can locate a likely source using any available value; follow recorded source, containment or conversation references; and read the exact relevant section. An imperfect first hit can be sufficient if it supplies a useful place to look.
@@ -590,6 +598,8 @@ Implementations MUST publish a language-neutral fixture runner and real, inspect
 | **UKC-13 ACCESS** | Knowing a private locator does not grant read access; current authorization controls resolution. |
 | **UKC-14 SOURCE AGNOSTIC** | Code plus an HTML, Markdown, prose or conversation source preserve their actual values in the same common-record contract, accessible by applicable methods without fabricated universal AST or separate position records. |
 | **UKC-16 PARSER AND ON-TOUCH ENRICHMENT** | Admit Woburn fixture through unchanged generic CommonMark parser: full text/AST survives, but postal code and coordinates are not individually labeled. Touch the same record for a location task and run a separately declared location-aware parser or evidence-grounded LLM enricher: append the recognized existing location facts and any justified relationships to **that same ID**; do not rewrite original text, require full-corpus enrichment, or imply the original parser extracted those fields. A native location parser may capture the same fields immediately. Repeat enrichment without duplication. |
+| **UKC-17 GENERAL SOURCE EXAMPLES** | Run the seven-source reference characterization against actual language-native parsers and its recorded bytes: code, two webpages, cookbook, chapter, CSV, opaque binary. All seven preserve one source identity, exact source position, observed containment/links and available lexical proximity input; queries select from the same records, with zero mandatory model calls or vector generation. |
+| **UKC-18 COLD CONTEXT AND RECOVERY** | Hold sources and accepted findings constant, clear all derived indexes, reconstruct, ask an evidence-backed question twice in independent cold runs; verify useful evidence/identity recovery without asserting word-for-word answer identity. Then show an on-touch qualified discovery changes future knowledge while untouched sources and records remain unchanged. |
 | **UKC-15 ORIGINAL PROOFS** | Re-execute real OpenKC lossless translation/observed-edge proof and GPS source navigation replay, recording what was actually tested. |
 
 **Core certification requires UKC-01 through UKC-08, UKC-10, UKC-11, UKC-13 and UKC-14.** UKC-09 and UKC-15 are required end-to-end demonstration evidence; do not substitute a mocked trace for the original recorded experiments. **UKC-12 is required to claim parity between two language implementations.** If the conformance fixtures/runner do not yet exist, this spec is a defined contract, **not a claim of certified SDK completion**.
