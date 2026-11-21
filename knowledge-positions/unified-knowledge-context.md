@@ -1,6 +1,6 @@
 # Unified Knowledge Context (UKC): The Knowledge Positions SDK
 
-**Normative contract:** UKC/1 candidate. **Target:** any execution language. **Authority:** this file, the existing JITK paper, the two companion specifications and the original executable experiments.
+**Normative contract:** UKC/1 candidate. **Target:** any execution language. **Authority:** the linked core contract sections below, interpreted with the existing JITK paper, two companion specifications and original executable experiments. The index is navigation, not the whole SDK specification.
 
 The UKC/1 specification is organized into the component documents below. The original sections retain their order and wording; only source-relative link destinations have been adjusted for relocated files. This is a documentation reorganization, not a new SDK implementation.
 
@@ -29,9 +29,9 @@ The UKC/1 specification is organized into the component documents below. The ori
 - [12. Implementer's exact procedure](docs/implementer-guide.md)
 - [13. Future fourth position: Resonance](docs/resonance.md)
 
-## Existing agent-skill guidance, organized by SDK component
+## Agent and Host Integration — optional, non-normative guidance
 
-The following documents preserve guidance copied from the existing [Knowledge Positions OmniGraph skill](research/omnigraph/skills/knowledge-positions-omnigraph/SKILL.md). They describe agent/host use of the SDK and are not additional UKC/1 conformance requirements. The original skill remains unchanged.
+The following documents preserve guidance copied from the existing [Knowledge Positions OmniGraph skill](research/omnigraph/skills/knowledge-positions-omnigraph/SKILL.md). They are a separate, **non-normative agent/host integration profile**: deployment preferences and agent policies are not UKC/1 conformance obligations, and do not restrict language or engine independence. The original skill remains unchanged.
 
 - [Skill overview and knowledge vocabulary](docs/agent-knowledge-overview.md)
 - [Agent startup and official OmniGraph delegation](adapters/omnigraph/agent-startup.md)
