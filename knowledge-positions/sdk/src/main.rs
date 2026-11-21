@@ -11,7 +11,7 @@ struct Cli {
     #[arg(long)] root:PathBuf,
     #[arg(long,default_value="repo:quatrus-scratchpad")] authority:String,
     #[arg(long)] output:Option<PathBuf>,
-    #[arg(long,default_value_t=30)] deadline_seconds:u64,
+    #[arg(long,default_value_t=30,global=true)] deadline_seconds:u64,
 }
 #[derive(Subcommand)]
 enum Cmd {
