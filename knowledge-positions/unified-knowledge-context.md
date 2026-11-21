@@ -1,0 +1,278 @@
+# Unified Knowledge Context (UKC): The Knowledge Positions SDK
+
+**Normative contract:** UKC/1 candidate. **Target:** any execution language. **Authority:** this file, the existing JITK paper, the two companion specifications and the original executable experiments.
+
+# 0. FIRST LAW — the entire mechanism before any implementation detail
+
+**ONE KNOWLEDGE IDENTITY. THREE POSITIONS: LOCATION · RELATION · PROXIMITY.**
+
+**Every item of knowledge is represented by these three positions of the SAME knowledge.** They are not three pieces of knowledge, three databases, three processing stages, or three interpretations. The fourth position, **RESONANCE**, is the planned extension; it will be another position of the same knowledge, not a new knowledge system.
+
+Capture what the source already knows: literal values, structure, identity, locations, links, parent/child relationships, order, named references and available proximity values. Keep these values **together**, in one shared, source-backed, OKF-compatible knowledge representation. An AST is already a graph: parent, child, sibling and containment are actual relationships. A webpage, conversation, book, document, event or language parse likewise offers whatever structure it truly contains. No intelligence is required to turn an observed relationship into a graph-accessible edge.
+
+**The retrieval method changes. The knowledge does not.** Structural/AST-style navigation uses position; NetworkX or another graph algorithm uses relations; fuzzy/lexical/vector search uses proximity or literal content. Each method returns the same knowledge identity and can lead to the same exact source evidence. The caller may switch methods freely. The number of fields or methods is not fixed: preserve the available values a different method may later need.
+
+**Ingestion is deterministic, not semantic interpretation.** Same source, version, observations and declared rules produce the same IDs, recorded values, edges and positions. Use ordinary parsers, algorithms, hashes and indexes. Do not run an LLM to invent names, meanings, semantic layers or links already explicit in the source. If a relationship is **not** known, leave it unknown. When a human or intelligence later investigates and establishes a genuinely new, evidence-backed relationship, append only that discovery as an enrichment delta. Cheap, imperfect hashed proximity is valuable because it can lead to a node, its neighbors and an exact original passage. Vector calculation can happen independently and does not block use.
+
+**If a system independently reinterprets each representation, requires an LLM to ingest known structure, invents missing relationships, or cannot move among methods using the same identity, it is NOT UKC.** This is an arithmetic-like, reproducible contract; do not replace it with a scanner architecture, graph engine, embedding model, agent framework or RAG workflow.
+
+---
+
+## 1. Purpose, sources of authority and normative language
+
+UKC is an executable-language-independent SDK specification. Python, Rust, TypeScript, JavaScript, Java, Go, C/C++, C#, Swift, WASM or any other executable environment can implement it. A language, database, parser, framework, network service, model provider or UI is never an intrinsic requirement.
+
+**MUST**, **MUST NOT**, **SHOULD** and **MAY** are normative. The first law and all Core requirements are mandatory. Advertised optional functions must pass their relevant conformance tests. Unsupported features must be reported, not faked.
+
+Read this contract together with:
+- [Canonical JITK paper](research/paper.md): origin, principle and the original cold-context GPS experiment.
+- [Knowledge Asset Evolution v1.6.3](Knowledge-Asset-Evolution-Spec-v1.6.3.md): portable OKF-compatible ownership, lifecycle, schema governance and durable events, when those profiles are selected.
+- [Knowledge Graph Relationships and Enrichment](Knowledge_Graph_Relationships_and_Enrichment.md): observed versus qualified discovered relations and provenance.
+- [OpenKC architecture](https://github.com/l00p3rl00p/quatrus-scratchpad/blob/main/experiments/openkc-ast-okf-yanp/ARCHITECTURE.md), [deterministic mapping](https://github.com/l00p3rl00p/quatrus-scratchpad/blob/main/experiments/openkc-ast-okf-yanp/MAPPING.md), [working code](https://github.com/l00p3rl00p/quatrus-scratchpad/blob/main/experiments/openkc-ast-okf-yanp/openkc_etl.py), [proof](https://github.com/l00p3rl00p/quatrus-scratchpad/blob/main/experiments/openkc-ast-okf-yanp/EVIDENCE.md).
+- [Original GPS experiment and replay](research/EXPERIMENT.md).
+- [Official upstream OKF specification](https://github.com/GoogleCloudPlatform/open-knowledge-format/blob/main/SPEC.md). This governs valid OKF assets. UKC additions described below are **producer-defined extension keys**, not purported native Google OKF fields.
+
+The OpenKC experiment proved source-preserving AST–OKF round trips and observed syntax graph edges. The original GPS experiment documented a fresh investigator following imperfect lookup leads and graph relationships to four precise source passages from a source withheld from the model. They establish the mechanism in real, bounded tests—not universal parser/vector or large-corpus performance. New claims require executable evidence.
+
+**Durability principle:** original sources and accepted evidence-backed intellectual discoveries survive. Indexes, graph databases, vectors and caches are projections and can be reconstructed. Losing a derived database must not require reproducing an earlier intelligence's reasoning when its accepted discoveries were already preserved.
+
+## 2. The three positions and fourth-position extension
+
+| Position | Literal or computed values | Direct operations |
+|---|---|---|
+| **LOCATION** | Original source authority, identity, observed version, source span/anchor, native structural path and order (when known). | Resolve evidence; exact source/AST/DOM/document navigation. |
+| **RELATION** | Same item ID, observed source links and native structural edges, plus separately admitted qualified findings. Preserve direction, type, multiplicity, order and provenance. | Traverse, inspect neighbors, select graph algorithms. |
+| **PROXIMITY** | Declared lexical/fuzzy signals and zero or more specifically identified vector spaces. Unknown/queued vectors remain unknown. | Approximate candidate lookup and similarity. |
+| **RESONANCE** (future) | Evidence-supported activity→knowledge→observed-consequence position. | Conditional importance from experience; not an implemented requirement of UKC/1. |
+
+A position is **addressable information about an item**, not an instruction to construct a new semantic model. No position is the prerequisite processing output of another. Each position has status **known**, **unknown**, or **not_applicable** with a reason. A known empty set is different from an unknown set. No vector is different from a known zero vector.
+
+A tree is a graph from the moment its actual nodes and native edges are available. Existing title, identifier, href, message order and declared dependency values can support literal lookup and relation navigation immediately. The same record may also have native structured attributes not listed above. They must be preserved, not trimmed to three fields.
+
+A vector never creates a causal or semantic relation by itself. Fuzzy overlap may indicate where to look. The source location closes the loop with verified evidence.
+
+## 3. One logical record: the representation contract
+
+Every successfully admitted knowledge item has exactly one logical record identity and all three position slots. A single source can contain many items. The natural grain is source-adapter-defined: file, symbol, AST/DOM node, document section, message, event, paragraph, observed relation or qualified finding.
+
+**Minimum UKC/1 logical fields** (not a mandated programming-language struct or physical DB schema):
+
+| Name | Meaning |
+|---|---|
+| **schema** | Literal version label **ukc/1**. |
+| **id** | Version-scoped deterministic knowledge identity (§4), shared by all methods. |
+| **source** | Authority/owner namespace, source key, observed version/digest, original route/realm and current-access requirements. |
+| **kind** | Honest native item kind. Never force HTML or prose to pretend to be Python AST. |
+| **location** | Known source/structural coordinates and verification method, or explicit unknown. Keep all independently verified alternate coordinates. |
+| **relations** | Zero or more native observed links/edges and qualified discovered relations (§5). |
+| **proximity** | Zero or more space-ID-tagged vectors, with explicit status; lexical/fuzzy candidate access may use source text directly. |
+| **values** | All supplied names, titles, typed fields, text, order, attributes, flags and literal facts; do not silently drop fields. |
+| **native** | Complete supplied native parse/structure and/or immutable hash-addressed payload, sufficient for exact reconstruction of admitted inputs. |
+| **evidence** | Source version, coordinates, original byte/span digests and separately accepted finding/event provenance. |
+
+Use **one shared logical record**, even if runtime performance calls for multiple physical indexes. A graph table row and a vector-index entry referencing the same ID are not independent bodies of knowledge. They are materializations over the record. A consumer can read all known positions without another AI inference or a second import.
+
+### 3.1 What “complete” means
+
+Record all values actually available at the input boundary. Never add a title, causal edge, actor, location or meaning not supplied. Missing fields stay unknown. Preserve native path, child order, UTF-8 offsets, explicit attributes and any source-specific field, even if no current search method needs them. An implementation may retain a large native payload in a content-addressed sidecar, but the record must have a verified pointer and portable export must include or resolve that payload. A dangling external payload is not a lossless record.
+
+The SDK does not impose a universal AST schema. A deterministic adapter describes source-native structure; UKC records it.
+
+### 3.2 OKF-compatible interchange
+
+UKC records MUST have a **valid OKF-compatible representation** on export and import. Use upstream-recognized OKF fields correctly, plus a producer-defined **x_ukc** extension for identity, positions, original native values, evidence and optional sidecar references. The source body and its exact bytes must be preserved where available. Unknown YAML keys, native fields and unrelated OKF content must round-trip without being silently discarded.
+
+**OKF is the common translation vocabulary and portable packaging, not a semantic extraction service.** Translating observed parser values to an equivalent OKF field/extension is a copy or deterministic mapping; it does not make an LLM think about their meaning. If a destination representation cannot express a native source value, preserve it losslessly in a native extension or sidecar and report limited direct query support. Do not manufacture equivalent meaning.
+
+An illustrative asset (not a normative upstream OKF schema, and digest placeholders are intentionally not executable fixtures):
+
+~~~yaml
+---
+type: SourceUnit
+title: Example
+x_ukc:
+  schema: ukc/1
+  id: "ukc:v1:<computed-digest>"
+  source:
+    authority: repo:example
+    key: docs/example.md
+    version: "sha256:<source-bytes-digest>"
+  location:
+    status: known
+    basis: parser
+    path: ["document", "heading[0]"]
+    spans: [{unit: utf8-byte, start: 0, end: 10}]
+  relations: []
+  proximity: [{space: "lexical-hash-512/rust-scanner-v1", status: unknown, vector: null}]
+  native: {storage: inline}
+  evidence: {source_sha256: "<source-bytes-digest>"}
+---
+# Example
+~~~
+
+A “knowledge graph” with an OKF note containing only a generated summary but not the original supplied structure does not meet this contract.
+
+## 4. Identity, exact source positions and deterministic equality
+
+For new source-backed UKC/1 records, define a deterministic ID from **(schema, authority, source_key, observed_source_version, native_kind, native_unit_key)**. Exact same normalized inputs must produce exact same identity bytes in every language; no random UUID, database auto-ID or machine-specific temporary checkout path is allowed as a canonical identity.
+
+**Canonical ID bytes profile UKC-ID-1:**
+1. Construct the ordered six-element array of UTF-8 strings: **["ukc/1", authority, source_key, source_version, native_kind, unit_key]**.
+2. Encode as compact UTF-8 JSON with no spaces, using literal non-ASCII Unicode (rather than optional ASCII escapes), escaping JSON quotes, backslashes and control characters. Adapter normalization of authority/path/unit is an explicitly versioned producer contract; input to ID hashing must be identical across languages.
+3. SHA-256 the exact encoded bytes; output **ukc:v1:** followed by 64 lowercase hexadecimal characters.
+
+For already existing historical identities, retain a stable **legacy_id** alias mapping to an unambiguous canonical record. Never silently claim a historical hash was computed by this new scheme. A new source version may produce a new source-versioned ID; retain stable logical-unit aliases and supersession links when available. Do not change unrelated IDs because another file changed.
+
+**Coordinates:** exact UTF-8 byte ranges are zero-based, end-exclusive; all other coordinate systems declare their unit, basis and version. Prefer source-native hierarchy/anchor over guessed line numbers; preserve complementary verified spans. Model-described positions are candidate leads until deterministic reader/source evidence confirms them.
+
+**Resolution:** to read exact original evidence, check access for the present principal, source authority and version, span bounds and content hash. Changed or inaccessible sources return typed failure/lead status, never substitute a new source and claim exact evidence. A locator is not an access grant.
+
+**Hashes:** SHA-256 of original bytes and specific spans is an integrity identity, not semantic understanding. Reuse unchanged work. Source and accepted enrichment hashes must have distinct ownership and update rules when optional lifecycle governance is enabled.
+
+## 5. Relationship rules and enrichment boundary
+
+A relation record MUST contain **subject ID, predicate, object ID or unresolved target locator, origin, qualification, evidence**, and preserve native direction/order/attributes. A source-supplied parent/child edge, sibling order, declared URI/link, import, dependency or literal “related_to” is an **observed fact of the source**, not AI enrichment. Record and index it immediately. No mandatory ontology normalization or invented “meaning layer.”
+
+A similarity candidate is not a source relationship. Similar titles, shared terms, grammar parse features, cosine scores and co-visitation can provide **leads**. If an implementation stores them as edges, it must label them honestly as lexical/syntactic/similarity observations and never silently promote them to verified causes, prerequisites or semantic relationships.
+
+**Enrichment** begins only where ordinary reading/investigation reveals new knowledge not already supplied. A newly established relation is appended as a separate, source-backed delta with actor, evidence, qualification/status and time/source version where known. It must not rewrite original source facts or rebuild untouched records. Unreviewed candidates remain proposals. The companion Relationships and Evolution specifications define richer qualification/governance when implemented.
+
+**Forbidden:** “Before graph search can work, the LLM must extract all semantic relationships.” The graph already has native relations. Intelligence may later discover more.
+
+## 6. Deterministic source acquisition and adapters
+
+Input is allowed from **any source with an honest adapter**. Examples:
+
+| Source | Existing tools that may read it | Native observations to keep |
+|---|---|---|
+| Code | Python ast, Tree-sitter, compiler parser, Rust syn, TypeScript compiler API | Node kinds, names, declared references, hierarchy, order, actual spans and attributes. |
+| Web/HTML | DOM/HTML parser | Elements, attributes, links, hierarchy, anchors and text coordinates. |
+| Markdown / documents | CommonMark, document parser, PDF text/page extractor | Headings, blocks, links, order, actual spans, pages/regions. |
+| Natural language | Tokenizer, spaCy or equivalent language parser | Tokens, sentence positions, syntactic dependency relations and observed entity spans; inferred world facts remain proposals. |
+| Conversations | Provider transcript/export parser | Session/message IDs, roles, timestamps, sequence, explicit references and source passages. |
+| Structured sources | JSON/XML/CSV/schema reader | Native fields, order, keys, declared relations and pointers. |
+| Events | Structured log/OTLP/event reader | IDs, timestamps, native fields and actually supplied causal links. |
+
+An adapter MUST output **source description + observed records + observed edges + actual positions + native payload** and no invented relationships. An unsupported native format may be admitted as raw bytes/text with unknown structural fields, not silently mislabeled as a parsed AST.
+
+Adapters are not compulsory at the core boundary; applications may supply already-structured data directly. Parser selection is an implementation detail. Reuse native libraries for efficiency rather than reinventing parsing, graph algorithms or fuzzy mathematics.
+
+## 7. Proximity: useful even when imperfect; never blocking
+
+Each admitted record has a proximity slot, **known/unknown/not_applicable**. Cheap lexical/hash computation can be run at admission or independently. Semantic/neural embedding, if used, is optional and can happen later. An incomplete vector does not invalidate source/location/relations and MUST NOT block searches available through those values.
+
+**Required vector-space descriptor:** space ID, dimensions, exact encoder algorithm and version, tokenization/Unicode/preprocessing, stop words, sign convention, input policy, normalization, numeric representation and source-content digest where applicable. A query must use the same space as stored vectors. Mismatched spaces are rejected, not silently compared.
+
+**Observed real incompatibility:** [original GPS encoder](examples/gps/gps.py) and [Rust-scanner-compatible encoder](research/omnigraph/encoder.py) both historically used the label “lexical-hash-512” but differ in stop-word and sign behavior. They are **NOT** interchangeable. Name their profiles distinctly (e.g. **lexical-hash-512/gps-legacy-v1** versus **lexical-hash-512/rust-scanner-v1**) and verify cross-language output with the same actual source strings. No language or ML model is pinned; exact behavioral compatibility is.
+
+An approximate proximity result MUST return a candidate canonical ID and source/evidence route. Proximity score alone is not a verified relation or an answer.
+
+## 8. Public SDK operations — required semantics, arbitrary language syntax
+
+An SDK MAY use idiomatic names, but must supply a conformance adapter offering these logical operations:
+
+| Operation | Observable contract |
+|---|---|
+| **capabilities()** | Report actual supported adapters, methods, vector profiles, source resolvers, storage, export/import and unsupported features. |
+| **admit(source, observations)** | Deterministic idempotent admission: one identity, all known native values, three slots, immediate observed links/positions. **Zero compulsory LLM calls.** |
+| **get(id)** | Return the same complete logical record across any search route; explicit unknown positions. |
+| **resolve(id, principal)** | Return exact original source span after source-version/integrity and current permission checks, otherwise typed failure. |
+| **neighbors(id, filters)** | Return observed and qualified edges with original type, direction/order, evidence and canonical neighbor IDs. |
+| **search(query, method, options)** | Support exact literal/structural, graph, lexical/fuzzy or vector access as advertised; results carry canonical IDs, method and source pointers. No mandatory semantic pipeline. |
+| **put_vector(id, descriptor, values)** | Store a named vector position without changing the record identity or original edges. |
+| **upsert_relation(edge, evidence)** | Idempotently add an observed edge or an admitted, qualified newly discovered edge; preserve provenance. |
+| **export_okf(ids)** | Portable OKF assets with complete x_ukc records and included/verifiable native payloads. |
+| **import_okf(assets)** | Recreate same identities, fields, positions, relations, vector descriptors and source-backed payloads with no inference. |
+| **verify(ids)** | Check integrity, source and edge references, vector-space coherency, version consistency and round-trip preservation. |
+| **rebuild(sources, accepted_findings)** | Restore disposable indexes from original source and accepted evidence without rerunning an LLM to rediscover prior results. |
+
+Typed failures include **unsupported_adapter, unsupported_method, source_inaccessible, source_changed, unresolved_location, incomplete_native_payload, invalid_identity, vector_space_mismatch, unqualified_relation, corrupt_record, duplicate_conflict, version_conflict**. Never turn a failed read into a fabricated successful result.
+
+The operations define **what** must happen, not **which package** implements it. An HTTP server, MCP plugin, CLI, UI, graph database, Python process or Rust binary is a deployment choice.
+
+## 9. Retrieval and investigative loop
+
+An agent may choose any route:
+1. Exact location known → read that original span.
+2. Name/title known → literal search resolves a record ID.
+3. “What connects to this?” → graph traversal of already-recorded edges.
+4. Approximate concept → fuzzy/lexical/vector candidates → inspect candidate neighborhood → resolve source.
+5. Missing relationship discovered during reading → qualify evidence → add one new relation delta.
+6. Reuse the resulting record and relationship on the next investigation.
+
+**No prescribed search sequence.** Graph algorithms may be NetworkX, native Cypher, other graph libraries or plain adjacency operations. Structural search may use Tree-sitter, native AST/DOM paths or a document parser. A fast imperfect lead is enough when the source can be reached and checked.
+
+The experimental principle is: **“The fuzzy match opens the door. The structure does the rest.”** The model formulates a search/traversal; deterministic tools execute; evidence is inspected; novel discoveries are admitted separately.
+
+## 10. Mandatory conformance suite: no claims without execution
+
+Implementations MUST publish a language-neutral fixture runner and real, inspectable outputs. Fixture input includes raw source bytes, source identity/version, parser observations, native attributes and observed edges. Output includes canonical ID input bytes/hash, logical records, relation lists, vector space, exact resolved source bytes and export/import verification.
+
+| Test | Required behavior |
+|---|---|
+| **UKC-01 SAME ITEM** | Structural, graph and lexical hits for the same unit return **one exact canonical ID**. Known vector hits return that same ID. |
+| **UKC-02 TREE IS GRAPH** | Real parsed parent, child and sibling order are immediately traversable as observed edges. No invented semantic edges. |
+| **UKC-03 LITERAL PRESERVATION** | Arbitrary native fields, Unicode, punctuation, source bytes and source hierarchy survive OKF export→import unchanged. |
+| **UKC-04 HONEST UNKNOWN** | Missing vector, missing title and unknown relation/location remain explicitly unknown; no defaults invented as facts. |
+| **UKC-05 IMMEDIATE INGEST** | Admit without any LLM/encoder/network dependency; source/graph/lexical access works before vectors are computed. |
+| **UKC-06 KNOWN EDGE** | A real input link or named relation is queryable immediately, with original direction, type and provenance. |
+| **UKC-07 ENRICHMENT DELTA** | A verified later relation adds only the evidence-backed relation, leaves source/native fields intact and is idempotent. |
+| **UKC-08 VECTOR PROFILE** | Mismatched GPS/Rust lexical-hash profiles are rejected; equal, declared profiles produce equivalent vectors in different languages. |
+| **UKC-09 IMPERFECT LEAD** | A candidate with no direct answer leads via neighbor and source location to precise evidence; this is an end-to-end investigation test. |
+| **UKC-10 SOURCE CHANGED** | Changed source bytes refuse stale exact reads while preserving prior evidence and versions. |
+| **UKC-11 RECONSTRUCTION** | Recreate graph/lexical/vector projections from original sources and accepted discovery records; no re-reasoning of previous discoveries. |
+| **UKC-12 CROSS-LANGUAGE** | Independent language implementations consume identical fixtures and agree on IDs, fields, observed edges, source bytes and encoder-specific vectors. |
+| **UKC-13 ACCESS** | Knowing a private locator does not grant read access; current authorization controls resolution. |
+| **UKC-14 SOURCE AGNOSTIC** | Code plus an HTML, Markdown, prose or conversation source both use the same three slots without fabricated universal AST. |
+| **UKC-15 ORIGINAL PROOFS** | Re-execute real OpenKC lossless translation/observed-edge proof and GPS source navigation replay, recording what was actually tested. |
+
+**Core certification requires UKC-01 through UKC-08, UKC-10, UKC-11, UKC-13 and UKC-14.** UKC-09 and UKC-15 are required end-to-end demonstration evidence; do not substitute a mocked trace for the original recorded experiments. **UKC-12 is required to claim parity between two language implementations.** If the conformance fixtures/runner do not yet exist, this spec is a defined contract, **not a claim of certified SDK completion**.
+
+Maintain portable actual fixtures, expected IDs, encoded hash input bytes, original blobs, expected relations, encoder outputs and test reports under a shared **conformance/** directory. A future language must run the same fixtures rather than invent new “equivalent” ones. No pinning of a specific language implementation is required.
+
+### Invalid implementations, regardless of apparent usefulness
+
+A claimed UKC SDK **fails** when:
+- It maintains separate AST, graph and vector *interpretations* with unrelated IDs.
+- It needs an LLM to turn already supplied parent/child/links into observed graph edges.
+- It loses source-native values during “conversion.”
+- It invents relationships from title similarity or embeddings and presents them as observed.
+- It cannot trace a candidate through the same ID and relation to the original source.
+- It forces embedding or corpus-wide enrichment before indexing a source.
+- It aliases incompatible vector algorithms under the same space name.
+- It requires all source types to become synthetic Python AST.
+- It uses only a disposable graph store for hard-won prior discoveries.
+- It passes an example but cannot pass the common conformance contract.
+
+## 11. Lifecycles, updates, concurrency, storage and performance
+
+**Sources and accepted discoveries are durable. Projections are disposable.** An implementation MAY use JSON, SQLite, LadybugDB, OmniGraph, NetworkX, Rust containers, distributed storage or a vector DB. Its physical layout is immaterial provided the logical record and observable operations remain exact.
+
+Admission MUST be idempotent. A source version change must preserve evidence and supersession history and update only affected positions/edges. Concurrent writers must use transactions or a coherent serialization strategy, not silently overwrite accepted deltas. Unknown or ambiguous source read failures remain visible.
+
+**Deterministic ingestion is the fast path.** Hash, parse, map observed fields, record identities, materialize native edges and make the record searchable. Compute expensive vectors or optional new relationships separately as needed. Reuse unchanged hashes, records and positions. A large folder scan is not a whole-corpus intelligence job. Rebuild indexes instead of designing expensive recovery machinery whenever source reconstruction is faster and preserves all accepted knowledge.
+
+Do not invent a benchmark threshold: measure with real input size, wall time, memory, store size, and LLM-call count. The zero-required-LLM-call condition for ordinary ingestion is normative.
+
+## 12. Implementer's exact procedure
+
+1. Read and implement **First Law**. No parser, DB or language choice changes it.
+2. Write a source-native deterministic adapter returning literal values, actual relationships, original structure and source positions.
+3. Produce the shared logical record with all three slots, true unknowns and one canonical ID.
+4. Expose immediate exact structural, source and graph queries over the recorded values.
+5. Prove complete lossless OKF-compatible import/export; preserve native extension values.
+6. Add cheap lexical/fuzzy discovery and declared compatible vectors independently of record admission.
+7. Implement qualified on-touch enrichment as **additive evidence-backed deltas**, not a mandatory scan phase.
+8. Support version-verified exact source resolution, privacy boundaries, incremental updates and reconstruction from durable evidence.
+9. Run and publish the conformance suite; show failures honestly. Compare Python, Rust and every new implementation against identical fixtures.
+10. Wire OmniGraph, MCP, a CLI, an agent or a UI **after** the contract works, as consumers—not as alternative definitions of knowledge.
+
+**Finished means:** an independent implementer can write the SDK in any execution language and obtain the same identities, captured values, observed edges, known/unknown positions, exact source evidence and cross-method navigation from identical fixtures. If the result requires interpretive re-ingestion or loses the common identity, it is not UKC.
+
+## 13. Future fourth position: Resonance
+
+**Resonance** represents experienced importance conditioned on task/activity, knowledge and observed consequence, as proposed in the research paper. It is *soon to be the fourth position*, not a fourth mandatory ingestion phase or a new semantic knowledge store. UKC/1 reserves the extension; full rules, evidence, algorithms, qualification and conformance must be defined before implementation claims. Adding Resonance MUST preserve the existing identity and deterministic first-three-position contract.
+
+---
+
+**Permanent statement:** **The knowledge was already there. Record it once with its three positions. Use existing deterministic methods to find it. Let intelligence add only what it learns.**
