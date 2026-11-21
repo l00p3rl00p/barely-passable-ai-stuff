@@ -111,6 +111,48 @@ The real read function additionally verifies the original source version and spa
 
 **Normative interpretation:** Preserve each already-known native value **once**, directly alongside the original information in the common OKF-compatible record; deterministically materialize indexes or graph edge rows from that same record if a chosen search engine requires them. Do **not** convert an AST into a different knowledge graph interpretation, then convert that into vector knowledge. **Physical indexing is allowed; separate interpretations and method-to-method conversion are forbidden.** Unknown facts remain unknown. Any separately computed new value retains its origin and same record identity.
 
+### 1.2 Woburn GPS characterization — actual original code, not a hypothetical example
+
+A small reproducible source is [conformance/fixtures/woburn-gps.md](conformance/fixtures/woburn-gps.md):
+
+~~~markdown
+# Woburn, Massachusetts
+- Postal code: 01801
+- Latitude (illustrative city point): 42.479261
+- Longitude (illustrative city point): -71.152278
+~~~
+
+The coordinates identify **an illustrative point**, not an exact universal location of the entire city. The probe at [conformance/probes/original_openkc_gps_probe.py](conformance/probes/original_openkc_gps_probe.py) **imports the original Scratchpad openkc_etl.py** and invokes its actual ast_from_bytes, ast_to_okf, split_note and okf_to_ast functions. It does not replace that code with a mock translation.
+
+**Characterization observed with the same original functions:**
+- Original source bytes preserved: **PASS**.
+- Parsed AST exact round trip: **PASS**.
+- Literal city, postal code and latitude/longitude retained in the source body and AST content: **PASS**.
+- Separate first-class OKF metadata fields for postal_code, latitude, longitude: **NOT PRESENT**. The original metadata keys are type, openkc_id, openkc_source_sha256, openkc_ast and title.
+
+The original code did exactly what the early proof promised: **losslessly preserved the already parsed source inside an OKF-compatible note**. It did **not** provide the additional field-level deterministic crosswalk from Markdown list labels to named geographic values. That absent mapping is a **real implementation gap**, not evidence that the preserved source knowledge is missing and not a reason to introduce a semantic LLM extraction pass.
+
+**Normative UKC implication:** For a recognized source format or explicitly supported field convention, a deterministic adapter MUST expose the source's **existing labeled values** as named fields in the same common record, while keeping the original unchanged. For this fixture, an adapter advertising the convention must expose:
+- Woburn, Massachusetts as the exact observed place label.
+- 01801 as the literal observed postal-code string (retain the leading-zero rule for postal values generally).
+- 42.479261 and -71.152278 as the declared observed coordinate values, explicitly typed and labeled as an illustrative point.
+
+Those are **not three different knowledge records**, and copying these fields is **not** an AST→graph→vector conversion. The already observed values sit beside the source, and geographic/structural/graph/lexical consumers may use them directly if applicable. An adapter that does not recognize the field convention MUST report it unsupported rather than pretend it produced a complete named-value crosswalk.
+
+Run this characterization against an actual checkout of the original Scratchpad script:
+
+~~~bash
+python knowledge-positions/conformance/probes/original_openkc_gps_probe.py \
+  --openkc-script /path/to/quatrus-scratchpad/experiments/openkc-ast-okf-yanp/openkc_etl.py
+# The original byte/AST preservation should pass and reports missing named GPS fields.
+python knowledge-positions/conformance/probes/original_openkc_gps_probe.py \
+  --openkc-script /path/to/quatrus-scratchpad/experiments/openkc-ast-okf-yanp/openkc_etl.py \
+  --require-field-crosswalk
+# Expected to fail on the untouched original code, revealing the exact missing mapping.
+~~~
+
+Do **not** report this characterization as a completed UKC SDK conformance run. It identifies the missing SDK behavior with an actual original implementation and a new literal source fixture. A future implementation must pass a separate assertion that its declared field adapter writes and retrieves those labeled values from the same common record, not merely from a reparse of the raw source.
+
 ## 2. The three positions and fourth-position extension
 
 | Position | Literal or computed values | Direct operations |
