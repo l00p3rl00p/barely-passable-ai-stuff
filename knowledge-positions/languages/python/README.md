@@ -11,10 +11,19 @@ python -m pip install .
 Import the existing API:
 
 ```python
+import hashlib
 from knowledge_positions import KnowledgePositions
 
-k = KnowledgePositions(encoder=my_existing_encoder, model_name="my-declared-vector-space")
-# Use k.add(...), k.link(...), k.neighbors(...), k.search(...) as implemented.
+text = "A source-backed observation"
+k = KnowledgePositions()
+node_id = k.add(
+    "example.txt",
+    text,
+    version=hashlib.sha256(text.encode("utf-8")).hexdigest(),
+    position={"start_byte": 0, "end_byte": len(text.encode("utf-8"))},
+    defer_embedding=True,
+)
+print(node_id, k.neighbors(node_id))
 ```
 
 Pass a real compatible encoder if vector computation is needed; `defer_embedding=True` on admission avoids compulsory embedding. The existing [capture workflow](../../capture.py), [graph/vector analysis](../../core_operations.py), and [OmniGraph adapter](../../research/omnigraph/adapter.py) remain separate consumers, not required parts of the SDK contract.
