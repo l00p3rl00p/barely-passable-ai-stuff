@@ -24,6 +24,22 @@ The [Unified Knowledge Context (UKC) SDK](../../../../unified-knowledge-context.
 
 When the work involves creating, interpreting or changing OmniGraph objects or Knowledge Positions records, consult the relevant SDK reference if needed. Do not substitute the reference for existing engine policy or assume ingestion grants write permission. Do not auto-run ingestion or block unrelated work waiting for the user to do it.
 
+## 0. Available knowledge positions and composable traversal
+
+**At the point of use, identify which access methods and original values are actually available for the same knowledge identity.** Do not assume all three are populated, do not require them to be used in sequence, and do not create substitute stores or independent identities.
+
+| Access method | Available when | What an agent can use |
+|---|---|---|
+| **Position / structure** | Source locator, byte/line/section coordinates, or a preserved native AST/parse structure exists | Direct source navigation, section/AST parent-child-sibling lookup, Tree-sitter or another suitable parser for a *specific* source when fresh parsing is needed |
+| **Relation / graph** | Observed or qualified links, endpoints, labels, and their provenance exist | OmniGraph native graph queries and bounded traversal; NetworkX or other graph algorithms over the relevant returned nodes and edges when useful |
+| **Proximity / similarity** | Lexical terms, declared embedding/vector space, or supported similarity values are available | Exact/lexical discovery, vector similarity or nearest-neighbor search in the actual indexed space; compare vectors only when model/space and dimensions match |
+
+**Use any nonempty combination:** Position only, Relation only, Proximity only, any pair, or all three. Start with the cheapest known entry point, follow another method only if it helps answer the question, and stop when sufficient evidence is obtained. For example, vector similarity can find an ID, graph traversal can follow its observed neighbors, and position can locate the exact original passage; or a known AST position can directly answer a request without any search. Switching methods **keeps the same knowledge identity and common record**. Do not convert AST into a new knowledge graph, graph results into new knowledge identities, or vector hits into asserted relationships. A search score is a discovery lead, not evidence of a graph edge.
+
+**Tools are methods, not dependencies:** Use Tree-sitter, NetworkX, native OmniGraph traversal, lexical/vector search, or their available equivalents when the host actually supplies them and the task merits them. Prefer already recorded source structure, graph relationships, or proximity rather than recomputing. If a method is unavailable or a position is not populated, mark it unavailable/unknown and use another available method; never fabricate parser results, links or vectors. Any on-demand parsing must preserve source and version provenance. A NetworkX algorithm may operate on bounded graph data retrieved from OmniGraph; it does not become a second authoritative graph.
+
+**Keep traversals bounded and source-backed.** Apply the existing up-to-three-hop relationship radius and return up to five useful knowledge identities unless the user explicitly asks for more. Keep original source coordinates, relationship provenance and vector-space labels alongside results. Verify exact source bytes/version when making source-evidence claims. The official `omnigraph` skill remains authoritative for engine-specific query syntax, index capabilities and operational constraints.
+
 ## 1. Knowledge access escalation
 
 Begin with the original human prompt, working context, and any JIT packet already supplied. Pass these four decision gates in order. They are not four mandatory retrieval operations.
@@ -46,7 +62,7 @@ Native agent coordination can update the knowledge available at any of gates 1â€
 When a host implements prompt-triggered JITK:
 
 - Prompts under **15 trimmed characters** bypass automatic discovery.
-- Otherwise, identify the likely subject and automatically query OmniGraph.
+- Otherwise, identify the likely subject and retrieve a bounded knowledge packet using whichever recorded position, relation and/or proximity methods are available in OmniGraph; use one method or combine them as useful.
 - Return **up to five relevant results**, with identities, provenance, positions and immediate associations. Return fewer or none when appropriate.
 - Preserve the original human prompt unchanged; supply the bounded knowledge packet separately before intelligence begins work.
 - Do not require the consuming LLM to initiate the lookup.
@@ -57,7 +73,7 @@ This is the host integration contract, not an assertion that a prompt hook is in
 
 ## 3. Local discovery priority
 
-OmniGraph is the **first point of local knowledge discovery**, not grep, glob, broad filesystem scans, or other local research tools. This does not require a graph call when gate 1 already suffices or a known source can be accessed directly at gate 2.
+OmniGraph is the **first point of local knowledge discovery**, using its available structural/position, graph/relation or proximity capabilitiesâ€”not necessarily vector search first. Do not default to grep, glob, broad filesystem scans or other local research tools. This does not require a graph call when gate 1 already suffices or a known source can be accessed directly at gate 2.
 
 Use other local tools to verify, read, or extend initially discovered knowledge, follow known source coordinates, or resolve a specific remaining gap after OmniGraph is insufficient. Do not replace graph discovery with habitual filesystem reconnaissance. Web research and other MCP services remain available whenever the task requires them; this rule does not prohibit or delay external research. Respect native access permissions and domain residence.
 
