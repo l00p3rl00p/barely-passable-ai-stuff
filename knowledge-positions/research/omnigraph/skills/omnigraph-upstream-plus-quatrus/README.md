@@ -34,7 +34,7 @@ The helper changes the destination only by **appending text at EOF**. It refuses
 
 ## What stays generic, and what stays local
 
-**Generic JITK:** The same appendix works with a parser, AST reader, filesystem source resolver, graph store, structured database, embedding index or agent tool. It asks which actual capabilities are accessible, selects the useful method, and resolves original evidence. It neither assumes OmniGraph nor requires loading the entire [UKC SDK](../../../unified-knowledge-context.md).
+**Generic JITK:** The same appendix works with a parser, AST reader, filesystem source resolver, graph store, structured database, embedding index or agent tool. It asks which actual capabilities are accessible, selects the useful method, and resolves original evidence. It neither assumes OmniGraph nor requires loading the entire [UKC SDK](../../../../unified-knowledge-context.md).
 
 **Quatrus profile:** Target `kp-agent`, graph `knowledge`, branch `kp-working`, `kp_rescan`, `kp_read`, LinkML, credentials and source-allowed-root rules are **existing local deployment choices**, not generic JITK or OmniGraph defaults. They are meaningful only where those installed services and permissions are present. Keep them outside the portable appendix.
 
