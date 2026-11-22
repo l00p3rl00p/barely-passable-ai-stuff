@@ -210,12 +210,17 @@ def main():
                 report["unchanged_editorial"], report["changed_editorial"]) == (
                     15, 13, 8, 22)
         assert two80 == 16 and two90 == 13
+        assert report["vector_top1_sections"] == 27
+        assert report["vector_top5_sections"] == 28
+        assert report["vector_top1_changed_sections"] == 12
+        assert report["vector_top5_changed_sections"] == 13
+        assert report["records"]["EKC:25"]["global_vector_rank"] == 2
         assert len(low) == 6 and all(
             "EKC:25" in (e["source_tag"], e["target_tag"]) for e in low)
         assert all(e["source"]["heading_match"] and
                    e["target"]["heading_match"] for e in candidates)
-        print("ASSERT PASS: all 22 relocated; 16 retain >=80% old tokens on "
-              "both ends, 13 >=90%; six weaker pairs all involve EKC:25.")
+        print("ASSERT PASS: 22 relocated; 27/28 blind vector top-1, 28/28 top-5; "
+              "16 pairs retain >=80% tokens, 13 >=90%; EKC:25 ranks 2nd.")
     if args.output:
         if args.output.resolve() in {p.resolve() for p in (
                 args.old_paper, args.current_paper, args.history, args.index)
