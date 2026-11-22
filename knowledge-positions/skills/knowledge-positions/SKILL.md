@@ -32,7 +32,7 @@ trigger: >-
 3. **Explore.** If a related position is known, follow its existing, evidence-backed relationships only as far as useful.
 4. **Discover.** Otherwise, use an available lexical, structural, graph or similarity search to find candidates, then inspect the real source.
 
-**Stop when the evidence is sufficient.** These are decision gates, not four required tool calls.
+**Stop when the evidence is sufficient.** These are decision gates, not four required tool calls. **Return the answer or best-supported likely answer to the query, with uncertainty labeled, and enough source-backed positions or leads to expand or verify it.** If no provisional answer is defensible, report that and provide grounded leads; never fabricate an answer.
 
 ## Choose the method that exists
 
@@ -58,6 +58,8 @@ This is the complete JITK workflow. It needs no specific database, SDK reading s
 This is a **working-method reference**, not a requirement to install a particular database, call another skill, or read the SDK. Follow the human's task: reuse what is known, retrieve only what is needed, and evolve knowledge from evidence.
 
 **Select any available route.** JITK can use direct files, source positions, AST/Tree-sitter structures, graphs, lexical search, vectors, filters or other tools without Knowledge Positions. **Where Knowledge Positions is implemented, these are methods operating on the same source-backed knowledge identity, not rival knowledge stores or stages.** Starting from a lexical hit, the agent can pivot to its native AST, recorded edges, typed fields, proximity, or original evidence; it can expand, narrow, rank, branch or stop using what is already recorded. Do not build separate identities for each entry method, require a conversion chain, or invent missing values. For other tools, cross-method identity reuse depends on actual shared identifiers or a verified mapping; it is not automatic.
+
+**Return an answer and a way forward.** Address the current question with the best evidence-supported answer or likely answer, labeling uncertainty. Alongside it, return enough known identities, source positions, relationships or other useful leads for the agent to verify or continue if needed. If no defensible answer is available, say so and provide the strongest grounded leads. Do not replace an answer with raw navigation results or invent certainty.
 
 ### Known integrations in this environment (examples, not dependencies)
 
