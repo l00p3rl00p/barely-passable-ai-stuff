@@ -131,6 +131,8 @@ The existing Python library's [three-touch regression tests](../../tests/test_en
 **Not claimed:** a general source-agnostic UKC SDK implementation, native full CommonMark AST capture, active authorization for private content, arbitrary-parser fidelity, or complete UKC certification. This is an EKC-anchored paper adapter, deliberately limited to the structure it actually parses. Other SDF contracts and conformance fixtures remain separate requirements, not hidden capabilities of this example.
 
 
+> Full worked explanation: [Deterministic historical relocation — what, why, how, results, and limits](DETERMINISTIC-HISTORICAL-RELOCATION.md). The reusable program is [relocate-historical-edges.py](relocate-historical-edges.py).
+
 ## Deterministic relocation of the 22 changed historical editorial links
 
 The initial strict-hash reconstruction activated eight editorial links and marked 22 historical links inactive because at least one endpoint section had changed. **Inactive does not mean unfindable.** The [source-only relocation experiment](relocate-historical-edges.py) resolves the older paper from the exact saved Git blob SHA and verifies its complete SHA-256, then reads the current authoritative paper. For every historical node it checks its original exact byte span/hash and finds the current EKC-anchored section. It measures historical token retention, exact surviving lines, lexical Jaccard, character sequence overlap, and declared lexical-vector cosine. **No LLM and no semantic relationship inference** are involved.
