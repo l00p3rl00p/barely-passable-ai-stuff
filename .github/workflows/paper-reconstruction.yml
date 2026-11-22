@@ -29,3 +29,4 @@ jobs:
       - run: python -m pip install numpy networkx
       - run: python knowledge-positions/tests/test_paper_reconstruction.py
       - run: PYTHONPATH=knowledge-positions python knowledge-positions/tests/test_enrichment_budget.py
+      - run: python knowledge-positions/SDF/examples/relocate-historical-edges.py --output /tmp/paper-relocation-report.json
