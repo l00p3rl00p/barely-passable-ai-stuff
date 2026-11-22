@@ -165,11 +165,32 @@ def main():
                         default=RESEARCH / "evolving-knowledge-context.json")
     parser.add_argument("--index", type=Path, default=RESEARCH / "jit-index.json")
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--assert-paper", action="store_true",
+                        help="Assert expected outcomes for the checked-in live paper")
     args = parser.parse_args()
     history = json.loads(args.history.read_text())
     current = json.loads(args.index.read_text())
     report = run(source_bytes(history, args.old_paper), args.current_paper.read_bytes(),
                  history, current)
+    if args.assert_paper:
+        candidates = report["relocated_editorial_candidates"]
+        two80 = sum(e["source"]["old_token_retained"] >= .8 and
+                    e["target"]["old_token_retained"] >= .8 for e in candidates)
+        two90 = sum(e["source"]["old_token_retained"] >= .9 and
+                    e["target"]["old_token_retained"] >= .9 for e in candidates)
+        low = [e for e in candidates if (e["source"]["old_token_retained"] < .8
+                                         or e["target"]["old_token_retained"] < .8)]
+        assert (report["exact_matching_sections"],
+                report["relocated_changed_sections"],
+                report["unchanged_editorial"], report["changed_editorial"]) == (
+                    15, 13, 8, 22)
+        assert two80 == 16 and two90 == 13
+        assert len(low) == 6 and all(
+            "EKC:25" in (e["source_tag"], e["target_tag"]) for e in low)
+        assert all(e["source"]["heading_match"] and
+                   e["target"]["heading_match"] for e in candidates)
+        print("ASSERT PASS: all 22 relocated; 16 retain >=80% old tokens on "
+              "both ends, 13 >=90%; six weaker pairs all involve EKC:25.")
     if args.output:
         if args.output.resolve() in {p.resolve() for p in (
                 args.old_paper, args.current_paper, args.history, args.index)
