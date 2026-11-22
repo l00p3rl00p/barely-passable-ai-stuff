@@ -3,7 +3,7 @@
 
 This is a **working-method reference**, not a requirement to install a particular database, call another skill, or read the SDK. Follow the human's task: reuse what is known, retrieve only what is needed, and evolve knowledge from evidence.
 
-**Select any available route.** Use direct files and source positions; AST/Tree-sitter or other structure; graph traversals and relationships; lexical or vector proximity. Cross between methods freely. Follow existing identities and original evidence, not invented connections.
+**Select any available route.** JITK can use direct files, source positions, AST/Tree-sitter structures, graphs, lexical search, vectors, filters or other tools without Knowledge Positions. **Where Knowledge Positions is implemented, these are methods operating on the same source-backed knowledge identity, not rival knowledge stores or stages.** Starting from a lexical hit, the agent can pivot to its native AST, recorded edges, typed fields, proximity, or original evidence; it can expand, narrow, rank, branch or stop using what is already recorded. Do not build separate identities for each entry method, require a conversion chain, or invent missing values. For other tools, cross-method identity reuse depends on actual shared identifiers or a verified mapping; it is not automatic.
 
 ### Known integrations in this environment (examples, not dependencies)
 
