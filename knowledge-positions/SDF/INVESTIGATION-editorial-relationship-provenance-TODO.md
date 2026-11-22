@@ -11,7 +11,7 @@
 - [x] Review committed database materialization paths; no public database creation trace establishes the editorial links' authoring process.
 - [x] Assess deterministic compatibility: 15 section hashes unchanged, eight editorial edges with both endpoints unchanged; 22 need separate review.
 - [x] Record publicly reproducible findings and their limitations in [the technical note](INVESTIGATION-editorial-relationship-provenance.md).
-- [x] Run independent Python and JavaScript reconstruction against the current public paper; assert same source-backed `ukc/1` identities, fields, lexical vectors, eight qualified recovered editorial edges and inactive mismatched history. Tested in [CI](../../../.github/workflows/paper-reconstruction.yml).
+- [x] Run independent Python and JavaScript reconstruction against the current public paper; assert same source-backed `ukc/1` identities, fields, lexical vectors, eight qualified recovered editorial edges and inactive mismatched history. Tested in [CI](../../.github/workflows/paper-reconstruction.yml).
 - [x] Check this paper example against the existing shared-record contract; it uses one `ukc/1` record per section and passes full-paper parity, source resolution, stale-source rejection, and `x_ukc` export checks. Full source-agnostic SDK certification was **not the scope of this example** and is not claimed.
 
 **Evidence boundary:** The first committed companion contains the relationships already; the repository does not establish the authoring procedure for each editorial link. Do not invent a creator, a missing script, or a database-writing event.
@@ -20,4 +20,4 @@
 
 ## Closure — tested public example
 
-The [complete SDF example](examples/README.md) and [CI test](../../../.github/workflows/paper-reconstruction.yml) passed on the current public paper: 29 records, 15 matching historic sections/vectors, eight recovered editorial relations, 22 inactive editorial relations, Python/JavaScript parity, source integrity, OKF `x_ukc`, and three-touch regression tests. Historical records were not modified. Publication safety: only public repository evidence appears in this note; working conversation material remains outside the public tree.
+The [complete SDF example](examples/README.md) and [CI test](../../.github/workflows/paper-reconstruction.yml) passed on the current public paper: 29 records, 15 matching historic sections/vectors, eight recovered editorial relations, 22 inactive editorial relations, Python/JavaScript parity, source integrity, OKF `x_ukc`, and three-touch regression tests. Historical records were not modified. Publication safety: only public repository evidence appears in this note; working conversation material remains outside the public tree.
