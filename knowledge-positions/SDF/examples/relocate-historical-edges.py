@@ -15,6 +15,7 @@ import difflib
 import hashlib
 import json
 import math
+import os
 import re
 import urllib.request
 from collections import Counter
@@ -38,9 +39,11 @@ def source_bytes(history, optional_path=None):
         if not re.fullmatch(r"[a-f0-9]{40}", blob):
             raise ValueError("Invalid saved Git blob identifier")
         url = "https://api.github.com/repos/" + AUTHORITY + "/git/blobs/" + blob
-        req = urllib.request.Request(
-            url, headers={"Accept": "application/vnd.github+json",
-                          "User-Agent": "public-knowledge-positions-reconstruction"})
+        headers = {"Accept": "application/vnd.github+json",
+                   "User-Agent": "public-knowledge-positions-reconstruction"}
+        if os.environ.get("GITHUB_TOKEN"):
+            headers["Authorization"] = "Bearer " + os.environ["GITHUB_TOKEN"]
+        req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req, timeout=30) as response:
             payload = json.load(response)
         if payload.get("encoding") != "base64":
