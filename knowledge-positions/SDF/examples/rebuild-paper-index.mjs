@@ -76,7 +76,7 @@ function lexicalHashVector(text) {
   return norm ? v.map(n => n / norm) : v;
 }
 
-function rebuild(raw, prior = {}) {
+export function rebuild(raw, prior = {}) {
   const old = new Map((prior.nodes || []).map(n => [n.id, n]));
   const sections = parseSections(raw);
   const nodes = [], edges = [];
@@ -115,7 +115,7 @@ function rebuild(raw, prior = {}) {
   };
 }
 
-function verify(raw, index) {
+export function verify(raw, index) {
   if (index.paper_sha256 !== SHA(raw)) throw new Error('Stale whole-paper SHA-256');
   const sections = parseSections(raw);
   if (sections.length !== index.nodes?.length) throw new Error('Incomplete section coverage');
@@ -135,17 +135,17 @@ function verify(raw, index) {
   return { sections: sections.length, edges: index.edges.length, sha256: SHA(raw) };
 }
 
-if (action === 'build') {
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url) && action === 'build') {
   const raw = readFileSync(PAPER);
   const prior = existsSync(INDEX) ? JSON.parse(readFileSync(INDEX, 'utf8')) : {};
   const { index, retained, recomputed } = rebuild(raw, prior);
   verify(raw, index);
   writeFileSync(INDEX, JSON.stringify(index, null, 2) + '\n');
   console.log('built ' + index.nodes.length + ' sections, ' + index.edges.length + ' edges; retained ' + retained + ', recomputed ' + recomputed);
-} else if (action === 'verify') {
+} else if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url) && action === 'verify') {
   const stats = verify(readFileSync(PAPER), JSON.parse(readFileSync(INDEX, 'utf8')));
   console.log('verified ' + stats.sections + ' sections, ' + stats.edges + ' edges, SHA-256 ' + stats.sha256);
-} else {
+} else if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   console.error('Usage: node rebuild-paper-index.mjs [build|verify] [paper.md] [jit-index.json]');
   process.exitCode = 2;
 }
