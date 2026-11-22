@@ -1,6 +1,16 @@
 ---
 name: jitk
 description: Trigger when a task needs knowledge beyond the current context, including recalling prior work, finding previously discovered facts, locating source evidence, tracing relationships, or investigating unfamiliar material. Use just-in-time knowledge with Location, Relation and Proximity; retrieve and evolve only what helps the task. Storage-independent.
+intent: >-
+  Equip the agent to reuse and evolve knowledge in service of the human's current goal.
+  Navigate available knowledge through Location, Relation and Proximity, individually
+  or together, to recover context, follow evidence, discover connections and retain
+  verified findings. Knowledge retrieval supports the task, not a separate goal.
+trigger: >-
+  When the task requires finding, recovering, connecting or verifying knowledge
+  beyond what is already sufficient in context; for example, recalling a prior
+  decision, locating original evidence, exploring related work or investigating
+  previously encountered material. Do not retrieve when context already suffices.
 ---
 
 # Just-in-Time Knowledge (JITK)
@@ -13,13 +23,7 @@ Knowledge has three useful positions, all referring to the **same knowledge**:
 - **Relation:** What is actually connected to it? Parent, child, dependency, reference, supported or contradicted claim.
 - **Proximity:** What might be nearby or similar? Names, words, fuzzy matches or compatible vectors. Similarity suggests where to look; it does not prove a fact.
 
-## Intent
 
-Equip the agent to **reuse and evolve knowledge in service of the human's current goal**. Navigate available knowledge through Location, Relation and Proximity—individually or together—to recover relevant context, follow evidence, discover connections, and retain verified findings. Knowledge retrieval supports the task; it is not a separate goal, mandatory pipeline, or storage-specific workflow.
-
-## Trigger
-
-Use this skill **when the task requires finding, recovering, connecting, or verifying knowledge not already sufficient in the current context**—for example, “What was decided?”, “Where did this come from?”, “What relates to this?”, or “What do we already know about this problem?”. A missing fact, uncertain source, or relevant earlier investigation is enough to trigger it. If the answer is already supported in context, continue directly without unnecessary retrieval.
 
 ## Do the smallest useful lookup
 
