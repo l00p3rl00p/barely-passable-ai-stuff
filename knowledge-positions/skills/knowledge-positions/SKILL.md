@@ -17,7 +17,7 @@ trigger: >-
 
 **Purpose:** Give the agent the knowledge it needs **now**, with a path back to the evidence, so it can continue the human's task. Do not turn retrieval into another project.
 
-Knowledge has three useful positions, all referring to the **same knowledge**:
+**JITK can work with any available retrieval tools.** When Knowledge Positions is implemented, its breakthrough is that different methods can use the **same source-backed knowledge identity**, rather than creating separate interpretations or requiring conversion steps. Three complementary addressable aspects of that recorded knowledge are:
 
 - **Location:** Where is it in the original source? File, message, section, AST node, line or byte span.
 - **Relation:** What is actually connected to it? Parent, child, dependency, reference, supported or contradicted claim.
@@ -36,7 +36,7 @@ Knowledge has three useful positions, all referring to the **same knowledge**:
 
 ## Choose the method that exists
 
-Use the tools actually available in the environment: source read, AST/tree navigation, graph neighbors, text search, vector search, or another supported method. Use any available method or combination of methods that helps investigate, connect, verify, or evolve knowledge. Move freely among Location, Relation, and Proximity, revisit earlier positions, and follow promising leads as they emerge. A single method, several methods, or a different route are all valid; the question and evidence guide the exploration. Respect the tool's permissions, syntax and failures. If access or a method is missing, say so rather than making up knowledge.
+Use the tools actually available in the environment: source read, AST/tree navigation, graph neighbors, text search, vector search, filtering, queries, or another supported method. When Knowledge Positions is available, entering through any connected method resolves one identity and its recorded values; pivot between methods on that same item without losing evidence. Otherwise, use native tools as they are, and verify any cross-tool identity mapping rather than assuming it. Use any available method or combination of methods that helps investigate, connect, verify, or evolve knowledge. Move freely among Location, Relation, and Proximity, revisit earlier positions, and follow promising leads as they emerge. A single method, several methods, or a different route are all valid; the question and evidence guide the exploration. Respect the tool's permissions, syntax and failures. If access or a method is missing, say so rather than making up knowledge.
 
 A source position is not automatically permission to read it. A similarity result is not an established relationship. Keep the original source, identity, position and provenance attached to any finding; preserve uncertainty.
 
@@ -57,7 +57,7 @@ This is the complete JITK workflow. It needs no specific database, SDK reading s
 
 This is a **working-method reference**, not a requirement to install a particular database, call another skill, or read the SDK. Follow the human's task: reuse what is known, retrieve only what is needed, and evolve knowledge from evidence.
 
-**Select any available route.** Use direct files and source positions; AST/Tree-sitter or other structure; graph traversals and relationships; lexical or vector proximity. Cross between methods freely. Follow existing identities and original evidence, not invented connections.
+**Select any available route.** JITK can use direct files, source positions, AST/Tree-sitter structures, graphs, lexical search, vectors, filters or other tools without Knowledge Positions. **Where Knowledge Positions is implemented, these are methods operating on the same source-backed knowledge identity, not rival knowledge stores or stages.** Starting from a lexical hit, the agent can pivot to its native AST, recorded edges, typed fields, proximity, or original evidence; it can expand, narrow, rank, branch or stop using what is already recorded. Do not build separate identities for each entry method, require a conversion chain, or invent missing values. For other tools, cross-method identity reuse depends on actual shared identifiers or a verified mapping; it is not automatic.
 
 ### Known integrations in this environment (examples, not dependencies)
 
