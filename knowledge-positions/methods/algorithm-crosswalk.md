@@ -14,5 +14,7 @@
 | Chronological/order navigation | Actual message, chapter, event or section order | Find previous message/chapter |
 | On-touch intelligent investigation | Retrieved source evidence + current task context | Connect SOUP's current defect to a prior fix |
 
+**This table lists algorithms over the same knowledge, not alternative knowledge representations or separate ingestion tracks.** A search result through any connected method resolves a shared record ID; the investigator can next use any other method whose required values are present, reusing the same source, relationships and provenance. For example, a lexical match can feed a graph-neighbor traversal, then a numeric ranking, then an exact source read. Intermediate counts or rankings can themselves be sufficient answers; full content hydration is not mandatory.
+
 **Not every method is useful on every item, and not every index needs to exist before the item is usable.** The shared record carries *available* values; algorithms use them directly, computing their own search scores as needed. One method's intermediate output never becomes a prerequisite for constructing another method's knowledge. A missing embedding does **not** mean proximity cannot be searched with filenames or lexical overlap. A binary may have no content-derived semantic vector yet still support location, containment-graph and name-similarity search.
 
