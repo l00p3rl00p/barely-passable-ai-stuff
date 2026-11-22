@@ -7,7 +7,7 @@ Research draft; not peer reviewed or submitted. Author approval required before 
 
 The original question behind this research was straightforward: how can we reduce the tokens consumed by large language models without sacrificing the intelligence needed to accomplish a task? The investigation led to a different question: why do we continually ask an intelligence to read information that another intelligence has already read, understood, connected, and used?
 
-This paper proposes Just-in-Time Knowledge (JITK), an approach that separates the knowledge an intelligence can access from the information it must carry in its current context. Knowledge has three interoperable positions: its location in an original source, its semantic vector position, and its relationships in a graph. The essential mechanism is one source-backed knowledge identity with common OKF-compatible values that existing structural, graph, lexical and vector tools can use directly; the positions are access methods, not separate interpretations of the knowledge. An intelligence uses these positions to discover and retrieve original evidence, construct its own investigative graphs, and preserve useful discoveries for later intelligences.
+This paper proposes Just-in-Time Knowledge (JITK), an approach that separates the knowledge an intelligence can access from the information it must carry in its current context. Existing retrieval methods—direct source access, structural and AST navigation, graph traversal, lexical search, vector similarity and others—can already locate parts of what is known. The Knowledge Positions contribution is to keep the values those methods can use together under one source-backed knowledge identity in a common OKF-compatible record. Rather than turning each search method into a separate body of knowledge or conversion stage, a finding reached through one method can be revisited, filtered, traversed, verified or enriched through another without losing identity or original evidence. JITK can operate without this representation; Knowledge Positions is one way to strengthen its continuity across methods.
 
 We introduce Knowledge Positions, a lightweight Python reference implementation. In a preliminary experiment, a fresh language-model session received a navigation package derived from 28 selected conversation passages while the source file was withheld. The model searched the index, followed relationships, requested four source passages, and answered a question from those passages. The experiment demonstrates the mechanics of selective knowledge navigation across sessions; it does not measure token savings, retrieval accuracy at scale, or automated enrichment. We articulate those open questions rather than claim to have solved them. The central proposition is that a context window is a temporary workspace, while knowledge is a persistent resource that can evolve through use.
 
@@ -45,12 +45,18 @@ Prompt caching, compression, and longer windows remain legitimate alternative or
 
 **Just-in-Time Knowledge (JITK) is the broader endeavor.** Its aim is to improve how knowledge is found, made available, used, reused, and developed through work, without asking each new context or intelligence to reconstruct everything that was learned before. Reducing context overhead was the starting question, not the limit of the inquiry.
 
-**Knowledge Positions is a central research contribution within that endeavor, not its definition or a prerequisite for it.** Positioning a knowledge identity by its original location, its evidenced relationships, and its proximity to other knowledge provides complementary ways to recover and navigate what is known. This representation can make retrieval and reuse more precise and enable useful connections to accumulate over time. Its value is a research proposition to be examined and improved through evidence, not a claim that every JITK implementation must use these positions or that their advantages have been proven in every setting.
+**Knowledge Positions is a central research contribution within that endeavor, not its definition or a prerequisite for it.** JITK began with many existing ways to find knowledge—reading sources, searching text, traversing code structures, using graphs, comparing vectors and querying data. The breakthrough proposed by Knowledge Positions is **not another search method placed beside them**. It is a way of recording a knowledge identity with the available source-backed values those different methods need, so a discovery made through any one method can be explored, checked, ranked, connected, narrowed or expanded through the others without losing the original knowledge. Location, Relation and Proximity describe complementary addressable aspects of the same recorded item, not competing retrieval engines. Resonance is a proposed future extension.
+
+**Entry method does not determine what knowledge can become.** A lexical hit might supply a common identity and known source position; that identity's recorded structural relations may then be traversed by a graph algorithm, its known attributes filtered numerically, its proximity compared when an applicable vector exists, and its original evidence checked directly. The investigator can pivot, backtrack, deepen, branch or stop at any point. Each additional method operates on available values of the **same knowledge**, while any *new* verified observation is added with provenance. No AST-to-graph or graph-to-vector conversion chain is required, and no method may manufacture missing fields merely to enable another method.
+
+**Illustrative investigation:** A question asks how many turkey recipes are known. A suitable index returns a count and identities for the matching records; if the count answers the question, the investigation stops without loading every recipe. If the next question asks for ten, the investigator can rank or filter the existing identities, inspect the top candidates' actual sources, then pivot to available relation, structural, lexical or vector operations as helpful. The count and subsequent ranking are different uses of the same recorded knowledge, not separate knowledge bases. Such interchangeability is a representation and integration contract, **not** a claim that every tool in an arbitrary installation already speaks the same identity protocol. Tools must be mapped or adapted to that common identity, and absent values remain absent.
+
+The proposed advantage is cumulative, evidence-backed reuse across methods. Its extent and economics remain subjects for experiments, rather than assertions that every JITK application or available tool already achieves this behavior.
 
 The parts of this work have different jobs:
 
 - **The research and paper** develop, explain, challenge, and test ideas for better knowledge retrieval and evolution. This manuscript documents a specific stage of an ongoing inquiry; it is not the final boundary of that inquiry.
-- **Knowledge Positions** supplies one evolving method for recording, relating, locating, and finding knowledge. The same method may have uses beyond today's JITK workflows.
+- **Knowledge Positions** supplies one evolving, shared-identity representation for **interchangeable, cumulative use of many retrieval and traversal methods**. It is not itself a sibling of lexical, AST, graph or vector search; those methods can act upon its recorded values when supported. The same representation may have uses beyond today's JITK workflows.
 - **The SDK and implementation contracts** make research methods implementable, inspectable, and portable. The current Knowledge Positions SDK is a practical expression of one method; it does not define all possible JITK methods.
 - **The JITK skill** teaches an agent when and how to use available knowledge during an actual task. It can draw upon Knowledge Positions without requiring the agent to read the SDK, and it can perform JITK without a Knowledge Positions implementation.
 - **Storage and access systems**—files, parsers, lexical indexes, vector search, codebase navigation, graph engines such as OmniGraph, or others—are available means of execution, not the research mission or mandatory dependencies.
@@ -63,7 +69,7 @@ The larger ambition is therefore **not only to search for information faster, bu
 
 ### The recovered mechanical invariant: one record, many methods
 
-**The breakthrough was not three indexes or a conversion pipeline.** A tree already has nodes, containment, order and relationships; those are graph-usable facts without an LLM inventing `related_to` edges. Preserve whatever a source or deterministic parser actually supplies, side by side under **one source-backed identity**, in a common **OKF-compatible record**. Retain the values required to access that same knowledge by its structural/source position, graph relationships, lexical terms and vector position. The number of fields is not fixed: do not discard an existing value merely because the first consumer does not use it.
+**The breakthrough is cross-method continuity of the same knowledge, not three indexes, another search engine or a conversion pipeline.** A tree already has nodes, containment, order and relationships; those are graph-usable facts without an LLM inventing `related_to` edges. Preserve whatever a source or deterministic parser actually supplies, side by side under **one source-backed identity**, in a common **OKF-compatible record**. Retain the values required to access that same knowledge by its structural/source position, graph relationships, lexical terms and vector position. The number of fields is not fixed: do not discard an existing value merely because the first consumer does not use it.
 
 **The method changes; the knowledge does not.** A structural/AST-style lookup uses positions and hierarchy; NetworkX or another graph tool uses the recorded nodes and edges; fuzzy/lexical retrieval finds candidates; vector search uses an available, explicitly identified vector space. All routes resolve to the same identity and original evidence. The source can be code, a webpage, a document, a conversation or another format; use its native structure or an ordinary language/document parser, not a mandatory Python AST. OKF is the portable common representation and extension surface, not a requirement to build another interpretation engine. A parser, graph algorithm or vector encoder may compute its own required derived values, but translation of values already supplied is **mechanical, not semantic extraction**.
 
@@ -168,24 +174,20 @@ The architecture begins with sources and ends with a richer, navigable knowledge
 
 ```mermaid
 flowchart TD
-  S["Original sources: code, text, documents, events"] --> P["Source adapters: AST, text extraction, NLP, schema mapping"]
-  P --> I["Identity, version hash, source span"]
-  I --> X["Contentless lexical index"]
-  I --> V["Semantic vector position"]
-  I --> G["NetworkX graph position"]
-  X --> A["Intelligence chooses discovery and traversal"]
-  V --> A
-  G --> A
-  A --> R["Resolve original evidence"]
+  S["Original sources: code, text, documents, events"] --> P["Faithful native readers and source adapters"]
+  P --> K["One source-backed knowledge identity; one common record of available values"]
+  K <--> M["Methods over the same identity: direct / AST / tree / lexical / graph / vector / query"]
+  M <--> A["Investigator: pivot, rank, branch, inspect, or stop"]
+  A --> R["Resolve and verify original evidence"]
   R --> W["Investigate and act"]
-  W --> E["Qualified findings and relationships"]
-  E --> G
+  W --> E["New evidenced findings and relationships"]
+  E --> K
   S --> D["Detect changed source version"]
-  D --> T["Mark explicit dependents stale"]
+  D --> T["Mark affected known dependents stale"]
   T --> A
 ```
 
-**Figure 1.** Proposed architecture. Source adapters, semantic embeddings, generalized enrichment and cascading invalidation describe the intended lifecycle; the reference implementation and pilot realize only part of it.
+**Figure 1.** Proposed common-identity architecture. Different methods use the recorded values of the same knowledge; optional indexes or graph/vector materializations are access paths, not separate stores of knowledge or required phases. Methods may be combined in any order, and missing values remain unknown. Source adapters, vector generation, qualified enrichment and cascading invalidation describe intended lifecycle capabilities; the reference implementation and pilot realize only part of them.
 
 The intelligence may initiate a deterministic lookup, choose exact or fuzzy search, ask for semantic neighbors, or create its own graph traversal. The execution of a database query or graph algorithm need not be another language-model inference. The division of labor is deliberate: let the model formulate the investigation; let ordinary code execute the operations.
 
