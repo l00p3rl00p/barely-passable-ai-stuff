@@ -8,6 +8,12 @@ It is **not** an agent, LLM, database, ingestion service, or required applicatio
 
 ![Knowledge Positions: original source, shared record, navigation, and evidence](diagrams/knowledge-loop.svg)
 
+## Where this fits in Just-in-Time Knowledge
+
+**Just-in-Time Knowledge (JITK) is the larger research and engineering effort** to make accumulated knowledge available, reusable, and able to evolve as work proceeds. **Knowledge Positions is one powerful, optional method** for representing and navigating that knowledge—not a condition for practicing JITK. The Knowledge Positions SDK helps developers implement the method; the [JITK skill](skills/knowledge-positions/SKILL.md) teaches an agent to use available knowledge capabilities without needing to read the SDK. Files, codebase tools, OmniGraph and other graph/vector/search systems are implementation choices, not prerequisites.
+
+For the research framing and how the paper, method, SDK, skill and storage systems relate, see [§1.2 of the canonical JITK paper](research/paper.md#12-the-larger-endeavor-jitk-knowledge-positions-and-practical-use).
+
 ## What problem does this solve?
 
 Imagine an application has already encountered a source file, a paragraph, and a link to another document. A later question may start with a filename, a nearby concept, or the related document. Without a shared identity and preserved source positions, each route can create a different representation and require a new investigation.
