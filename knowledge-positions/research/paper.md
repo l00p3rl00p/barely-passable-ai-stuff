@@ -170,7 +170,7 @@ This proposal builds on [Core Knowledge Vocabulary](../CORE_VOCABULARY.md) (inde
 
 ## 3. Architecture: knowledge that grows through work [EKC:08]
 
-The architecture begins with sources and ends with a richer, navigable knowledge space. Its most important feature is the return path: an investigation is not finished when an answer is generated. A useful relationship discovered during the investigation may become part of the knowledge available to future investigations.
+The architecture begins with sources and ends with a richer, navigable knowledge space. **A JITK retrieval must address the question with an answer or evidence-supported likely answer, while retaining enough positions and provenance to verify or continue.** If no supported answer is available, it must distinguish that gap from the leads it can still provide. Its most important feature beyond answering is the return path: a useful relationship discovered during investigation may become part of the knowledge available to future investigations. This does not require copying the full original source or enriching untouched items.
 
 ```mermaid
 flowchart TD
