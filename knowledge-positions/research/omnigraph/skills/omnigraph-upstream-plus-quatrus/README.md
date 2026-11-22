@@ -5,9 +5,9 @@ This directory provides a **version-matched official OmniGraph skill with append
 ## What this package contains
 
 - [`SKILL.md`](SKILL.md) — the **unchanged official upstream `v0.15.0` `skills/omnigraph/SKILL.md`** followed at EOF by the two appendices listed below.
-- [Generic JITK appendix](../../../../skills/appendices/jitk.md) — reuse → direct source → evidenced relationships → discovery; choose actual available access methods, verify original evidence, and delegate execution to the selected implementation.
+- [Generic JITK appendix](../../../../skills/knowledge-positions/jitk.md) — reuse → direct source → evidenced relationships → discovery; choose actual available access methods, verify original evidence, and delegate execution to the selected implementation.
 - [`quatrus-ingestion.appendix.md`](quatrus-ingestion.appendix.md) — the existing, user-supplied Quatrus section copied as a separate optional deployment-specific appendix.
-- [Append-only helper](../../../../skills/appendices/append-to-skill.sh) — adds either/both sections to an existing installed skill without editing its original instructions.
+- [Append-only helper](../../../../skills/knowledge-positions/append-to-skill.sh) — adds either/both sections to an existing installed skill without editing its original instructions.
 
 **Original source:** [ModernRelay OmniGraph `v0.15.0` official SKILL.md](https://github.com/ModernRelay/omnigraph/blob/v0.15.0/skills/omnigraph/SKILL.md). The original upstream content ends immediately before `<!-- knowledge-positions-jitk:start -->`. The Quatrus-specific instructions are enclosed by `<!-- quatrus-ingestion:start -->` and `<!-- quatrus-ingestion:end -->` and do not modify any upstream paragraph.
 
@@ -21,16 +21,11 @@ Obtain or retain the **entire official OmniGraph skill directory**, including it
 
 From a checkout of this repository:
 
-```sh
-# Generic JITK behavior for ANY already installed skill:
-bash knowledge-positions/skills/appendices/append-to-skill.sh /path/to/your/SKILL.md
+\`\`\`bash
+bash knowledge-positions/skills/knowledge-positions/append-to-skill.sh /path/to/omnigraph/SKILL.md --quatrus
+\`\`\`
 
-# Add both generic behavior and the existing Quatrus OmniGraph profile
-# (only to an OmniGraph skill in the explicitly configured Quatrus environment):
-bash knowledge-positions/skills/appendices/append-to-skill.sh /path/to/omnigraph/SKILL.md --quatrus
-```
-
-The helper changes the destination only by **appending text at EOF**. It refuses a nonexistent target or a non-OmniGraph target for `--quatrus`. It detects the section markers and skips already-added appendices, making repeat application idempotent. It neither launches the CLI nor starts an ingestion operation.
+The helper is shipped inside the [generic Knowledge Positions skill package](../../../../skills/knowledge-positions/README.md). It changes the destination only by **appending text at EOF**. It refuses a nonexistent target or a non-OmniGraph target for `--quatrus`. It detects the section markers and skips already-added appendices, making repeat application idempotent. It neither launches the CLI nor starts an ingestion operation.
 
 ## What stays generic, and what stays local
 
