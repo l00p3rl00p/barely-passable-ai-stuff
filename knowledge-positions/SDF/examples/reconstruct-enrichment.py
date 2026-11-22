@@ -1,141 +1,260 @@
 #!/usr/bin/env python3
-"""Reconstruct paper navigation + safely reusable historical editorial edges.
+"""Paper-specific deterministic UKC/1 reconstruction using existing Python indexer.
 
-Source and historical artifact are READ-ONLY; output and report are separate.
-This is a paper-specific example of source/hash-qualified reconstruction, NOT
-UKC/1 conformance or semantic revalidation. No LLM is used.
+Input: immutable current paper and historical companion.
+Output: version-scoped common records + qualified hash-compatible relations.
+No LLM, no historical/source mutation, no dependency beyond existing numpy indexer.
+This is a paper example, not broad UKC SDK conformance certification.
+
+python reconstruct-enrichment.py build [--source ... --history ... --output ...]
+python reconstruct-enrichment.py verify [--source ... --history ... --output ...]
+python reconstruct-enrichment.py get EKC:14 [--output ...]
+python reconstruct-enrichment.py neighbors EKC:14 [--output ...]
+python reconstruct-enrichment.py resolve EKC:14 [--source ... --output ...]
+python reconstruct-enrichment.py export-okf EKC:14 [--output ...]
 """
 import argparse
+import hashlib
 import json
 import sys
+import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 RESEARCH = HERE.parents[1] / "research"
 sys.path.insert(0, str(RESEARCH))
-import jit_index  # reuse the existing canonical Python source indexer
+import jit_index
+
+AUTHORITY = "repo:l00p3rl00p/barely-passable-ai-stuff"
+SOURCE_KEY = "knowledge-positions/research/paper.md"
 
 
-def reconstruct(source: Path, historical: Path, output: Path, report_path: Path):
-    source, historical, output, report_path = (
-        p.resolve() for p in (source, historical, output, report_path)
-    )
-    if len({source, historical, output, report_path}) != 4:
-        raise ValueError("Source, history, index output, and report paths must be distinct")
-    if not source.is_file() or not historical.is_file():
-        raise FileNotFoundError("Missing authoritative source or historical companion")
-    history = json.loads(historical.read_text(encoding="utf-8"))
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
 
-    # Build from the CURRENT source. Never mutate the manuscript or historical artifact.
-    jit_index.PAPER = source
-    jit_index.INDEX = output
-    base = jit_index.build()
-    jit_index.load_verified()
 
-    old_by_id = {node["id"]: node for node in history["nodes"]}
-    if len(old_by_id) != len(history["nodes"]):
-        raise ValueError("Historical records contain duplicate identities")
-    current_by_tag = {node["tag"]: node for node in base["nodes"]}
-    if len(current_by_tag) != len(base["nodes"]):
-        raise ValueError("Current sections contain duplicate tags")
+def canonical(tag, digest):
+    raw = json.dumps([AUTHORITY, SOURCE_KEY, tag, digest],
+                     ensure_ascii=False, separators=(",", ":")).encode()
+    return "ukc:v1:" + sha(raw)
 
-    matches = {
-        node["id"]: current_by_tag.get(node["tag"])
-        for node in history["nodes"]
-        if current_by_tag.get(node["tag"]) is not None
-        and node["content_hash"] == current_by_tag[node["tag"]]["source_version_sha256"]
+
+def reconstruct(paper_bytes, history):
+    # The preexisting Python source parser and lexical-hash encoder are authoritative
+    # for this Python example. Use only a temporary generated index.
+    with tempfile.TemporaryDirectory() as tmp:
+        old_paper, old_index = jit_index.PAPER, jit_index.INDEX
+        try:
+            tmp_paper = Path(tmp) / "paper.md"
+            tmp_paper.write_bytes(paper_bytes)
+            jit_index.PAPER, jit_index.INDEX = tmp_paper, Path(tmp) / "jit-index.json"
+            index = jit_index.build()
+            jit_index.load_verified()
+        finally:
+            jit_index.PAPER, jit_index.INDEX = old_paper, old_index
+    old_by_id = {n["id"]: n for n in history["nodes"]}
+    by_tag = {n["tag"]: n for n in index["nodes"]}
+    if len(old_by_id) != len(history["nodes"]) or len(by_tag) != len(index["nodes"]):
+        raise ValueError("Duplicate historical identity or current tag")
+    matching = {
+        n["id"]: by_tag[n["tag"]] for n in history["nodes"]
+        if n["tag"] in by_tag
+        and n["content_hash"] == by_tag[n["tag"]]["source_version_sha256"]
     }
-    # A hash match authorizes reusing old values only in a compatible declared
-    # profile; the fresh vectors are independently reconstructed from current bytes.
-    vector_verified, vector_incompatible = [], []
-    for old_id, now in matches.items():
-        previous = old_by_id[old_id]
-        old_vector = previous.get("vector")
-        new_vector = now.get("vector")
-        if (
-            previous.get("embedding_model") == now.get("embedding_model")
-            and isinstance(old_vector, list)
-            and isinstance(new_vector, list)
-            and len(old_vector) == len(new_vector)
-            and all(abs(a - b) < 1e-12 for a, b in zip(old_vector, new_vector))
-        ):
-            vector_verified.append(now["tag"])
-        else:
-            vector_incompatible.append(now["tag"])
-
-    existing = {(e["source"], e["target"], e["relation"]) for e in base["edges"]}
-    recovered, inactive, already_structural = [], [], []
-    for edge in history["edges"]:
-        src = old_by_id.get(edge["source"])
-        dst = old_by_id.get(edge["target"])
-        if src is None or dst is None:
-            raise ValueError("Historical relation has an unknown endpoint")
-        present = edge["source"] in matches and edge["target"] in matches
-        item = {
-            "from": src["tag"], "to": dst["tag"], "relation": edge["relation"],
-            "historical_evidence": edge.get("evidence"),
-            "source_hash": src["content_hash"], "target_hash": dst["content_hash"],
-        }
-        if not present:
-            item["reason"] = "one_or_both_source_section_hashes_changed"
-            inactive.append(item)
-            continue
-        new_src, new_dst = matches[edge["source"]]["id"], matches[edge["target"]]["id"]
-        key = (new_src, new_dst, edge["relation"])
-        if key in existing:
-            already_structural.append(item)
-            continue
-        # Preserve exactly the earlier editorial assertion and its original
-        # qualification; do not promote navigation-only into semantic fact.
-        base["edges"].append({
-            "source": new_src, "target": new_dst, "relation": edge["relation"],
-            "qualification": "historical_editorial_navigation",
-            "evidence": edge.get("evidence"),
-            "reused_from": {
-                "artifact": historical.name,
-                "source_sha256": history.get("source_sha256"),
-                "source_section_sha256": src["content_hash"],
-                "target_section_sha256": dst["content_hash"],
+    records = []
+    for order, n in enumerate(index["nodes"]):
+        digest = n["source_version_sha256"]
+        p = n["source_position"]
+        records.append({
+            "schema": "ukc/1",
+            "id": canonical(n["tag"], digest),
+            "source": {
+                "authority": AUTHORITY, "key": SOURCE_KEY,
+                "realm": "public_repository",
+                "version": "sha256:" + index["paper_sha256"],
+                "unit_version": "sha256:" + digest,
+                "access": "public"
             },
+            "kind": "markdown_section",
+            "location": {
+                "status": "known", "basis": "ekc_heading_parser",
+                "anchor": n["tag"],
+                "spans": [{"unit": "utf8_byte", "start": p["start_byte"],
+                           "end": p["end_byte"]}],
+                "start_line": p["start_line"], "end_line": p["end_line"]
+            },
+            "relations": [],
+            "proximity": [{"space": "lexical-hash-512",
+                           "status": "known", "vector": n["vector"]}],
+            "values": {"title": n["heading"], "tag": n["tag"],
+                       "order": order, "terms": n["terms"]},
+            "native": {"parser": "ekc_heading_regex",
+                       "heading_level": n["heading_level"],
+                       "source_ref": n["id"], "source_bytes_retained": False},
+            "evidence": {"source_sha256": index["paper_sha256"],
+                         "span_sha256": digest,
+                         "precision": "verified_utf8_span"}
         })
-        existing.add(key)
-        recovered.append(item)
+    record_by_tag = {r["values"]["tag"]: r for r in records}
+    old_to_current = {oid: record_by_tag[n["tag"]] for oid, n in matching.items()}
+    used = set()
+    accepted = []
+
+    def link(a, b, relation, qualification, evidence, provenance):
+        key = (a["id"], b["id"], relation, qualification)
+        if key in used:
+            return False
+        used.add(key)
+        edge = {"source": a["id"], "target": b["id"], "relation": relation,
+                "qualification": qualification, "evidence": evidence,
+                "provenance": provenance}
+        a["relations"].append({**edge, "direction": "out", "neighbor": b["id"]})
+        b["relations"].append({**edge, "direction": "in", "neighbor": a["id"]})
+        return True
+
+    for e in index["edges"]:
+        a = record_by_tag[e["source"].removeprefix("paper.md#")]
+        b = record_by_tag[e["target"].removeprefix("paper.md#")]
+        link(a, b, e["relation"], e["qualification"],
+             {"origin": "parsed_heading_structure"},
+             {"source": SOURCE_KEY, "source_sha256": index["paper_sha256"]})
+
+    compatible_vectors = []
+    for oid, n in matching.items():
+        old = old_by_id[oid]
+        v = record_by_tag[n["tag"]]["proximity"][0]["vector"]
+        if (old.get("embedding_model") == "lexical-hash-512"
+                and isinstance(old.get("vector"), list)
+                and len(v) == len(old["vector"])
+                and all(abs(x - y) < 1e-12 for x, y in zip(v, old["vector"]))):
+            compatible_vectors.append(n["tag"])
+
+    inactive, matched_sequence = [], []
+    for e in history["edges"]:
+        a_old = old_by_id.get(e["source"])
+        b_old = old_by_id.get(e["target"])
+        if a_old is None or b_old is None:
+            raise ValueError("Historical edge has missing endpoint")
+        a, b = old_to_current.get(e["source"]), old_to_current.get(e["target"])
+        item = {"from": a_old["tag"], "to": b_old["tag"], "relation": e["relation"],
+                "old_source_hash": a_old["content_hash"],
+                "old_target_hash": b_old["content_hash"]}
+        if a is None or b is None:
+            inactive.append({**item, "reason": "one_or_both_source_hashes_changed"})
+            continue
+        if e["relation"] == "next_section":
+            matched_sequence.append(item)
+            continue
+        if not link(a, b, e["relation"], "historical_editorial_navigation",
+                    e.get("evidence"),
+                    {"artifact": "evolving-knowledge-context.json",
+                     "source_sha256": history["source_sha256"],
+                     "source_span_sha256": a_old["content_hash"],
+                     "target_span_sha256": b_old["content_hash"]}):
+            raise ValueError("Duplicate editorial edge")
+        accepted.append(item)
+    for r in records:
+        r["relations"].sort(
+            key=lambda e: (e["direction"], e["relation"], e["neighbor"]))
     report = {
-        "method": "deterministic_source_hash_qualified_reconstruction",
-        "source": str(source), "historical": str(historical),
-        "current_sections": len(base["nodes"]), "matching_historical_sections": len(matches),
-        "matching_section_tags": sorted(node["tag"] for node in matches.values()),
-        "verified_legacy_vectors": sorted(vector_verified),
-        "incompatible_legacy_vectors": sorted(vector_incompatible),
-        "base_structural_edges": len(base["edges"]) - len(recovered),
-        "recovered_editorial_edges": recovered, "already_structural_edges": already_structural,
+        "current_sections": len(records),
+        "source_hash_matches": len(matching),
+        "compatible_legacy_vectors": sorted(compatible_vectors),
+        "structural_edges": len(index["edges"]),
+        "recovered_editorial_edges": accepted,
         "inactive_historical_edges": inactive,
-        "result_edges": len(base["edges"]),
-        "qualification": "Historical editorial links retained as navigation only, not semantic proof",
+        "matched_historical_sequence_edges": len(matched_sequence),
+        "current_edges": len(index["edges"]) + len(accepted),
+        "qualification": "Historical editorial links are navigation only"
     }
-    # Derived output can be discarded and reconstructed. No historic input is rewritten.
-    output.write_text(json.dumps(base, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    # Verify against original after adding only supported edge references.
-    jit_index.load_verified()
-    report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    return report
+    return {"schema": "ukc-reconstruction/1",
+            "source_sha256": index["paper_sha256"],
+            "records": records, "report": report}
+
+
+def verify(paper_bytes, result):
+    if sha(paper_bytes) != result["source_sha256"]:
+        raise ValueError("source_changed")
+    ids = {r["id"] for r in result["records"]}
+    if len(ids) != len(result["records"]):
+        raise ValueError("duplicate_conflict")
+    for r in result["records"]:
+        p = r["location"]["spans"][0]
+        span = paper_bytes[p["start"]:p["end"]]
+        if (r["schema"] != "ukc/1"
+                or r["id"] != canonical(r["values"]["tag"], r["evidence"]["span_sha256"])
+                or sha(span) != r["evidence"]["span_sha256"]):
+            raise ValueError("corrupt_record: " + r["values"]["tag"])
+        if len(r["proximity"][0]["vector"]) != 512:
+            raise ValueError("vector_space_mismatch")
+        if any(e["neighbor"] not in ids for e in r["relations"]):
+            raise ValueError("invalid edge endpoint")
+    return True
+
+
+def lookup(data, key):
+    for r in data["records"]:
+        if r["id"] == key or r["values"]["tag"] == key:
+            return r
+    raise KeyError(key)
+
+
+def export_okf(record):
+    # JSON is valid YAML 1.2 flow syntax; preserve all x_ukc fields exactly.
+    frontmatter = json.dumps({"type": "SourceUnit",
+                              "title": record["values"]["title"],
+                              "x_ukc": record},
+                             ensure_ascii=False, indent=2)
+    return ("---\n" + frontmatter + "\n---\n\n"
+            + "# " + record["values"]["title"] + "\n\n"
+            + "Source-backed knowledge position; resolve original bytes through "
+              "x_ukc.source and x_ukc.location.\n")
 
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("action", choices=[
+        "build", "verify", "get", "resolve", "neighbors", "export-okf"])
+    p.add_argument("tag", nargs="?")
     p.add_argument("--source", type=Path, default=RESEARCH / "paper.md")
     p.add_argument("--history", type=Path, default=RESEARCH / "evolving-knowledge-context.json")
-    p.add_argument("--output", type=Path, default=HERE / "reconstructed-index.json")
-    p.add_argument("--report", type=Path, default=HERE / "reconstruction-report.json")
+    p.add_argument("--output", type=Path, default=HERE / "paper-ukc.json")
     a = p.parse_args()
-    result = reconstruct(a.source, a.history, a.output, a.report)
-    print(json.dumps({
-        "sections": result["current_sections"],
-        "source_hash_matches": result["matching_historical_sections"],
-        "recovered_editorial": len(result["recovered_editorial_edges"]),
-        "inactive_historical": len(result["inactive_historical_edges"]),
-        "edges": result["result_edges"],
-    }, indent=2))
+    if a.output.resolve() in {a.source.resolve(), a.history.resolve()}:
+        p.error("Output must not overwrite authoritative source or history")
+    raw = a.source.read_bytes()
+    if a.action == "build":
+        history = json.loads(a.history.read_text())
+        result = reconstruct(raw, history)
+        verify(raw, result)
+        a.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
+        print(json.dumps({"current_sections": result["report"]["current_sections"],
+                          "matching": result["report"]["source_hash_matches"],
+                          "recovered": len(result["report"]["recovered_editorial_edges"]),
+                          "inactive": len(result["report"]["inactive_historical_edges"]),
+                          "edges": result["report"]["current_edges"]}, indent=2))
+        return
+    data = json.loads(a.output.read_text())
+    verify(raw, data)
+    if a.action == "verify":
+        history = json.loads(a.history.read_text())
+        fresh = reconstruct(raw, history)
+        if fresh != data:
+            raise ValueError("Saved output differs from deterministic rebuild")
+        print(f"verified {len(data['records'])} UKC/1 paper records")
+        return
+    if not a.tag:
+        p.error("Section tag or canonical ID required")
+    r = lookup(data, a.tag)
+    if a.action == "get":
+        print(json.dumps(r, ensure_ascii=False, indent=2))
+    elif a.action == "neighbors":
+        print(json.dumps(r["relations"], ensure_ascii=False, indent=2))
+    elif a.action == "resolve":
+        span = r["location"]["spans"][0]
+        print(raw[span["start"]:span["end"]].decode())
+    else:
+        print(export_okf(r))
 
 
 if __name__ == "__main__":
