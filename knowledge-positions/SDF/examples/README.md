@@ -140,6 +140,7 @@ In the actual executed public-paper test:
 - All 22 retained their source headings/anchors.
 - **16 of 22** retained at least 80% of old tokens at **both** endpoints; **13 of 22** retained at least 90%.
 - **Six weaker links** all touch **EKC:25**, where the historical-to-current token retention is approximately **40.5%**. This is a specific heavy revision, not a failure to locate the knowledge.
+- In a **blind vector ranking across all 29 current sections**, the historical vectors ranked the correct section **first for 27 of 28 old sections**, and **within the top five for all 28**. Among the 13 hash-changed sections, **12 ranked first** and **all 13 ranked in the top five**. The sole second-place result was the heavily rewritten **EKC:25**; its exact anchor and relational neighbors disambiguated it without an LLM.
 - The previously recovered eight hash-exact editorial links remain distinct from these 22 **relocated historical candidates**. No historical link was silently promoted from \`navigation only\` to verified semantic fact.
 
 Try the same experiment (requires access to the official public GitHub Git-blob endpoint, or supply a byte-identical historical source with \`--old-paper\`):
