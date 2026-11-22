@@ -43,3 +43,89 @@ Compare with the [original Python implementation](../../research/jit_index.py) a
 ## Reuse without accidentally changing the experiment
 
 This is a **framework example**, not an additional result of the original cold-context research trial. It was observed during maintenance of the living paper after the manuscript had been written. It belongs here as a practical demonstration and is linked from the paper's companion materials for provenance. Do not revise the research paper to incorporate this later example unless the explicit Paper Lock review process authorizes a correction.
+
+
+## Current-paper Knowledge Positions reconstruction — verified, source-backed UKC/1 example
+
+> **PUBLIC REPOSITORY NOTICE:** This example uses only the public manuscript and previously published companion. Do not publish session transcripts, unreviewed discoveries, private worktrees, machine paths, personal context, or confidential evidence.
+
+The heading index above is an **earlier stage** of the method. The completed live-paper example is:
+
+- [Python common-record reconstruction](reconstruct-enrichment.py), using the existing \`research/jit_index.py\` section parser and lexical-hash implementation.
+- [Independent JavaScript reconstruction](reconstruct-enrichment.mjs), using the source parser in \`rebuild-paper-index.mjs\`.
+- [Shared full-paper test](../../tests/test_paper_reconstruction.py) and [CI run definition](../../../.github/workflows/paper-reconstruction.yml), which execute both on the actual paper.
+
+Both languages construct one logical \`ukc/1\` record per paper section containing **identity, authoritative source version, verified byte/line location, observed native heading fields, qualified graph relationships, lexical vector, and evidence**. The old \`paper.md#EKC:NN\` tag is preserved as a native source anchor, while the \`ukc:v1:...\` canonical identity is derived from repository source key, section tag and verified section digest. This allows unchanged sections to retain canonical identity when other parts of the paper move.
+
+**Actual current-paper record example:**
+
+\`\`\`yaml
+schema: ukc/1
+id: ukc:v1:b9fa995de1a79bb5ee7be349a588f06585a14d50c84e399dab8dd8107467b72f
+kind: markdown_section
+source:
+  authority: repo:l00p3rl00p/barely-passable-ai-stuff
+  key: knowledge-positions/research/paper.md
+  realm: public_repository
+  access: public
+  # whole-paper and section-scoped SHA-256 versions are stored separately
+location:
+  status: known
+  basis: ekc_heading_parser
+  anchor: EKC:14
+  spans: [{unit: utf8_byte, start: 43428, end: 45359}]
+  start_line: 271
+  end_line: 302
+values:
+  title: "5. Reference implementation: Knowledge Positions"
+  tag: EKC:14
+native:
+  parser: ekc_heading_regex
+  heading_level: 2
+  source_ref: "paper.md#EKC:14"
+proximity:
+  - space: lexical-hash-512
+    status: known
+    # the actual 512-component vector is stored in the generated record
+evidence:
+  span_sha256: 11c9b6134de4f447a39c353abb36093b7b3601eb248b65af3b05f0af165fdbc4
+relations:
+  # Real generated output includes current structural and compatible
+  # historical navigation edges with direction, canonical neighbor ID,
+  # evidence and qualification.
+\`\`\`
+
+This is a shortened display; use \`get\` to inspect the **complete actual record** including its vector, incoming/outgoing relations and evidence.
+
+**Run without changing the manuscript or historical companion:**
+
+\`\`\`sh
+# From knowledge-positions/; outputs are derived files outside the source tree.
+python SDF/examples/reconstruct-enrichment.py build --output /tmp/paper-ukc-python.json
+node SDF/examples/reconstruct-enrichment.mjs build \
+  research/paper.md research/evolving-knowledge-context.json /tmp/paper-ukc-js.json
+
+python SDF/examples/reconstruct-enrichment.py verify --output /tmp/paper-ukc-python.json
+node SDF/examples/reconstruct-enrichment.mjs verify \
+  research/paper.md research/evolving-knowledge-context.json /tmp/paper-ukc-js.json
+
+python SDF/examples/reconstruct-enrichment.py get EKC:14 --output /tmp/paper-ukc-python.json
+node SDF/examples/reconstruct-enrichment.mjs neighbors EKC:14 \
+  research/paper.md research/evolving-knowledge-context.json /tmp/paper-ukc-js.json
+python SDF/examples/reconstruct-enrichment.py resolve EKC:14 --output /tmp/paper-ukc-python.json
+
+# Self-contained parity, source resolution, stale-source rejection and OKF x_ukc checks:
+python tests/test_paper_reconstruction.py
+\`\`\`
+
+The live-paper test verifies: **29 current UKC/1 section records**, **15 matching historical section hashes**, **15 matching previously stored lexical vectors**, **38 current observed structural edges**, **eight recovered historical editorial navigation edges**, and **22 historical editorial edges held inactive**. The recovered edges keep their original \`navigation only\` qualification; a hash match is not a fresh semantic review. The two languages agree on common-record fields, canonical identities, original resolved bytes and portable \`x_ukc\` frontmatter values. Source bytes and the archived companion are unchanged.
+
+### Touch behavior and limits
+
+The existing Python library's [three-touch regression tests](../../tests/test_enrichment_budget.py) establish that admission is touch 1; touches 2 and 3 may update a semantic payload; the third freezes it, while new qualified links can still grow outward. A source-version change starts a new budget. **Touches do not create links automatically.** Neither the companion nor the present example contains proof of per-edge historical touch events; the companion's editorial edges are treated as prior recorded navigational knowledge, not retroactively attributed to touches.
+
+### Conformance boundary
+
+**Yes, this example uses Knowledge Positions:** it reconstructs actual shared source-backed UKC/1 logical records and accesses their location, relation, and proximity values from the same identity. No LLM is required for reconstruction. It also makes both-language results directly comparable and inspectable.
+
+**Not claimed:** a general source-agnostic UKC SDK implementation, native full CommonMark AST capture, active authorization for private content, arbitrary-parser fidelity, or complete UKC certification. This is an EKC-anchored paper adapter, deliberately limited to the structure it actually parses. Other SDF contracts and conformance fixtures remain separate requirements, not hidden capabilities of this example.
