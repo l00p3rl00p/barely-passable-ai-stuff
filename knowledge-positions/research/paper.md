@@ -41,6 +41,24 @@ The goal is not to replace large context windows, eliminate tokens, or prove tha
 
 Prompt caching, compression, and longer windows remain legitimate alternative or complementary approaches. Our proposed measure of success must include total token use and tool overhead, not only the size of the initial prompt.
 
+### 1.2 The larger endeavor: JITK, Knowledge Positions, and practical use
+
+**Just-in-Time Knowledge (JITK) is the broader endeavor.** Its aim is to improve how knowledge is found, made available, used, reused, and developed through work, without asking each new context or intelligence to reconstruct everything that was learned before. Reducing context overhead was the starting question, not the limit of the inquiry.
+
+**Knowledge Positions is a central research contribution within that endeavor, not its definition or a prerequisite for it.** Positioning a knowledge identity by its original location, its evidenced relationships, and its proximity to other knowledge provides complementary ways to recover and navigate what is known. This representation can make retrieval and reuse more precise and enable useful connections to accumulate over time. Its value is a research proposition to be examined and improved through evidence, not a claim that every JITK implementation must use these positions or that their advantages have been proven in every setting.
+
+The parts of this work have different jobs:
+
+- **The research and paper** develop, explain, challenge, and test ideas for better knowledge retrieval and evolution. This manuscript documents a specific stage of an ongoing inquiry; it is not the final boundary of that inquiry.
+- **Knowledge Positions** supplies one evolving method for recording, relating, locating, and finding knowledge. The same method may have uses beyond today's JITK workflows.
+- **The SDK and implementation contracts** make research methods implementable, inspectable, and portable. The current Knowledge Positions SDK is a practical expression of one method; it does not define all possible JITK methods.
+- **The JITK skill** teaches an agent when and how to use available knowledge during an actual task. It can draw upon Knowledge Positions without requiring the agent to read the SDK, and it can perform JITK without a Knowledge Positions implementation.
+- **Storage and access systems**—files, parsers, lexical indexes, vector search, codebase navigation, graph engines such as OmniGraph, or others—are available means of execution, not the research mission or mandatory dependencies.
+
+These layers are related but independently evolvable. A new retrieval method can strengthen JITK without changing Knowledge Positions. Improvements to Knowledge Positions can enhance retrieval and knowledge reuse without requiring a new storage engine or rewriting the JITK skill. The skill can adopt tools that already exist without making those tools part of the theory.
+
+The larger ambition is therefore **not only to search for information faster, but to make accumulated knowledge progressively more useful as it is encountered, connected, verified, and reused**. The original evidence remains available for re-examination. Results, assumptions, and mechanisms remain open to revision as experiments and implementation experience accumulate.
+
 ## 2. Knowledge, context, and the three positions [EKC:04]
 
 ### The recovered mechanical invariant: one record, many methods
