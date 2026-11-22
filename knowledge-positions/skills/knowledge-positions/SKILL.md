@@ -13,6 +13,10 @@ Knowledge has three useful positions, all referring to the **same knowledge**:
 - **Relation:** What is actually connected to it? Parent, child, dependency, reference, supported or contradicted claim.
 - **Proximity:** What might be nearby or similar? Names, words, fuzzy matches or compatible vectors. Similarity suggests where to look; it does not prove a fact.
 
+## Intent
+
+Equip the agent to **reuse and evolve knowledge in service of the human's current goal**. Navigate available knowledge through Location, Relation and Proximity—individually or together—to recover relevant context, follow evidence, discover connections, and retain verified findings. Knowledge retrieval supports the task; it is not a separate goal, mandatory pipeline, or storage-specific workflow.
+
 ## Trigger
 
 Use this skill **when the task requires finding, recovering, connecting, or verifying knowledge not already sufficient in the current context**—for example, “What was decided?”, “Where did this come from?”, “What relates to this?”, or “What do we already know about this problem?”. A missing fact, uncertain source, or relevant earlier investigation is enough to trigger it. If the answer is already supported in context, continue directly without unnecessary retrieval.
