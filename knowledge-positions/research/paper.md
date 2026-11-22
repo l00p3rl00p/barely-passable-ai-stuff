@@ -90,12 +90,12 @@ We distinguish four things:
 
 A knowledge item need not be a paragraph. It can be a function, an API contract, a test result, a decision, a passage in a book, or a relationship between them. The unit should be selected for usefulness, not a mandatory universal chunk size.
 
-Let a source version be S = (u, h), where u is its resolvable address and h is a digest of its bytes. A knowledge node k has an identifier i, source coordinates p, a vector v and graph membership:
+Let a source version be S = (u, h), where u is its resolvable address and h is a digest of its bytes. A source-backed knowledge item k has one identity i and whatever positional values have actually been observed or computed:
 
-    k = (i, S, p, v, metadata)
-    G = (V, E), where i belongs to V.
+    k = (i, S, known_values, provenance)
+    known_values may include p (source coordinates), v (declared-space vector), and E (recorded edges).
 
-The source position is (u, h, p); the vector position is v; the graph position is the node's identity and its relationships in G. An edge can include its direction, type, evidence and qualification. This notation is a conceptual contract, not a required database schema.
+Location can use (u, h, p) when p is known; vector comparison uses v only when present and compatible; graph traversal uses the item's recorded edges E. An edge can include its direction, type, evidence and qualification. No position or vector must be fabricated to complete this illustration; the same item remains usable through other known values. This notation is a conceptual contract, not a required database schema.
 
 | Position | Question answered | Example |
 |---|---|---|
