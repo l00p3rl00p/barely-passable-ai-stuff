@@ -111,6 +111,16 @@ def run(old_raw, new_raw, history, current):
             raise ValueError("Section source digest verification failed: " + n["tag"])
         same = n["content_hash"] == current_node["source_version_sha256"]
         metrics = similarity(a, b, n["vector"], current_node["vector"])
+        # Independent "blind" proximity scan over every current section:
+        # do not use the EKC label as an input to the vector ranking.
+        def cosine(v, w):
+            denom = math.sqrt(sum(x*x for x in v) * sum(y*y for y in w))
+            return sum(x*y for x, y in zip(v, w)) / denom if denom else 0.0
+        ranked = sorted(new_nodes,
+                        key=lambda other: (-cosine(n["vector"], other["vector"]),
+                                           other["tag"]))
+        vector_rank = next(i+1 for i, other in enumerate(ranked)
+                           if other["tag"] == n["tag"])
         # Relocation is supported by matching stable anchor and verified bytes.
         # This does not imply semantic relation evidence has been revalidated.
         records[n["tag"]] = {
@@ -120,6 +130,8 @@ def run(old_raw, new_raw, history, current):
             "exact_content_match": same,
             "old_position": op, "current_position": np,
             "heading_match": n["heading"] == current_node["heading"],
+            "global_vector_rank": vector_rank,
+            "global_vector_top_hit": ranked[0]["tag"],
             **metrics,
         }
     changed_editorial = []
@@ -151,6 +163,16 @@ def run(old_raw, new_raw, history, current):
         "relocated_changed_sections": sum(not v["exact_content_match"] for v in records.values()),
         "unchanged_editorial": len(recovered_editorial),
         "changed_editorial": len(changed_editorial),
+        "vector_top1_sections": sum(r["global_vector_rank"] == 1
+                                    for r in records.values()),
+        "vector_top5_sections": sum(r["global_vector_rank"] <= 5
+                                    for r in records.values()),
+        "vector_top1_changed_sections": sum(
+            not r["exact_content_match"] and r["global_vector_rank"] == 1
+            for r in records.values()),
+        "vector_top5_changed_sections": sum(
+            not r["exact_content_match"] and r["global_vector_rank"] <= 5
+            for r in records.values()),
         "records": records,
         "relocated_editorial_candidates": changed_editorial,
         "recovered_exact_editorial": recovered_editorial,
@@ -204,6 +226,10 @@ def main():
         "relocated_changed_sections": report["relocated_changed_sections"],
         "unchanged_editorial": report["unchanged_editorial"],
         "changed_editorial": report["changed_editorial"],
+        "vector_top1_sections": report["vector_top1_sections"],
+        "vector_top5_sections": report["vector_top5_sections"],
+        "vector_top1_changed_sections": report["vector_top1_changed_sections"],
+        "vector_top5_changed_sections": report["vector_top5_changed_sections"],
         "candidates": [
             {**{k: e[k] for k in ("source_tag", "target_tag", "relation")},
              "source_jaccard": e["source"]["token_jaccard"],
@@ -212,6 +238,8 @@ def main():
              "target_retained": e["target"]["old_token_retained"],
              "source_cosine": e["source"]["vector_cosine"],
              "target_cosine": e["target"]["vector_cosine"],
+             "source_vector_rank": e["source"]["global_vector_rank"],
+             "target_vector_rank": e["target"]["global_vector_rank"],
              "both_headings_match": e["source"]["heading_match"] and e["target"]["heading_match"]}
             for e in report["relocated_editorial_candidates"]
         ],
