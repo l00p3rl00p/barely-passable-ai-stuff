@@ -133,6 +133,10 @@ The existing Python library's [three-touch regression tests](../../tests/test_en
 
 > Full worked explanation: [Deterministic historical relocation — what, why, how, results, and limits](DETERMINISTIC-HISTORICAL-RELOCATION.md). The reusable program is [relocate-historical-edges.py](relocate-historical-edges.py).
 
+## Reconstruction of enrichment state, not database preservation
+
+**Never be afraid to erase the database.** Treat the graph/index/vector store as a disposable projection of durable original sources **and previously accepted evidence-backed enrichment deltas**. The [human-authorized reconstruction workflow](DETERMINISTIC-RECONSTRUCTION-HUMAN-REVIEW.md) explains how to recover deterministically first, ask the human whether to proceed, and reserve a small LLM review for genuinely unresolved relationships. The original source does not necessarily contain earlier derived discoveries; keep those accepted deltas outside the disposable database, or rebuilding them as previously established knowledge will not be possible.
+
 ## Deterministic relocation of the 22 changed historical editorial links
 
 The initial strict-hash reconstruction activated eight editorial links and marked 22 historical links inactive because at least one endpoint section had changed. **Inactive does not mean unfindable.** The [source-only relocation experiment](relocate-historical-edges.py) resolves the older paper from the exact saved Git blob SHA and verifies its complete SHA-256, then reads the current authoritative paper. For every historical node it checks its original exact byte span/hash and finds the current EKC-anchored section. It measures historical token retention, exact surviving lines, lexical Jaccard, character sequence overlap, and declared lexical-vector cosine. **No LLM and no semantic relationship inference** are involved.
