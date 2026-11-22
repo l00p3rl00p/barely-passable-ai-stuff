@@ -129,3 +129,24 @@ The existing Python library's [three-touch regression tests](../../tests/test_en
 **Yes, this example uses Knowledge Positions:** it reconstructs actual shared source-backed UKC/1 logical records and accesses their location, relation, and proximity values from the same identity. No LLM is required for reconstruction. It also makes both-language results directly comparable and inspectable.
 
 **Not claimed:** a general source-agnostic UKC SDK implementation, native full CommonMark AST capture, active authorization for private content, arbitrary-parser fidelity, or complete UKC certification. This is an EKC-anchored paper adapter, deliberately limited to the structure it actually parses. Other SDF contracts and conformance fixtures remain separate requirements, not hidden capabilities of this example.
+
+
+## Deterministic relocation of the 22 changed historical editorial links
+
+The initial strict-hash reconstruction activated eight editorial links and marked 22 historical links inactive because at least one endpoint section had changed. **Inactive does not mean unfindable.** The [source-only relocation experiment](relocate-historical-edges.py) resolves the older paper from the exact saved Git blob SHA and verifies its complete SHA-256, then reads the current authoritative paper. For every historical node it checks its original exact byte span/hash and finds the current EKC-anchored section. It measures historical token retention, exact surviving lines, lexical Jaccard, character sequence overlap, and declared lexical-vector cosine. **No LLM and no semantic relationship inference** are involved.
+
+In the actual executed public-paper test:
+- All **22 of 22** editorial links with changed endpoint hashes had both endpoints relocated to verified current source spans and identities.
+- All 22 retained their source headings/anchors.
+- **16 of 22** retained at least 80% of old tokens at **both** endpoints; **13 of 22** retained at least 90%.
+- **Six weaker links** all touch **EKC:25**, where the historical-to-current token retention is approximately **40.5%**. This is a specific heavy revision, not a failure to locate the knowledge.
+- The previously recovered eight hash-exact editorial links remain distinct from these 22 **relocated historical candidates**. No historical link was silently promoted from \`navigation only\` to verified semantic fact.
+
+Try the same experiment (requires access to the official public GitHub Git-blob endpoint, or supply a byte-identical historical source with \`--old-paper\`):
+
+\`\`\`sh
+python SDF/examples/relocate-historical-edges.py --assert-paper \
+  --output /tmp/paper-relocation-report.json
+\`\`\`
+
+The report preserves old and new source/target positions, hashes, section IDs, original relation labels and qualification, and measured similarity. It is enough to **navigate the old relationship to its present-day sections** even when hashes differ. It does **not** prove that the relation's editorial meaning is unchanged; the saved relationship evidence does not contain an exact quoted rationale for each edge. This distinction is part of Knowledge Positions' evidence contract, not a need to reconstruct the entire paper with an LLM.
