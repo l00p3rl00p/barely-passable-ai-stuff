@@ -1,6 +1,6 @@
 ---
 name: jitk
-description: Use just-in-time knowledge to answer a task by reusing, locating, exploring, and discovering source-backed information only as needed. Evolve useful knowledge through its positions without depending on a particular storage engine.
+description: Trigger when a task needs knowledge beyond the current context, including recalling prior work, finding previously discovered facts, locating source evidence, tracing relationships, or investigating unfamiliar material. Use just-in-time knowledge with Location, Relation and Proximity; retrieve and evolve only what helps the task. Storage-independent.
 ---
 
 # Just-in-Time Knowledge (JITK)
@@ -12,6 +12,10 @@ Knowledge has three useful positions, all referring to the **same knowledge**:
 - **Location:** Where is it in the original source? File, message, section, AST node, line or byte span.
 - **Relation:** What is actually connected to it? Parent, child, dependency, reference, supported or contradicted claim.
 - **Proximity:** What might be nearby or similar? Names, words, fuzzy matches or compatible vectors. Similarity suggests where to look; it does not prove a fact.
+
+## Trigger
+
+Use this skill **when the task requires finding, recovering, connecting, or verifying knowledge not already sufficient in the current context**—for example, “What was decided?”, “Where did this come from?”, “What relates to this?”, or “What do we already know about this problem?”. A missing fact, uncertain source, or relevant earlier investigation is enough to trigger it. If the answer is already supported in context, continue directly without unnecessary retrieval.
 
 ## Do the smallest useful lookup
 
