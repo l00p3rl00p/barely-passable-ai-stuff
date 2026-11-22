@@ -56,6 +56,14 @@ The install uses the existing [`pyproject.toml`](pyproject.toml). Its declared P
 
 The [complete example](examples/sdk_first_use.py) asserts this output; a failed assertion produces a nonzero exit status. It demonstrates the **existing Python API** only; it does not imply that all UKC/1 conformance tests pass.
 
+Run the standalone smoke check after installation:
+
+```sh
+bash tools/check-sdk.sh
+```
+
+It compiles the existing library and first-use example, then runs the example's assertions. It is a **smoke test**, not UKC/1 certification.
+
 ## Cookbook: choose the result you want
 
 | Goal | Existing recipe / example | Compare with |
