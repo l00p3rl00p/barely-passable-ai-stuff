@@ -37,3 +37,5 @@ Keep the returned context small: ordinarily no more than **five useful items** a
 **Example:** “Where was this bug fixed?” → use the known file position, or find a matching issue → follow its recorded fix relationship → inspect the relevant source lines → return the fix and evidence. If a previously unknown relationship is verified, preserve it through an available authorized operation. Otherwise, simply answer.
 
 This is the complete JITK workflow. It needs no specific database, SDK reading session, extra skill invocation, model, or background service.
+
+**Optional reference only:** The [Knowledge Positions SDK](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/main/knowledge-positions/README.md) provides deeper information on identity, schema design, adapters, algorithms and conformance. Use it only when the task actually requires those details; **never** read it as a prerequisite to ordinary JITK retrieval.
