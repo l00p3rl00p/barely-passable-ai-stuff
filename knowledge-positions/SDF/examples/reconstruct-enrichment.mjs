@@ -177,6 +177,7 @@ const archived = resolve(isQuery ? arg3 || ROOT + '/evolving-knowledge-context.j
 const destination = resolve(isQuery ? arg4 || HERE + '/paper-ukc.json' :
   arg3 || HERE + '/paper-ukc.json');
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  if (destination === source || destination === archived) throw new Error('Output must not overwrite authoritative source or history');
   const bytes = readFileSync(source), history = JSON.parse(readFileSync(archived, 'utf8'));
   if (command === 'build') {
     const output = recover(bytes, history);
