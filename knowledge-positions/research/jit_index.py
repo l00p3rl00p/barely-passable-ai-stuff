@@ -129,6 +129,20 @@ def build():
 def load_verified():
     data = json.loads(INDEX.read_text(encoding="utf-8"))
     raw = PAPER.read_bytes()
+    if data.get("paper_sha256") != sha(raw):
+        raise ValueError("Stale JIT whole-paper hash")
+    sections = parse_sections(raw)
+    if [s["tag"] for s in sections] != [n["tag"] for n in data["nodes"]]:
+        raise ValueError("JIT index does not cover current paper sections in order")
+    for section, node in zip(sections, data["nodes"]):
+        p = node["source_position"]
+        expected = (section["start_byte"], section["end_byte"], section["start_line"], section["end_line"])
+        actual = (p["start_byte"], p["end_byte"], p["start_line"], p["end_line"])
+        if actual != expected:
+            raise ValueError("Stale JIT section coordinates: " + node["tag"])
+    ids = {n["id"] for n in data["nodes"]}
+    if any(e["source"] not in ids or e["target"] not in ids for e in data["edges"]):
+        raise ValueError("JIT edge references missing section identity")
     for node in data["nodes"]:
         p = node["source_position"]
         span = raw[p["start_byte"]:p["end_byte"]]

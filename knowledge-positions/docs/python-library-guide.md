@@ -106,7 +106,7 @@ Design coverage belongs in Architecture, implemented capabilities in Environment
 
 - [GPS experiment](../examples/gps/README.md): cold-context retrieval, with the recorded four-passage investigation.
 - [Incremental Markdown AST + OKF alpha](../research/alpha/README.md): working two-section paper example with stable source identity, annotated paragraphs and delta tests.
-- [Jupyter notebook](../knowledge_positions_demo.ipynb) and [Marimo notebook](../knowledge_positions_demo.py).
+- [Jupyter notebook](../examples/knowledge_positions_demo.ipynb) and [Marimo notebook](../examples/knowledge_positions_demo.py).
 - [Knowledge Asset Evolution v1.6.3](../Knowledge-Asset-Evolution-Spec-v1.6.3.md) and [Knowledge Graph Relationships](../Knowledge_Graph_Relationships_and_Enrichment.md): original design documents.
 
 **Graph rule:** give the intelligence NetworkX, not a prescribed graph-search framework. It chooses graph structure, relationships, algorithms and traversal. Tree-sitter is optional; syntax trees are not a constraint on the knowledge graph.

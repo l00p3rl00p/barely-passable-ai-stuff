@@ -1,8 +1,10 @@
-# Knowledge Positions SDK
+# Knowledge Positions
+
+Two entry points: **[The paper](paper/README.md)** — the existing canonical JITK manuscript and its findings; **[Software Development Framework (SDF)](SDF/README.md)** — the Knowledge Positions method, contracts, generic skill, examples, and practical implementation guidance. The paper and framework are distinct; neither requires a particular language or database.
 
 **One knowledge identity. Many ways to find, traverse, verify and reuse it—without losing the source or starting over.**
 
-Knowledge Positions is an experimental, source-backed knowledge library and a language-neutral SDK contract (UKC/1 candidate). It is for software that needs to preserve and retrieve knowledge from code, documents, conversations, structured data, and other sources **without repeatedly interpreting what the source already says**.
+Knowledge Positions is an experimental, source-backed knowledge library and a language-neutral framework contract (UKC/1 candidate). It is for software that needs to preserve and retrieve knowledge from code, documents, conversations, structured data, and other sources **without repeatedly interpreting what the source already says**.
 
 It is **not** an agent, LLM, database, ingestion service, or required application framework. An application calls the library or plugs existing implementations into the same contract. The application chooses its source readers, storage, search methods, and access policy.
 
@@ -12,9 +14,9 @@ It is **not** an agent, LLM, database, ingestion service, or required applicatio
 
 **Just-in-Time Knowledge (JITK) is the larger research and engineering effort** to make accumulated knowledge available, reusable and able to evolve through work. Direct lookup, AST/tree navigation, graph algorithms, lexical search, vector similarity and database queries already provide different ways to reach knowledge. **Knowledge Positions is the optional, cross-method representation that lets these methods operate on the *same source-backed identity*, with its known values available for the next method to use.** It is not one more search engine alongside those methods. A search result can become a graph traversal, a structural read, a ranking or a source verification without creating a new knowledge object or prescribed conversion chain. Each usable method requires its corresponding recorded values and a compatible mapping to that identity; unavailable values remain unknown.
 
-The Knowledge Positions SDK documents how to implement this shared-identity method. The [JITK skill](skills/knowledge-positions/SKILL.md) helps an agent use available knowledge capabilities with or without Knowledge Positions, and without reading the SDK as a prerequisite. Files, codebase tools, OmniGraph, search engines and other systems provide access and execution, not competing knowledge identities by default.
+The Knowledge Positions framework documents how to implement this shared-identity method. The [JITK skill](skills/knowledge-positions/SKILL.md) helps an agent use available knowledge capabilities with or without Knowledge Positions, and without reading the framework as a prerequisite. Files, codebase tools, OmniGraph, search engines and other systems provide access and execution, not competing knowledge identities by default.
 
-For the research framing and how the paper, method, SDK, skill and storage systems relate, see [§1.2 of the canonical JITK paper](research/paper.md#12-the-larger-endeavor-jitk-knowledge-positions-and-practical-use).
+For the research framing and how the paper, method, framework, skill and storage systems relate, see [§1.2 of the canonical JITK paper](research/paper.md#12-the-larger-endeavor-jitk-knowledge-positions-and-practical-use).
 
 ## What problem does this solve?
 
@@ -22,7 +24,7 @@ Imagine an application has already encountered a source file, a paragraph, and a
 
 **Knowledge Positions keeps a lightweight navigational record—one identity, source/version locator, known positions and native links—rather than copying the source or pre-enriching every conceivable relationship.** Location resolves exact evidence; Relation makes observed or qualified connections traversable; Proximity offers lexical, fuzzy and compatible-vector candidates. These are three addressable aspects of the *same record*, not three methods that must be executed in order. For example, a lexical hit can resolve a record ID, a graph traversal can follow its real edges, a structural reader can inspect its native node, and a query can filter its recorded attributes—all without changing the identity. A method that lacks the required recorded values cannot fabricate them; new verified findings enrich that same identity with provenance.
 
-**Why use this kit rather than build it from scratch?** The existing Python library already supplies source-position records, deterministic repeat admission within its legacy identity scheme, directed relationships, graph traversal/algorithms, deferred vectors, persistence, and lifecycle operations. The SDK contract specifies how independent implementations should preserve identity, native values, provenance, failure states, and portability. Its examples and conformance requirements make results inspectable instead of merely plausible.
+**Why use this reference library rather than build it from scratch?** The existing Python library already supplies source-position records, deterministic repeat admission within its legacy identity scheme, directed relationships, graph traversal/algorithms, deferred vectors, persistence, and lifecycle operations. The framework contract specifies how independent implementations should preserve identity, native values, provenance, failure states, and portability. Its examples and conformance requirements make results inspectable instead of merely plausible.
 
 The contract is language-neutral. **The currently installable implementation here is Python; Rust scanner/ingester source exists in a separate workspace; a complete TypeScript binding is not yet supplied.** Do not mistake the existing Python library's historical record IDs for certified UKC/1 canonical IDs.
 
@@ -87,7 +89,7 @@ The [full example collection](examples/README.md) groups the original inputs, pr
 
 ## Use the API you actually have
 
-The current Python distribution exposes `KnowledgePositions` from [`knowledge_positions.py`](knowledge_positions.py). These are **real existing entry points**, not speculative SDK functions:
+The current Python distribution exposes `KnowledgePositions` from [`knowledge_positions.py`](knowledge_positions.py). These are **real existing entry points**, not speculative framework functions:
 
 | Task | Existing Python API |
 |---|---|
@@ -117,7 +119,7 @@ The [capability map](docs/component-and-capability-map.md) separates implemented
 
 The [UKC/1 contract](unified-knowledge-context.md) defines the common record, canonical IDs, API semantics, supported method families, and import/export requirements. [Conformance](conformance/requirements.md) describes the required behavior for a conforming implementation, including source-fidelity, cross-language comparison, and failure states. A contract specification or successful Python example is **not a claim of full UKC/1 certification**.
 
-## SDK reference, maintenance, and origins
+## Framework reference, maintenance, and origins
 
 - [UKC/1 specification and API reference](unified-knowledge-context.md)
 - [First Law: one identity, one common knowledge record](contracts/first-law.md)

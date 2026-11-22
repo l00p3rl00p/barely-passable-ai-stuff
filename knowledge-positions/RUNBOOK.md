@@ -37,9 +37,9 @@ The first embedding run needs access to the configured model.
 
 ```bash
 python -m pip install jupyterlab marimo
-jupyter lab knowledge_positions_demo.ipynb
+jupyter lab examples/knowledge_positions_demo.ipynb
 # Alternatively:
-marimo edit knowledge_positions_demo.py
+marimo edit examples/knowledge_positions_demo.py
 ```
 
 Run the cells to inspect source positions, vectors, graph persistence and the GPS fixture. The notebooks have not been validated end-to-end with the real model.
@@ -74,7 +74,7 @@ See [Environment](ENVIRONMENT.md) for actual components and [Coverage](COVERAGE.
 ## 6. Verify lifecycle behavior
 
 ```bash
-python -m unittest -v test_lifecycle test_graph_views test_chat_context
+python -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
 The library supports `mark_source_changed(source, new_version)`, `invalidate(node_id, reason)`, `deprecate(node_id, reason, replacement_id=...)`, and explicit `revalidate(node_id, evidence)`. Default search excludes stale and deprecated nodes; `include_historical=True` includes them. Source hashes and review evidence must be supplied by the caller. No automatic monitoring or automatic fact verification is implied.
