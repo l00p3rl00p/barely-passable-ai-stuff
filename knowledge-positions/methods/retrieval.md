@@ -1,5 +1,7 @@
 ## 9. Retrieval and investigative loop
 
+**Answer first; preserve the path forward.** A successful JITK response MUST address the original query with an answer or the best evidence-supported likely answer, explicitly qualifying uncertainty. It also returns enough relevant identity, source location, known relationships or other navigational positions to verify, expand, narrow, rank or continue the investigation. Do not return positions alone when the available evidence supports an answer, and do not load whole sources merely to supply navigational context. If the evidence cannot support even a provisional answer, state that limitation and return the strongest grounded leads rather than inventing one.
+
 An agent may choose any route:
 1. Exact location known → read that original span.
 2. Name/title known → literal search resolves a record ID.
