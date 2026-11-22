@@ -1,126 +1,112 @@
-# Knowledge Positions
+# Knowledge Positions SDK
 
-**Experimental / pre-standard.** A small Python library for just-in-time knowledge navigation: one identity, three positions (source, vector, graph). Keep original evidence accessible and let the intelligence construct and navigate its own graph using NetworkX.
+**Preserve knowledge once. Find it by location, relationship, or similarity. Verify it against the original source.**
 
-## Quick start — capture working conversations
+Knowledge Positions is an experimental, source-backed knowledge library and a language-neutral SDK contract (UKC/1 candidate). It is for software that needs to preserve and retrieve knowledge from code, documents, conversations, structured data, and other sources **without repeatedly interpreting what the source already says**.
 
-Knowledge Positions is a Python library, not a required agent workflow, provider account, repository layout or service. You supply the source access, choose what knowledge matters, and choose where it lives. The library provides source, graph and vector positions and the operations that maintain them.
+It is **not** an agent, LLM, database, ingestion service, or required application framework. An application calls the library or plugs existing implementations into the same contract. The application chooses its source readers, storage, search methods, and access policy.
 
-### 1. Install and create a knowledge store
+![Knowledge Positions: original source, shared record, navigation, and evidence](diagrams/knowledge-loop.svg)
 
-From an existing checkout, or clone the public library:
+## What problem does this solve?
 
-```bash
+Imagine an application has already encountered a source file, a paragraph, and a link to another document. A later question may start with a filename, a nearby concept, or the related document. Without a shared identity and preserved source positions, each route can create a different representation and require a new investigation.
+
+**Knowledge Positions keeps the observations with one source-backed identity.** Location resolves the exact evidence; Relation follows real observed or separately qualified links; Proximity finds candidates by matching existing text or declared comparable vectors. No method must run before another. Unknown information stays unknown.
+
+**Why use this kit rather than build it from scratch?** The existing Python library already supplies source-position records, deterministic repeat admission within its legacy identity scheme, directed relationships, graph traversal/algorithms, deferred vectors, persistence, and lifecycle operations. The SDK contract specifies how independent implementations should preserve identity, native values, provenance, failure states, and portability. Its examples and conformance requirements make results inspectable instead of merely plausible.
+
+The contract is language-neutral. **The currently installable implementation here is Python; Rust scanner/ingester source exists in a separate workspace; a complete TypeScript binding is not yet supplied.** Do not mistake the existing Python library's historical record IDs for certified UKC/1 canonical IDs.
+
+## Install and run your first example
+
+Requirements: Python 3.10+, Git, and access to the public repository. The example uses only the existing library, with embeddings deferred. It does **not** require an LLM, API key, GPU, database server, or source files from anyone else's machine.
+
+```sh
 git clone https://github.com/l00p3rl00p/barely-passable-ai-stuff.git
 cd barely-passable-ai-stuff/knowledge-positions
 python -m pip install .
-# Choose any writable data directory. No external project checkout is required.
-HOME_DIR="$HOME/my-conversation-knowledge"
-test -f "$HOME_DIR/graph.json" || python capture.py --home "$HOME_DIR" init
-python capture.py --home "$HOME_DIR" verify
+python examples/sdk_first_use.py
 ```
 
-### 2. Capture Core
+The install uses the existing [`pyproject.toml`](pyproject.toml). Its declared Python dependencies are `networkx`, `numpy`, and `sentence-transformers`; **this particular example does not load or download an embedding model**.
 
-Every knowledge item has one identity and three positional slots:
+### What the example does
 
-| Slot | Meaning |
-|---|---|
-| Location | Source identity, version and exact span when available |
-| Relation | Graph identity and qualified connections |
-| Proximity | Vector in a declared compatible space, or null/unknown |
+1. Records two passages with exact UTF-8 byte ranges and the original source SHA-256.
+2. Re-admits the first passage and checks that its identity stays the same.
+3. Records an observed `next_passage` relationship and reads it through the graph.
+4. Verifies the next passage against the original bytes.
+5. Saves and reloads the existing graph without changing the identities.
 
-The twelve minimum relationships are `is_a`, `instance_of`, `part_of`, `has_property`, `used_for`, `located_in`, `manufactured_by`, `works_for`, `competitor_of`, `requires`, `causes`, `related_to`. See [Core Vocabulary](CORE_VOCABULARY.md) for their ordinary meanings, graph structures and vector operations. Additional relationships are enrichment.
-
-Your application or intelligence chooses accessible conversations and useful discoveries. Prepare a reviewed record from actual evidence; record unresolved source identifiers as leads, not invented coordinates. A note's exact saved span is not automatically an original-chat span. The CLI uses deterministic lexical-hash-512 vectors, not semantic embeddings; use the Python API with an actual compatible encoder for semantic embeddings.
-
-### 3. Run the library
-
-Write a reviewed JSON record to a file outside the store. The following is a schema illustration, not evidence to ingest:
+**Expected output (JSON):**
 
 ```json
 {
-  "key": "stable-discovery-key",
-  "title": "Actual source title",
-  "provider": "actual-provider",
-  "source_type": "conversation",
-  "status": "locator_only",
-  "claim": "A concise discovery from accessible evidence",
-  "qualification": "What is established and what is unresolved",
-  "query": "Distinctive terms for finding the original"
+  "same_identity": true,
+  "nodes": 2,
+  "edges": 1,
+  "first_text": "Alpha is a paragraph.",
+  "next_text": "Beta follows Alpha.",
+  "vector_status": "unknown",
+  "source_verified": true,
+  "reloaded": true
 }
 ```
 
-Replace placeholders with your own evidence before running the commands. Required fields: key, title, provider, source_type, status, claim, qualification. Optional fields: date, url, conversation_id, message_id, source_version, source_position, query, source_key. Do not include secrets, raw private transcripts or sensitive personal data.
+The [complete example](examples/sdk_first_use.py) asserts this output; a failed assertion produces a nonzero exit status. It demonstrates the **existing Python API** only; it does not imply that all UKC/1 conformance tests pass.
 
-```bash
-NOTE=/path/to/your-reviewed-record.json
-NODE_ID=$(python capture.py --home "$HOME_DIR" remember "$NOTE" --reviewed)
-python capture.py --home "$HOME_DIR" read "$NODE_ID"
-python capture.py --home "$HOME_DIR" verify
-python capture.py --home "$HOME_DIR" search "your topic"
-python capture.py --home "$HOME_DIR" context "$NODE_ID"
-```
+## Cookbook: choose the result you want
 
-When a second actual record exists, link the two returned IDs with a supported relationship and qualification:
+| Goal | Existing recipe / example | Compare with |
+|---|---|---|
+| Build, search, traverse, and read exact evidence | [GPS end-to-end walkthrough](examples/gps/README.md) | [Recorded GPS evidence](research/EXPERIMENT.md) |
+| Preserve Python source structure and imports | [Code example](examples/source-mappings.md#a-code--actual-parser-shape-not-invented-software-semantics) | [Native parser observations](readers/native-parser-fidelity.md) |
+| Read links from HTML, Markdown, or a book | [Seven source-mapping examples](examples/source-mappings.md) | [Recorded characterization](conformance/characterization.md) |
+| Preserve CSV values without inventing numeric types | [CSV shoe-size example](examples/source-mappings.md) | [Native-to-common field mapping](readers/native-to-common.md) |
+| Make opaque files discoverable without interpreting their contents | [Binary example](examples/source-mappings.md) | [Algorithm crosswalk](methods/algorithm-crosswalk.md) |
+| Check whether another implementation is equivalent | [UKC/1 conformance requirements](conformance/requirements.md) | [Contract and certification conditions](contracts/public-operations.md) |
 
-```bash
-python capture.py --home "$HOME_DIR" link "$NODE_ID" \
-  --target "$TARGET_ID" --relation requires \
-  --reason "Explain the observed prerequisite" --reviewed
-python capture.py --home "$HOME_DIR" verify
-```
+The [full example collection](examples/README.md) groups the original inputs, preserved values, and observed outputs. Some historical characterization runners are not checked into `main`; those pages state this limitation instead of claiming they are runnable.
 
-The capture procedure computes hashes, identity and lexical vectors (or use `--defer-embedding`), saves and verifies records. Context retrieval defaults to Personalized PageRank attenuation with a `conservative`, `balanced`, or `aggressive` profile and an `other` boundary; explicit ego radius is available when requested. Full graph analysis is unrestricted: ten named views are available, and additional structures can be calculated. Source-version changes use `mark_source_changed` to cascade staleness; direct graph edits require cache invalidation. Use one writer at a time.
+## Use the API you actually have
 
-### 4. Choose how to use it
+The current Python distribution exposes `KnowledgePositions` from [`knowledge_positions.py`](knowledge_positions.py). These are **real existing entry points**, not speculative SDK functions:
 
-Use the Python API, [Runbook](RUNBOOK.md), [agent.md](agent.md), or the executable [capture procedure](capture.py). The caller decides source selection, capture cadence, storage location, retention and Git policy. Those choices are application instructions, not library requirements. The library does not open provider chat history or automatically decide what a conversation means.
-
-For a concrete public demonstration, see the [GPS experiment](examples/gps/README.md) and [research manuscript](research/paper.md). The manuscript also describes a separate live-use case study; it is an example of using the library, not a prerequisite.
-
-## Intra-item positions (optional, reusable across formats)
-
-`ingest_python(path)` now records the actual syntax-node hierarchy, parent path, sibling order and source version alongside existing source spans. For another source, call `k.record_item_position` with either a verified structure `path` **or** ordinary `coordinates` such as line/byte ranges or native anchors. A reader uses `basis='reader', precision='parsed'`; an LLM-provided location uses `basis='observation'` and remains provisional. The library chooses a canonical method in [priority order](LOCATION_ACCESS.md#shared-location-method-selection-source-agnostic); a novel method must be registered as provisional and is serialized for future graph readers. No AST parser is required for other source types, and no LLM is responsible for maintaining paths. The library changes neither stable node IDs nor vectors when adding missing structural metadata.
-
-`k.positioned_embedding_input(node_id, original_text)` verifies the original text hash and returns structural context plus text for an **optional** positional embedding policy. It does not silently re-embed anything; callers label and test that policy separately. No universal file-read watcher or automatic host hook is installed. See [architecture](ARCHITECTURE.md#structural-position-within-an-item).
-
-## What to read
-
-| Document | Purpose |
+| Task | Existing Python API |
 |---|---|
-| [README](README.md) | Introduction and quick getting started. |
-| [MISSION](MISSION.md) | Vision and objectives: what we are trying to achieve. |
-| [ARCHITECTURE](ARCHITECTURE.md) | High-level design that addresses the mission. |
-| [ENVIRONMENT](ENVIRONMENT.md) | Actual technical environment and implemented capabilities. |
-| [Implementation](knowledge_positions.py) | The actual code and executable artifacts. |
-| [RUNBOOK](RUNBOOK.md) | Human-facing installation, operation, usage and experimentation. |
-| [BACKLOG](BACKLOG.md) | Work remaining between what exists and what we intend to achieve. |
-| [ROADMAP](ROADMAP.md) | Technical means and direction for achieving the mission. |
+| Admit a source-backed passage | `add(source, text, version=..., position=..., defer_embedding=True)` |
+| Read recorded items | `graph.nodes[id]` |
+| Record and navigate observed relationships | `link(...)`, `neighbors(id)`, `graph_view(...)` |
+| Select graph algorithms | `core_algorithms(...)`, `derive_graph(...)` |
+| Find candidates | `search(text)`; vector computation when an encoder is supplied |
+| Refine within-source position | `record_item_position(...)` |
+| Preserve and reload a graph | `save(path)`, `KnowledgePositions.load(path)` |
+| Manage changed sources and knowledge history | `mark_source_changed(...)`, `invalidate(...)`, `deprecate(...)` |
 
-[Attribution](ATTRIBUTION.md) · [Contributing](CONTRIBUTING.md)
+Use [the complete existing Python library guide](docs/python-library-guide.md) for capture workflows and graph behavior. The current library raises standard Python exceptions such as `ValueError` and `KeyError` for invalid inputs; it does **not** yet implement every typed failure defined by the candidate [UKC/1 contract](contracts/public-operations.md).
 
-Design coverage belongs in Architecture, implemented capabilities in Environment, experimental evidence with experiments, remaining work in Backlog, and planned technical solutions in Roadmap.
+### Language and integration boundaries
 
-## Examples and design references
+- [Python](languages/python/README.md) — the installable existing API and its compatibility limitations.
+- [Rust](languages/rust/README.md) — existing native scanner and ingester source; not a falsely advertised Rust UKC library.
+- [TypeScript](languages/typescript/README.md) — contract entry point, not an installable binding yet.
+- [Adapters](adapters/README.md) — existing OmniGraph integration and optional agent host profiles.
 
-- [GPS experiment](examples/gps/README.md): cold-context retrieval, with the recorded four-passage investigation.
-- [Incremental Markdown AST + OKF alpha](research/alpha/README.md): working two-section paper example with stable source identity, annotated paragraphs and delta tests.
-- [Jupyter notebook](knowledge_positions_demo.ipynb) and [Marimo notebook](knowledge_positions_demo.py).
-- [Knowledge Asset Evolution v1.6.3](Knowledge-Asset-Evolution-Spec-v1.6.3.md) and [Knowledge Graph Relationships](Knowledge_Graph_Relationships_and_Enrichment.md): original design documents.
+The [capability map](docs/component-and-capability-map.md) separates implemented functions, adapters, specification requirements, and unverified gaps.
 
-**Graph rule:** give the intelligence NetworkX, not a prescribed graph-search framework. It chooses graph structure, relationships, algorithms and traversal. Tree-sitter is optional; syntax trees are not a constraint on the knowledge graph.
+## How to know your result is correct
 
-**Scope:** JSON persistence, in-memory graph, source spans, embeddings (including unknown/deferred vector slots) and qualified links. Ten named native graph views and ten core algorithms are available; agents can calculate additional named structures using NetworkX or `derive_graph`. The GPS trial used lexical hashed vectors; real semantic-model execution and notebook end-to-end validation remain pending. Explicit cascading staleness and deprecation are implemented and mechanically tested; automatic source monitoring, enrichment and large-corpus validation remain pending. See Environment, Backlog and the experiment documentation for precise boundaries.
+**A valid result has an identity, a source/version, the original value and location when known, honest observed/qualified relationships, and explicit unavailable values.** Similarity alone is a lead, never proof of a relationship. Exact source resolution must reject changed bytes or inaccessible sources rather than silently substitute another source.
 
-[Core knowledge vocabulary](CORE_VOCABULARY.md) — twelve minimum named-reference relationships, graph structures/algorithms and vector operations. [Precise locations, access realms, ownership and optional LadybugDB architecture](LOCATION_ACCESS.md). [Executable core operations](core_operations.py).
+The [UKC/1 contract](unified-knowledge-context.md) defines the common record, canonical IDs, API semantics, supported method families, and import/export requirements. [Conformance](conformance/requirements.md) describes the required behavior for a conforming implementation, including source-fidelity, cross-language comparison, and failure states. A contract specification or successful Python example is **not a claim of full UKC/1 certification**.
 
-## The idea in one picture
+## SDK reference, maintenance, and origins
 
-![Working conversational knowledge](diagrams/knowledge-loop.svg)
+- [UKC/1 specification and API reference](unified-knowledge-context.md)
+- [First Law: one identity, one common knowledge record](contracts/first-law.md)
+- [Canonical identity](core/identity.md), [source adapters](readers/source-adapters.md), [data interchange](contracts/common-record.md)
+- [Contributing](CONTRIBUTING.md), [coverage and limitations](COVERAGE.md), [existing research](research/paper.md)
+- [Original Python project guide](docs/python-library-guide.md)
 
-We started trying to save tokens. The bigger opportunity is to stop repeatedly paying to learn the same thing. This application indexes working conversations, not all human knowledge. First pass is Core; retrieve a graph-theoretically bounded working set and keep immediate excluded neighbors as boundary references in `other`. The default dial is balanced PPR attenuation, not a magic hop count. The ten named graph views remain available for full analysis, and agents can calculate more.
-
-**We did not invent cascading invalidation.** We learned the dependency-staleness mechanism from [Garyu-tt/noosphere-lite-mcp](https://github.com/Garyu-tt/noosphere-lite-mcp). In our engineering judgment, the library supplies roughly 95% of the mechanisms needed for JIT memory; the remaining work is architecture, integration and execution. This is a design assessment, not a measured percentage or token-saving result. [LadybugDB](https://docs.ladybugdb.com/) is a prospective embedded graph store; [SQLite](https://www.sqlite.org/) supplies the FTS5 example. Neither is required for the core in-memory library.
-
-[Architecture: four views](ARCHITECTURE.md) · [Agent reminder](agent.md) · [Runbook](RUNBOOK.md)
+**Status:** Experimental Python library (`0.1.0` in `pyproject.toml`) and UKC/1 candidate specification. The original sources and accepted discoveries are authoritative; graph and search indexes are reconstructable projections. Other implementations may use any suitable language, parser, or database as long as they meet and demonstrate the shared contract.
