@@ -24,7 +24,7 @@ Knowledge has three useful positions, all referring to the **same knowledge**:
 
 ## Choose the method that exists
 
-Use the tools actually available in the environment: source read, AST/tree navigation, graph neighbors, text search, vector search, or another supported method. Choose by the question and known position, not by a preferred database. One method may be enough; combine methods only when useful. Respect the tool's permissions, syntax and failures. If access or a method is missing, say so rather than making up knowledge.
+Use the tools actually available in the environment: source read, AST/tree navigation, graph neighbors, text search, vector search, or another supported method. Use any available method or combination of methods that helps investigate, connect, verify, or evolve knowledge. Move freely among Location, Relation, and Proximity, revisit earlier positions, and follow promising leads as they emerge. A single method, several methods, or a different route are all valid; the question and evidence guide the exploration. Respect the tool's permissions, syntax and failures. If access or a method is missing, say so rather than making up knowledge.
 
 A source position is not automatically permission to read it. A similarity result is not an established relationship. Keep the original source, identity, position and provenance attached to any finding; preserve uncertainty.
 
