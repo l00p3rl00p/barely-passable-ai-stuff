@@ -4,6 +4,9 @@
 
 **ONE KNOWLEDGE IDENTITY. THREE POSITIONS: LOCATION · RELATION · PROXIMITY.**
 
+**Why this matters:** Existing direct, structural/AST, graph, lexical, vector and query methods can all operate on the *same source-backed knowledge identity* through its available recorded values. The value is **continuous, interchangeable investigation across methods**, not three separate indexes, mandatory steps or competing knowledge objects. A result located through one method can be traversed, filtered, ranked, verified or enriched through another without rebuilding it; each method still requires actual supporting values and an available adapter. This is the Knowledge Positions contribution to the broader, optional-method [Just-in-Time Knowledge effort](research/paper.md#12-the-larger-endeavor-jitk-knowledge-positions-and-practical-use). JITK itself does not require Knowledge Positions.
+
+
 ![Knowledge Positions: source-backed knowledge navigation](diagrams/knowledge-loop.svg)
 
 **Normative contract:** UKC/1 candidate. **Target:** any execution language. **Authority:** the linked core contract sections below, interpreted with the existing JITK paper, two companion specifications and original executable experiments. The index is navigation, not the whole SDK specification.
