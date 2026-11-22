@@ -21,9 +21,9 @@ Obtain or retain the **entire official OmniGraph skill directory**, including it
 
 From a checkout of this repository:
 
-\`\`\`bash
+```bash
 bash knowledge-positions/skills/knowledge-positions/append-to-skill.sh /path/to/omnigraph/SKILL.md --quatrus
-\`\`\`
+```
 
 The helper is shipped inside the [generic Knowledge Positions skill package](../../../../skills/knowledge-positions/README.md). It changes the destination only by **appending text at EOF**. It refuses a nonexistent target or a non-OmniGraph target for `--quatrus`. It detects the section markers and skips already-added appendices, making repeat application idempotent. It neither launches the CLI nor starts an ingestion operation.
 
