@@ -1,0 +1,24 @@
+sections:
+  EKC:27:
+    tags: [bootstrap, core, human-intent]
+    summary: Explains the minimum source-backed starting procedure and separates library mechanics from the human's working instructions.
+    relationships: []
+    paragraphs:
+      - quote: The library and the instructions for using it are different things.
+        tags: [library-boundary, human-intent]
+        summary: The human chooses the goal and access; the library implements the mechanics.
+  EKC:28:
+    tags: [runtime-hooks, durable-capture, optional-tool-bypass]
+    summary: Records that the agent bypassed optional persistence and proposes capturing source events at the host execution boundary.
+    relationships:
+      - type: related_to
+        target: EKC:27
+        evidence: The operational capture boundary elaborates the separate runtime responsibilities described in Section 14.
+    paragraphs:
+      - quote: Instructions describe desired behavior; they do not necessarily make it part of execution.
+        tags: [enforcement, prompt-limitations]
+        summary: Documentation cannot alone guarantee the capture path will run.
+        relationships:
+          - type: related_to
+            target: EKC:27
+            evidence: The paragraph contrasts optional instructions with the persistent starting procedure.

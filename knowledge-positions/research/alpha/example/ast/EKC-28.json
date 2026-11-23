@@ -1,0 +1,320 @@
+{
+  "type": "MarkdownSection",
+  "tag": "EKC:28",
+  "start_byte": 783,
+  "end_byte": 2248,
+  "children": [
+    {
+      "id": "paper.md#EKC:28/ast/heading_open/726327cf7eba7efdcd35/1",
+      "type": "heading_open",
+      "tag": "h2",
+      "nesting": 1,
+      "markup": "##",
+      "position": {
+        "start_byte": 783,
+        "end_byte": 869,
+        "unit": "utf8_byte",
+        "status": "exact_lines"
+      },
+      "content_hash": "726327cf7eba7efdcd35ab5430cbf819f32415bbbb2119c3bea3634bf374fe98",
+      "attrs": {},
+      "children": [
+        {
+          "id": "paper.md#EKC:28/ast/inline/726327cf7eba7efdcd35/1",
+          "type": "inline",
+          "tag": "",
+          "nesting": 0,
+          "markup": "",
+          "position": {
+            "start_byte": 783,
+            "end_byte": 869,
+            "unit": "utf8_byte",
+            "status": "exact_lines"
+          },
+          "content_hash": "726327cf7eba7efdcd35ab5430cbf819f32415bbbb2119c3bea3634bf374fe98",
+          "attrs": {},
+          "children": [
+            {
+              "id": "paper.md#EKC:28/ast/text/eb76f8ca23c5fb7eb7f3/1",
+              "type": "text",
+              "tag": "",
+              "nesting": 0,
+              "markup": "",
+              "position": null,
+              "content_hash": "eb76f8ca23c5fb7eb7f33064d4039d4c3bf40e7c8a5ec79467f091ac11473c5c",
+              "attrs": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "paper.md#EKC:28/ast/paragraph_open/bdbac2d7b72096641496/1",
+      "type": "paragraph_open",
+      "tag": "p",
+      "nesting": 1,
+      "markup": "",
+      "position": {
+        "start_byte": 870,
+        "end_byte": 1345,
+        "unit": "utf8_byte",
+        "status": "exact_lines"
+      },
+      "content_hash": "bdbac2d7b72096641496b7f8e6c974bfb1a5876b0f5190e4c3b192de011689fa",
+      "attrs": {},
+      "children": [
+        {
+          "id": "paper.md#EKC:28/ast/inline/bdbac2d7b72096641496/1",
+          "type": "inline",
+          "tag": "",
+          "nesting": 0,
+          "markup": "",
+          "position": {
+            "start_byte": 870,
+            "end_byte": 1345,
+            "unit": "utf8_byte",
+            "status": "exact_lines"
+          },
+          "content_hash": "bdbac2d7b72096641496b7f8e6c974bfb1a5876b0f5190e4c3b192de011689fa",
+          "attrs": {},
+          "children": [
+            {
+              "id": "paper.md#EKC:28/ast/text/2cdd6055d1fc152c998d/1",
+              "type": "text",
+              "tag": "",
+              "nesting": 0,
+              "markup": "",
+              "position": null,
+              "content_hash": "2cdd6055d1fc152c998df35502ecf6c8188212bc3a02ba36c4f6e627d592a727",
+              "attrs": {},
+              "children": []
+            },
+            {
+              "id": "paper.md#EKC:28/ast/strong_open/ab0d0a0a695b4ef0719a/1",
+              "type": "strong_open",
+              "tag": "strong",
+              "nesting": 1,
+              "markup": "**",
+              "position": null,
+              "content_hash": "ab0d0a0a695b4ef0719a7efc677a86337d450c4fe638c88b19739714183e7b73",
+              "attrs": {},
+              "children": []
+            },
+            {
+              "id": "paper.md#EKC:28/ast/text/a1e7111a86036a448416/1",
+              "type": "text",
+              "tag": "",
+              "nesting": 0,
+              "markup": "",
+              "position": null,
+              "content_hash": "a1e7111a86036a448416cc32607342374da70ca4201467e76807886c954361a9",
+              "attrs": {},
+              "children": []
+            },
+            {
+              "id": "paper.md#EKC:28/ast/strong_close/bac2317767403e330b56/1",
+              "type": "strong_close",
+              "tag": "strong",
+              "nesting": -1,
+              "markup": "**",
+              "position": null,
+              "content_hash": "bac2317767403e330b5643789ea9ca8a93c485ea4c6790526b374b65de40f84f",
+              "attrs": {},
+              "children": []
+            },
+            {
+              "id": "paper.md#EKC:28/ast/text/5270548fb0f884fd4c43/1",
+              "type": "text",
+              "tag": "",
+              "nesting": 0,
+              "markup": "",
+              "position": null,
+              "content_hash": "5270548fb0f884fd4c43c0562136e54c819783e32ceebc186d1343b7f8af7ea5",
+              "attrs": {},
+              "children": []
+            },
+            {
+              "id": "paper.md#EKC:28/ast/strong_open/ab0d0a0a695b4ef0719a/2",
+              "type": "strong_open",
+              "tag": "strong",
+              "nesting": 1,
+              "markup": "**",
+              "position": null,
+              "content_hash": "ab0d0a0a695b4ef0719a7efc677a86337d450c4fe638c88b19739714183e7b73",
+              "attrs": {},
+              "children": []
+            },
+            {
+              "id": "paper.md#EKC:28/ast/text/c7e540cf10c87746d9ff/1",
+              "type": "text",
+              "tag": "",
+              "nesting": 0,
+              "markup": "",
+              "position": null,
+              "content_hash": "c7e540cf10c87746d9ffac740da0627b43224fc7ee210fc6142cb59b52fd942a",
+              "attrs": {},
+              "children": []
+            },
+            {
+              "id": "paper.md#EKC:28/ast/strong_close/bac2317767403e330b56/2",
+              "type": "strong_close",
+              "tag": "strong",
+              "nesting": -1,
+              "markup": "**",
+              "position": null,
+              "content_hash": "bac2317767403e330b5643789ea9ca8a93c485ea4c6790526b374b65de40f84f",
+              "attrs": {},
+              "children": []
+            },
+            {
+              "id": "paper.md#EKC:28/ast/text/1e96f0a9f4caf0e8d94a/1",
+              "type": "text",
+              "tag": "",
+              "nesting": 0,
+              "markup": "",
+              "position": null,
+              "content_hash": "1e96f0a9f4caf0e8d94a78caa6ba0c56accaa7646f8dd4e728b7f1c72dcc8bb8",
+              "attrs": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "paper.md#EKC:28/ast/paragraph_open/19285d1e331cea577687/1",
+      "type": "paragraph_open",
+      "tag": "p",
+      "nesting": 1,
+      "markup": "",
+      "position": {
+        "start_byte": 1346,
+        "end_byte": 1662,
+        "unit": "utf8_byte",
+        "status": "exact_lines"
+      },
+      "content_hash": "19285d1e331cea5776879337cd0e579df8ba3b7049c07ce44ab829ef21a27e22",
+      "attrs": {},
+      "children": [
+        {
+          "id": "paper.md#EKC:28/ast/inline/19285d1e331cea577687/1",
+          "type": "inline",
+          "tag": "",
+          "nesting": 0,
+          "markup": "",
+          "position": {
+            "start_byte": 1346,
+            "end_byte": 1662,
+            "unit": "utf8_byte",
+            "status": "exact_lines"
+          },
+          "content_hash": "19285d1e331cea5776879337cd0e579df8ba3b7049c07ce44ab829ef21a27e22",
+          "attrs": {},
+          "children": [
+            {
+              "id": "paper.md#EKC:28/ast/text/052b60614cea0273974b/1",
+              "type": "text",
+              "tag": "",
+              "nesting": 0,
+              "markup": "",
+              "position": null,
+              "content_hash": "052b60614cea0273974b4a29db602f5ef2afaf3888e22bc914b8c2fc41808f04",
+              "attrs": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "paper.md#EKC:28/ast/paragraph_open/e038fcde13f5da206c6e/1",
+      "type": "paragraph_open",
+      "tag": "p",
+      "nesting": 1,
+      "markup": "",
+      "position": {
+        "start_byte": 1663,
+        "end_byte": 2248,
+        "unit": "utf8_byte",
+        "status": "exact_lines"
+      },
+      "content_hash": "e038fcde13f5da206c6e20b3cbffaf087d75bee48d0e9e4ff81bdf91c04bb32e",
+      "attrs": {},
+      "children": [
+        {
+          "id": "paper.md#EKC:28/ast/inline/e038fcde13f5da206c6e/1",
+          "type": "inline",
+          "tag": "",
+          "nesting": 0,
+          "markup": "",
+          "position": {
+            "start_byte": 1663,
+            "end_byte": 2248,
+            "unit": "utf8_byte",
+            "status": "exact_lines"
+          },
+          "content_hash": "e038fcde13f5da206c6e20b3cbffaf087d75bee48d0e9e4ff81bdf91c04bb32e",
+          "attrs": {},
+          "children": [
+            {
+              "id": "paper.md#EKC:28/ast/text/6dd226d5c6936d6e7d9b/1",
+              "type": "text",
+              "tag": "",
+              "nesting": 0,
+              "markup": "",
+              "position": null,
+              "content_hash": "6dd226d5c6936d6e7d9b9051f85510d44c5be0439e0a4c4aef2593c3ce564d2d",
+              "attrs": {},
+              "children": []
+            },
+            {
+              "id": "paper.md#EKC:28/ast/strong_open/ab0d0a0a695b4ef0719a/3",
+              "type": "strong_open",
+              "tag": "strong",
+              "nesting": 1,
+              "markup": "**",
+              "position": null,
+              "content_hash": "ab0d0a0a695b4ef0719a7efc677a86337d450c4fe638c88b19739714183e7b73",
+              "attrs": {},
+              "children": []
+            },
+            {
+              "id": "paper.md#EKC:28/ast/text/109282e204ea2d2da910/1",
+              "type": "text",
+              "tag": "",
+              "nesting": 0,
+              "markup": "",
+              "position": null,
+              "content_hash": "109282e204ea2d2da9101f7982260e13791a4f5fb4e6b2a5d9883e1018c599d8",
+              "attrs": {},
+              "children": []
+            },
+            {
+              "id": "paper.md#EKC:28/ast/strong_close/bac2317767403e330b56/3",
+              "type": "strong_close",
+              "tag": "strong",
+              "nesting": -1,
+              "markup": "**",
+              "position": null,
+              "content_hash": "bac2317767403e330b5643789ea9ca8a93c485ea4c6790526b374b65de40f84f",
+              "attrs": {},
+              "children": []
+            },
+            {
+              "id": "paper.md#EKC:28/ast/text/15a2977bf369854dd46d/1",
+              "type": "text",
+              "tag": "",
+              "nesting": 0,
+              "markup": "",
+              "position": null,
+              "content_hash": "15a2977bf369854dd46d06f4a03a655c55510d98ec7e0f069bb8079d3dff5ea7",
+              "attrs": {},
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

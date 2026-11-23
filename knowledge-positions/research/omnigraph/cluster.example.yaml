@@ -1,0 +1,19 @@
+version: 1
+metadata:
+  name: knowledge-positions
+state:
+  backend: cluster
+  lock: true
+graphs:
+  knowledge:
+    schema: schema.pg
+    queries: queries/
+
+# Knowledge-only example. No embedding provider.
+policies:
+  graph-access:
+    file: graph.policy.yaml
+    applies_to: [knowledge]
+  server-access:
+    file: server.policy.yaml
+    applies_to: [cluster]

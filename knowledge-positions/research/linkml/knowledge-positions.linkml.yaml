@@ -1,0 +1,440 @@
+# Knowledge Positions Architecture → LinkML implementation.
+# Native schema fields retained; indexes are projection choices.
+id: "https://github.com/l00p3rl00p/barely-passable-ai-stuff/knowledge-positions"
+name: "knowledge_positions"
+description: "Knowledge Positions Architecture expressed in LinkML: one identity, independent positions, qualified relationships, enrichment and lifecycle. Indexing is an implementation choice."
+prefixes:
+  linkml: "https://w3id.org/linkml/"
+  kp: "https://github.com/l00p3rl00p/barely-passable-ai-stuff/knowledge-positions/"
+default_prefix: "kp"
+default_range: "string"
+imports:
+  - "linkml:types"
+classes:
+  KnowledgeItem:
+    attributes:
+      id:
+        range: "string"
+        required: true
+        identifier: true
+        description: "Stable knowledge identity. Unchanged spans retain identity when other parts of the source change."
+        annotations:
+          role: "core_position"
+      kind:
+        range: "string"
+        required: true
+        description: "Structural unit kind from the reader, e.g. file, heading_section, knowledge_note, or a Python AST node type. Open vocabulary."
+        annotations:
+          role: "core_position"
+      entity_type:
+        range: "string"
+        description: "What the item is about when that differs from kind (library defaults it to kind)."
+        annotations:
+          role: "additional_knowledge"
+      domain:
+        range: "string"
+        description: "Explicit subject/work domain; not a permission boundary."
+        annotations:
+          role: "additional_knowledge"
+          native_projection_index: "optional"
+      heading:
+        range: "string"
+        description: "Heading or title when the source unit has one. Derived, full-text indexed."
+        annotations:
+          role: "additional_knowledge"
+          native_projection_index: "optional"
+      terms:
+        range: "string"
+        description: "Deterministically extracted lexical terms for full-text discovery. Derived; not the source text and not a privacy boundary."
+        annotations:
+          role: "additional_knowledge"
+          native_projection_index: "optional"
+      owner_namespace:
+        range: "string"
+        description: "Owner / authority namespace of the source. Records where authority lies; it is NOT access control."
+        annotations:
+          role: "additional_knowledge"
+      source_id:
+        range: "string"
+        required: true
+        description: "Stable source identifier (library `source`)."
+        annotations:
+          role: "core_position"
+          native_projection_index: "optional"
+      source_address:
+        range: "string"
+        description: "Resolvable address or opaque locator u (path, URL, message locator)."
+        annotations:
+          role: "core_position"
+      source_repo:
+        range: "string"
+        description: "Repository coordinate, for repository sources."
+        annotations:
+          role: "additional_knowledge"
+      source_commit:
+        range: "string"
+        description: "Repository commit the source was observed at, for repository sources."
+        annotations:
+          role: "additional_knowledge"
+      source_path:
+        range: "string"
+        description: "Path inside the repository or source root, for file sources."
+        annotations:
+          role: "additional_knowledge"
+          native_projection_index: "optional"
+      source_version_sha256:
+        range: "string"
+        description: "h: digest of the observed source version's bytes. Null only for a locator_only lead."
+        annotations:
+          role: "core_position"
+      observed_source_version:
+        range: "string"
+        description: "Newer verified source version reported by a watcher. Differs from source_version_sha256 when the item is out of date."
+        annotations:
+          role: "lifecycle"
+      source_precision:
+        range: "KnowledgeItem_source_precision_enum"
+        required: true
+        description: "verified: the version and span were read from the original. locator_only: an unverified lead (heading, search hit, model clue); its span fields stay null."
+        annotations:
+          role: "core_position"
+      position_unit:
+        range: "string"
+        description: "Unit of the span coordinates, e.g. utf8_byte, python_utf8_columns, page_region, time_window, message."
+        annotations:
+          role: "core_position"
+      start_byte:
+        range: "integer"
+        description: "Version-scoped UTF-8 start byte of the span."
+        annotations:
+          role: "core_position"
+          native_integer_width: "64"
+      end_byte:
+        range: "integer"
+        description: "Version-scoped UTF-8 end byte of the span."
+        annotations:
+          role: "core_position"
+          native_integer_width: "64"
+      start_line:
+        range: "integer"
+        description: "1-based start line of the span."
+        annotations:
+          role: "core_position"
+          native_integer_width: "64"
+      end_line:
+        range: "integer"
+        description: "1-based end line of the span."
+        annotations:
+          role: "core_position"
+          native_integer_width: "64"
+      position_coordinates:
+        range: "string"
+        description: "JSON flat map of other adapter-native coordinates (column offsets, page/region, message id, time window, event offset). Not a repeat of the typed span fields."
+        annotations:
+          role: "core_position"
+      span_sha256:
+        range: "string"
+        description: "Digest of the exact span text (library content_hash)."
+        annotations:
+          role: "core_position"
+      ownership:
+        range: "KnowledgeItem_ownership_enum"
+        description: "Optional: which ownership region of the source the span lies in, when the source declares one. Location and traceability do not depend on it."
+        annotations:
+          role: "additional_knowledge"
+      realm:
+        range: "KnowledgeItem_realm_enum"
+        description: "Possible-access realm. A hint, never a credential, permission or proof of current access."
+        annotations:
+          role: "additional_knowledge"
+      possible_routes:
+        range: "string"
+        description: "JSON list of {environment, via} route hints. Actual discover/read/write access is checked by the current environment and is never stored here."
+        annotations:
+          role: "additional_knowledge"
+      within_path:
+        range: "string"
+        multivalued: true
+        description: "Ordered structural path inside the source. Parent path and depth are derived from it."
+        annotations:
+          role: "core_position"
+      sibling_index:
+        range: "integer"
+        description: "Order among siblings under the same parent, when the reader supplies it."
+        annotations:
+          role: "core_position"
+          native_integer_width: "32"
+      location_coordinates:
+        range: "string"
+        description: "JSON flat map of complementary within-item coordinates (library item_location.coordinates)."
+        annotations:
+          role: "core_position"
+      location_method:
+        range: "string"
+        description: "native_structure | stable_anchor | source_span | observed_locator, or a registered LocationMethod name (custom:<slug>)."
+        annotations:
+          role: "core_position"
+      location_basis:
+        range: "KnowledgeItem_location_basis_enum"
+        description: "Who supplied the within-item position."
+        annotations:
+          role: "core_position"
+      location_precision:
+        range: "KnowledgeItem_location_precision_enum"
+        description: "parsed only when a deterministic reader/parser verified it against the original; an observation is always locator_only."
+        annotations:
+          role: "core_position"
+      vector_lexical_hash_512_status:
+        range: "KnowledgeItem_vector_lexical_hash_512_status_enum"
+        description: "Membership/status in space lexical-hash-512 (deterministic lexical space)."
+        annotations:
+          role: "core_position"
+      vector_lexical_hash_512:
+        range: "float"
+        multivalued: true
+        maximum_cardinality: 512
+        minimum_cardinality: 512
+        description: "Space lexical-hash-512 as produced by the JITK Rust scanner: sha256-hashed, stop-word-filtered lexical vector, unit-normalised. Not a semantic embedding; similarity is a discovery lead, never a fact."
+        annotations:
+          role: "core_position"
+          native_projection_index: "optional"
+      status:
+        range: "KnowledgeItem_status_enum"
+        required: true
+        description: "current | stale (source or a dependency changed: review required, not disproved) | deprecated (historical; never silently revived)."
+        annotations:
+          role: "lifecycle"
+          native_projection_index: "optional"
+      status_history:
+        range: "string"
+        multivalued: true
+        description: "Append-only JSON entries {status, reason}."
+        annotations:
+          role: "lifecycle"
+      enrichment:
+        range: "string"
+        description: "JSON machine enrichment payload. Not authoritative source evidence. Frozen when the budget is spent; later discoveries grow outward as new items and relationships."
+        annotations:
+          role: "enrichment"
+      enrichment_touches:
+        range: "integer"
+        required: true
+        description: "Semantic payload mutations so far; admission is touch 1."
+        annotations:
+          role: "lifecycle"
+          native_integer_width: "32"
+        minimum_value: 1
+      enrichment_touch_limit:
+        range: "integer"
+        required: true
+        description: "Touch ceiling (library default 3)."
+        annotations:
+          role: "lifecycle"
+          native_integer_width: "32"
+        minimum_value: 1
+      enrichment_frozen:
+        range: "boolean"
+        required: true
+        description: "True once touches reach the limit, until a verified source-version change starts a new epoch."
+        annotations:
+          role: "lifecycle"
+    description: "One admitted knowledge item: one identity with three positions (location, relation, proximity). A derived pointer to original evidence, never a copy of it."
+    comments:
+      - "Source-backed admission requires actual source identity, observed version and native coordinates; locator_only leads must not claim exact verified spans."
+      - "Proximity may be unknown; never fabricate vectors. Graph identity exists without an edge. Source/graph/vector discovery mechanisms are independent."
+      - "Initial admission is touch 1; later enrichment follows the existing three-touch lifecycle. Schema describes structure, not execution."
+      - "OKF-compatible portable representation uses producer-defined extensions; this is not a new OKF standard."
+  EnrichmentCluster:
+    attributes:
+      id:
+        range: "string"
+        required: true
+        identifier: true
+        description: "Cluster id chosen by the caller."
+      touches:
+        range: "integer"
+        required: true
+        description: "Semantic payload mutations spent by the cluster; creation is touch 1."
+        annotations:
+          native_integer_width: "32"
+        minimum_value: 1
+      touch_limit:
+        range: "integer"
+        required: true
+        description: "Touch ceiling (library default 3)."
+        annotations:
+          native_integer_width: "32"
+        minimum_value: 1
+      frozen:
+        range: "boolean"
+        required: true
+        description: "True once the cluster budget is spent."
+      source_versions:
+        range: "string"
+        description: "JSON map source -> version. A changed version starts a new enrichment epoch."
+    description: "Explicit cluster sharing one enrichment mutation budget (library graph-level enrichment_budgets)."
+  LocationMethod:
+    attributes:
+      name:
+        range: "string"
+        required: true
+        identifier: true
+        description: "custom:<short-slug>"
+        pattern: "^custom:[a-z][a-z0-9_-]{1,47}$"
+      source_kind:
+        range: "string"
+        required: true
+        description: "Kind of source the convention applies to."
+      description:
+        range: "string"
+        required: true
+        description: "How the coordinate is expressed."
+      verification:
+        range: "string"
+        required: true
+        description: "How a reader verifies it against the original."
+      status:
+        range: "LocationMethod_status_enum"
+        required: true
+        description: "Novel conventions stay provisional until a verified adapter exists."
+    description: "A registered novel location convention (library location_methods registry). The four canonical methods are built in and are not rows."
+  InEnrichmentCluster:
+    attributes:
+      source:
+        range: "KnowledgeItem"
+        required: true
+        description: "Identity of the source node; directed edge origin."
+      target:
+        range: "EnrichmentCluster"
+        required: true
+        description: "Identity of the target node; directed edge destination."
+    description: "Item shares its enrichment budget with an explicit cluster (library enrichment_cluster)."
+    unique_keys:
+      edge_identity:
+        unique_key_slots:
+          - "source"
+  Relationship:
+    attributes:
+      source:
+        range: "KnowledgeItem"
+        required: true
+        description: "Identity of the source node; directed edge origin."
+      target:
+        range: "KnowledgeItem"
+        required: true
+        description: "Identity of the target node; directed edge destination."
+      relation:
+        range: "string"
+        required: true
+        description: "Relationship label (open vocabulary). Do not infer symmetry or transitivity from it."
+      evidence_key:
+        range: "string"
+        required: true
+        description: "sha256([relation, evidence]): the library edge key. Part of the edge identity."
+      evidence:
+        range: "string"
+        description: "JSON evidence supporting the relationship, or null."
+      qualification:
+        range: "string"
+        description: "Producer qualification, e.g. source_structure for parser-derived edges, candidate for discovery leads."
+      status:
+        range: "Relationship_status_enum"
+        description: "Relationship lifecycle. Null when the producer recorded none."
+      origin:
+        range: "string"
+        description: "Who or what asserted the relationship (parser, human, model, ...)."
+      confidence:
+        range: "double"
+        description: "Asserted confidence, only when meaningful. Never a similarity score."
+      cost:
+        range: "double"
+        description: "Justified nonnegative traversal cost for weighted views; null when none is justified."
+      weight:
+        range: "double"
+        description: "Algorithm weight, when one is used."
+    description: "A qualified, directed relationship between two knowledge items. Direction follows the label's documented meaning, e.g. requires: dependent -> prerequisite."
+    unique_keys:
+      edge_identity:
+        unique_key_slots:
+          - "source"
+          - "target"
+          - "relation"
+          - "evidence_key"
+    comments:
+      - "Core vocabulary is open: is_a, instance_of, part_of, has_property, used_for, located_in, manufactured_by, works_for, competitor_of, requires, causes, related_to. Domain extensions are permitted. Never infer facts from similarity."
+  KnowledgeGraph:
+    tree_root: true
+    description: "Knowledge items and optional qualified relationships, enrichment clusters and registered location methods. An item can have graph position without an edge."
+    attributes:
+      items:
+        range: "KnowledgeItem"
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+      relationships:
+        range: "Relationship"
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+      enrichment_clusters:
+        range: "EnrichmentCluster"
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+      cluster_memberships:
+        range: "InEnrichmentCluster"
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+      location_methods:
+        range: "LocationMethod"
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+enums:
+  KnowledgeItem_source_precision_enum:
+    permissible_values:
+      verified: {}
+      locator_only: {}
+  KnowledgeItem_ownership_enum:
+    permissible_values:
+      author: {}
+      machine: {}
+  KnowledgeItem_realm_enum:
+    permissible_values:
+      public_web: {}
+      authenticated_web: {}
+      provider_private: {}
+      local_file: {}
+      ssh_host: {}
+      cloud_workspace: {}
+      repository: {}
+  KnowledgeItem_location_basis_enum:
+    permissible_values:
+      parser: {}
+      reader: {}
+      observation: {}
+  KnowledgeItem_location_precision_enum:
+    permissible_values:
+      parsed: {}
+      locator_only: {}
+  KnowledgeItem_vector_lexical_hash_512_status_enum:
+    permissible_values:
+      known: {}
+      unknown: {}
+  KnowledgeItem_status_enum:
+    permissible_values:
+      current: {}
+      stale: {}
+      deprecated: {}
+  LocationMethod_status_enum:
+    permissible_values:
+      provisional: {}
+  Relationship_status_enum:
+    permissible_values:
+      observed: {}
+      proposed: {}
+      reviewed: {}
+      rejected: {}
+      superseded: {}
+      unresolved: {}

@@ -1,0 +1,76 @@
+# Knowledge graph data-plane policy.
+# Ordinary agents operate unprotected working branches.
+# Maintenance and human stewards can curate protected main and manage branches.
+# Only administrators change schema. Authority is authenticated, not a role label.
+version: 1
+groups:
+  readers: [act-admin, act-kp-human, act-kp-agent, act-kp-maintenance]
+  agents: [act-kp-agent]
+  maintainers: [act-kp-maintenance]
+  stewards: [act-admin, act-kp-human]
+  admins: [act-admin]
+protected_branches: [main]
+rules:
+  - id: read-data
+    allow:
+      actors: { group: readers }
+      actions: [read, export]
+      branch_scope: any
+  - id: invoke-stored-queries
+    allow:
+      actors: { group: readers }
+      actions: [invoke_query]
+  - id: agents-write-working
+    allow:
+      actors: { group: agents }
+      actions: [change]
+      branch_scope: unprotected
+  - id: agents-create-working
+    allow:
+      actors: { group: agents }
+      actions: [branch_create]
+      target_branch_scope: unprotected
+  - id: agents-manage-working
+    allow:
+      actors: { group: agents }
+      actions: [branch_delete, branch_merge]
+      target_branch_scope: unprotected
+  - id: agents-manage-working-commits
+    allow:
+      actors: { group: agents }
+      actions: [commit_publish, commit_drop]
+      target_branch_scope: unprotected
+  - id: maintainers-write
+    allow:
+      actors: { group: maintainers }
+      actions: [change]
+      branch_scope: any
+  - id: maintainers-manage-branches
+    allow:
+      actors: { group: maintainers }
+      actions: [branch_create, branch_delete, branch_merge]
+      target_branch_scope: any
+  - id: maintainers-manage-commits
+    allow:
+      actors: { group: maintainers }
+      actions: [commit_publish, commit_drop]
+      target_branch_scope: any
+  - id: stewards-write
+    allow:
+      actors: { group: stewards }
+      actions: [change]
+      branch_scope: any
+  - id: stewards-manage-branches
+    allow:
+      actors: { group: stewards }
+      actions: [branch_create, branch_delete, branch_merge]
+      target_branch_scope: any
+  - id: stewards-manage-commits
+    allow:
+      actors: { group: stewards }
+      actions: [commit_publish, commit_drop]
+      target_branch_scope: any
+  - id: change-schema
+    allow:
+      actors: { group: admins }
+      actions: [schema_apply]
