@@ -25,7 +25,6 @@ node KnowledgeItem
     id: String @key @description("Stable knowledge identity chosen by the producer (library: sha256 of [source, version, position, kind]). Unchanged spans keep their id when other parts of the source change.")
     kind: String @description("Structural unit kind from the reader, e.g. file, heading_section, knowledge_note, or a Python AST node type. Open vocabulary.")
     entity_type: String? @description("What the item is about when that differs from kind (library defaults it to kind).")
-    domain: String? @index @description("Explicit subject/work domain; not a permission boundary.")
     heading: String? @index @description("Heading or title when the source unit has one. Derived, full-text indexed.")
     terms: String? @index @description("Deterministically extracted lexical terms for full-text discovery. Derived; not the source text and not a privacy boundary.")
 
@@ -67,8 +66,16 @@ node KnowledgeItem
     // A Vector(N) column holds exactly one space, so incompatible vectors are never compared.
     // Adding a space = add a nullable status + vector pair (in-place migration).
 
-    // Deterministic lexical proximity; no external encoder or semantic provider.
-    vector_lexical_hash_512_status: enum(known, unknown)? @description("Membership/status in space lexical-hash-512 (deterministic lexical space).")
+    // Preferred space: OmniGraph's native semantic embedding (provider + @embed + nearest()),
+    // served by the local Ollama through OmniGraph's openai-compatible provider kind.
+    // @embed records the model, so a text nearest() is refused unless the active provider
+    // resolves to exactly this model: another encoder cannot silently share this space.
+    embedding_text: String? @description("Input slot for OmniGraph's native embedding pipeline. Always null in the graph: span text is handed to `omnigraph embed` transiently and never stored, because the shared graph must not hold original source bytes.")
+    vector_nomic_embed_text_status: enum(known, unknown)? @description("Membership/status in space nomic-embed-text (preferred semantic space). unknown = span exceeds the model's 2048-token context (never embedded truncated) or is not yet embedded.")
+    vector_nomic_embed_text: Vector(768)? @embed("embedding_text", model="nomic-embed-text") @index @description("Native OmniGraph semantic embedding of the exact span text by nomic-embed-text (local Ollama).")
+
+    // Fallback space for constrained environments (no embedding provider).
+    vector_lexical_hash_512_status: enum(known, unknown)? @description("Membership/status in space lexical-hash-512 (fallback space).")
     vector_lexical_hash_512: Vector(512)? @index @description("Space lexical-hash-512 as produced by the JITK Rust scanner: sha256-hashed, stop-word-filtered lexical vector, unit-normalised. Not a semantic embedding; similarity is a discovery lead, never a fact.")
 
     // ---- lifecycle ---------------------------------------------------------
