@@ -24,15 +24,15 @@ The existing Python AST reader now records `item_location`: ordered node path, p
 
 `positioned_embedding_input` verifies original text against its stored hash and composes optional positional context for an encoder. It does **not** automatically compute or replace vectors; any improvement from position-aware embeddings requires measured experiments.
 
-[Regression test source](test_item_positions.py) now includes Python AST path tagging, structural-only ingestion without embedding calls, path-free line/anchor coordinates, method precedence, no-downgrade, novel-method catalog persistence, source-version conflicts and JSON round-trips. These test cases are **committed but have not been executed against the current complete GitHub library in this review**; earlier three-test smoke results predate the additional cases and cannot establish their success. No GitHub Actions workflow was enabled. Non-Python reader adapters, an automatic watchdog and direct LadybugDB persistence are not installed.
+[Regression test source](tests/test_item_positions.py) now includes Python AST path tagging, structural-only ingestion without embedding calls, path-free line/anchor coordinates, method precedence, no-downgrade, novel-method catalog persistence, source-version conflicts and JSON round-trips. These test cases are **committed but have not been executed against the current complete GitHub library in this review**; earlier three-test smoke results predate the additional cases and cannot establish their success. No GitHub Actions workflow was enabled. Non-Python reader adapters, an automatic watchdog and direct LadybugDB persistence are not installed.
 
 ## Run
 
 From this directory:
 ```bash
 python -m pip install . jupyterlab marimo
-jupyter lab knowledge_positions_demo.ipynb
-marimo edit knowledge_positions_demo.py
+jupyter lab examples/knowledge_positions_demo.ipynb
+marimo edit examples/knowledge_positions_demo.py
 ```
 
 Both notebooks are authored to exercise analogous checks; a current complete run with the real semantic embedding model has not been independently established here. First semantic-model use may require downloading the model unless cached. The GPS example builds a temporary index and tests hash failure; it never modifies the repository source. The published fixture is illustrative and not private. For the actual blind trial, give the agent only the index and tools, not source or recorded results. Use IDs returned by the current build, not historical IDs, if they differ.
@@ -73,7 +73,7 @@ The canonical library now implements explicit dependency-based staleness, deprec
 
 ## Named graph capabilities and first-pass positions (2026-11-10)
 
-The library implements ten named views, ten core algorithms, and open-ended named graph derivation. The [graph-view regression tests](test_graph_views.py) and lifecycle tests cover structural properties, cycles, parallel-edge evidence, costs, detached copies and unknown vectors. First pass retains location, relation and proximity slots; deferred vectors are null and excluded from similarity until source-verified completion. Semantic-model benchmarking remains separate. See [Core Vocabulary](CORE_VOCABULARY.md).
+The library implements ten named views, ten core algorithms, and open-ended named graph derivation. The [graph-view regression tests](tests/test_graph_views.py) and lifecycle tests cover structural properties, cycles, parallel-edge evidence, costs, detached copies and unknown vectors. First pass retains location, relation and proximity slots; deferred vectors are null and excluded from similarity until source-verified completion. Semantic-model benchmarking remains separate. See [Core Vocabulary](CORE_VOCABULARY.md).
 
 ## Capture workflow verification
 
