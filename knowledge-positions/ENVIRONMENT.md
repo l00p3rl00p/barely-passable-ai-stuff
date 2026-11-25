@@ -1,5 +1,7 @@
 # Environment
 
+For deployments using native ingestion, document the actual Scanner, Neuron Connector and storage destination, including their installed locations, configuration and invocation. These are deployment details of the same [Parse → Emit contract](contracts/native-ingestion.md), not separate processing stages. The implementation inventory below describes the standalone Python library.
+
 ## Actual implementation
 
 The current implementation is a standalone Python library, version 0.1.0. [Source code](knowledge_positions.py) is authoritative for actual behavior; [pyproject.toml](pyproject.toml) defines installation dependencies.

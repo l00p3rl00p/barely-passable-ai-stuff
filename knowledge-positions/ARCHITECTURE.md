@@ -1,5 +1,9 @@
 # Architecture
 
+## Native ingestion — canonical boundary
+
+**Scanner → Neuron Connector → Storage.** Functionally: **Parse → Emit**. Serialization is inherent in emitting; native storage acknowledges its own writes. The [native ingestion contract](contracts/native-ingestion.md) governs this boundary. The following views describe Knowledge Positions and historical library capabilities, not additional stages of native ingestion.
+
 ## One conversation. One identity. Three positions.
 
 Knowledge Positions is a lightweight library for **working conversational knowledge**. We do not need to index the entire universe to stop repeatedly learning what we already learned in a chat. Original conversations remain authoritative; referenced code, files and documents stay at their original sources.
