@@ -2,6 +2,8 @@
 
 ## Native ingestion — canonical boundary
 
+The complete [JITK architecture guide](docs/jitk-architecture-and-ingestion.md) includes the functional, runtime, terminology, Knowledge Positions and LLM-independent retrieval views. Deterministic ingestion and maintenance can run independently in a host's background execution; this is not a claim that the standalone library installs such automation.
+
 **Scanner → Neuron Connector → Storage.** Functionally: **Parse → Emit**. Serialization is inherent in emitting; native storage acknowledges its own writes. The [native ingestion contract](contracts/native-ingestion.md) governs this boundary. The following views describe Knowledge Positions and historical library capabilities, not additional stages of native ingestion.
 
 ## One conversation. One identity. Three positions.

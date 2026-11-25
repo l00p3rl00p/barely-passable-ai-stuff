@@ -1,5 +1,7 @@
 # UKC SDK component and capability map
 
+For the logical architecture rather than this implementation inventory, see [Understanding JITK](jitk-architecture-and-ingestion.md). Ordinary deterministic operations are usable without a generative LLM; optional host background integration is distinct from installed SDK functionality.
+
 **Purpose:** Package and expose existing capabilities under the [UKC/1 contract](../unified-knowledge-context.md). This is a **source inventory and integration map**, not a runtime, a new knowledge implementation, or a certification claim. No component changes authority merely by appearing here.
 
 ## Public contract and implementations

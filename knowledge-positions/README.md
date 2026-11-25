@@ -10,6 +10,8 @@ It is **not** an agent, LLM, database, ingestion service, or required applicatio
 
 ## Where this fits in Just-in-Time Knowledge
 
+Start with [Understanding JITK — architecture, ingestion and independent retrieval](docs/jitk-architecture-and-ingestion.md). The core knowledge capabilities do not require an LLM; supported exact, graph, lexical, fuzzy and other operations can return results directly to a human or application.
+
 The canonical [native ingestion contract](contracts/native-ingestion.md) defines **Parse → Emit** and the Scanner → Neuron Connector → Storage architecture. Knowledge Positions processing is independent of that path.
 
 **Just-in-Time Knowledge (JITK) is the larger research and engineering effort** to make accumulated knowledge available, reusable and able to evolve through work. Direct lookup, AST/tree navigation, graph algorithms, lexical search, vector similarity and database queries already provide different ways to reach knowledge. **Knowledge Positions is the optional, cross-method representation that lets these methods operate on the *same source-backed identity*, with its known values available for the next method to use.** It is not one more search engine alongside those methods. A search result can become a graph traversal, a structural read, a ranking or a source verification without creating a new knowledge object or prescribed conversion chain. Each usable method requires its corresponding recorded values and a compatible mapping to that identity; unavailable values remain unknown.

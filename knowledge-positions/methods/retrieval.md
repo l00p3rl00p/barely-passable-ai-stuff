@@ -1,5 +1,7 @@
 ## 9. Retrieval and investigative loop
 
+Retrieval is not an LLM-only operation. A human, script or application may invoke a supported lookup, traversal, ranking or count directly and receive structured results without any model inference. See [LLM-independent retrieval in the JITK architecture guide](../docs/jitk-architecture-and-ingestion.md#example-answering-without-an-llm).
+
 **Answer first; preserve the path forward.** A successful JITK response MUST address the original query with an answer or the best evidence-supported likely answer, explicitly qualifying uncertainty. It also returns enough relevant identity, source location, known relationships or other navigational positions to verify, expand, narrow, rank or continue the investigation. Do not return positions alone when the available evidence supports an answer, and do not load whole sources merely to supply navigational context. If the evidence cannot support even a provisional answer, state that limitation and return the strongest grounded leads rather than inventing one.
 
 An agent may choose any route:

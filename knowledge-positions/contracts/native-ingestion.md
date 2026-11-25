@@ -1,5 +1,7 @@
 # Native ingestion contract — Parse → Emit
 
+For the full newcomer explanation, architecture and runtime diagrams, Knowledge Positions boundary, and LLM-independent background operation, see [Understanding JITK](../docs/jitk-architecture-and-ingestion.md).
+
 ## Purpose and scope
 
 JITK makes existing information available for discovery, retrieval and intelligent use. Original sources are authoritative; database representations are reconstructable projections. This contract describes native ingestion when an application uses a Scanner and a destination-specific Neuron Connector. It does not make ingestion infrastructure a requirement of the standalone Knowledge Positions SDK.

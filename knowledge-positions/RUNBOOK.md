@@ -1,5 +1,7 @@
 # Runbook
 
+For an explanation of the same architecture across execution paths, including direct non-LLM retrieval and background host operation, see [Understanding JITK](docs/jitk-architecture-and-ingestion.md).
+
 For native ingestion, execute the Scanner with the appropriate Neuron Connector and destination, following the [Parse → Emit contract](contracts/native-ingestion.md). A successful native storage acknowledgement ends ingestion. The examples below describe direct SDK usage and historical host workflows, not mandatory stages of native ingestion.
 
 A human-facing guide to installing, running, using and experimenting with Knowledge Positions.

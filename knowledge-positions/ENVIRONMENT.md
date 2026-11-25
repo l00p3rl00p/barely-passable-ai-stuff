@@ -1,5 +1,7 @@
 # Environment
 
+The intended background operation and LLM-independent execution boundaries are described in [Understanding JITK](docs/jitk-architecture-and-ingestion.md). Record actual host integrations here only when implemented; the standalone SDK does not imply a running background worker.
+
 For deployments using native ingestion, document the actual Scanner, Neuron Connector and storage destination, including their installed locations, configuration and invocation. These are deployment details of the same [Parse → Emit contract](contracts/native-ingestion.md), not separate processing stages. The implementation inventory below describes the standalone Python library.
 
 ## Actual implementation
