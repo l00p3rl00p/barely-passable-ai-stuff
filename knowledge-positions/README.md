@@ -3,6 +3,8 @@
 ## Start here — choose one goal
 You do not need to read the whole directory.
 
+**[Browse the documentation knowledge graph](index.md)** — all source documents and their native links and backlinks.
+
 | I want to… | Open this next |
 |---|---|
 | Understand Knowledge Positions or build a kit | **[SDF developer guide](SDF/README.md)** — one reading path, with assembly and verification instructions. |
