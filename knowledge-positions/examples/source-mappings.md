@@ -1,6 +1,6 @@
 ### 3.3 Source → common OKF record → Location / Relation / Proximity: executable examples
 
-**This section is normative by example.** An implementation in any language must recognize what the source actually supplies, copy useful values into *one* source-backed record, retain the original, and make its methods consume those common values. **The method is a reader, not the author of another knowledge representation.** Example identities prefixed fixture: below are human-readable test IDs; they are **not** a substitute for the canonical hash IDs defined in §4. Each x_ukc mapping below is an **OKF producer-defined extension**, not an upstream standard field. The actual asset bytes, SHA and native parser output must be preserved/referenced even when only selected fields are shown here.
+**This section is normative by example.** An implementation in any language must recognize what the source actually supplies, copy useful values into *one* source-backed record, retain the original, and make its methods consume those common values. **The method is a reader, not the author of another knowledge representation.** Example identities prefixed fixture: below are human-readable test IDs; they are **not** a substitute for the canonical hash IDs defined in §4. Each x-ukc mapping below is an **OKF producer-defined extension**, not an upstream standard field. The actual asset bytes, SHA and native parser output must be preserved/referenced even when only selected fields are shown here.
 
 Every example explicitly supplies three available ways to find the item:
 - **LOCATION:** source identity, actual path or anchor, recorded coordinates and original evidence.
@@ -26,7 +26,7 @@ Python's real ast.parse exposes ImportFrom(module="decimal") and FunctionDef(nam
 ---
 type: Source Code
 title: cart.py
-x_ukc:
+x-ukc:
   id: "fixture:code/cart.py"
   source: "code/cart.py"
   values:
@@ -62,7 +62,7 @@ An ordinary HTML parser already knows the element hierarchy, text and href. No L
 ---
 type: Web Page
 title: Flatbread
-x_ukc:
+x-ukc:
   id: "fixture:web/recipe.html"
   source: "web/recipe.html"
   values:
@@ -102,7 +102,7 @@ A CommonMark parser returns actual headings, nesting, list nodes and source posi
 ---
 type: Document
 title: Flatbread
-x_ukc:
+x-ukc:
   id: "fixture:docs/flatbread.md"
   source: "docs/flatbread.md"
   values:
@@ -173,7 +173,7 @@ S02,9,6
 ---
 type: Binary Asset
 title: renderer.wasm
-x_ukc:
+x-ukc:
   id: "fixture:bin/renderer.wasm"
   source: "bin/renderer.wasm"
   values:

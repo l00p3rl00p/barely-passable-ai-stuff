@@ -31,7 +31,7 @@ The SDK does not impose a universal AST schema. A deterministic adapter describe
 
 ### 3.2 OKF-compatible interchange
 
-UKC records MUST have a **valid OKF-compatible representation** on export and import. Use upstream-recognized OKF fields correctly, plus a producer-defined **x_ukc** extension for identity, positions, original native values, evidence and optional sidecar references. The original source body and its exact bytes must remain recoverable **from the authoritative source or a specifically retained copy** when exact reconstruction is claimed; ordinary knowledge records may carry verified references rather than inline bodies. Unknown YAML keys, native fields and unrelated OKF content must round-trip without being silently discarded.
+UKC records MUST have a **valid OKF-compatible representation** on export and import. The pinned OKF version is v0.3 (`open-knowledge-format/open-knowledge-format`, commit `527e81aff55992be21507e97004286789126f88c`). Use upstream-recognized OKF fields correctly, plus a producer-defined **x-ukc** extension for identity, positions, original native values, evidence and optional sidecar references. The original source body and its exact bytes must remain recoverable **from the authoritative source or a specifically retained copy** when exact reconstruction is claimed; ordinary knowledge records may carry verified references rather than inline bodies. Unknown YAML keys, native fields and unrelated OKF content must round-trip without being silently discarded.
 
 **OKF is the common translation vocabulary and portable packaging, not a semantic extraction service.** Translating observed parser values to an equivalent OKF field/extension is a copy or deterministic mapping; it does not make an LLM think about their meaning. If a destination representation cannot express a native source value, preserve it losslessly in a native extension or sidecar and report limited direct query support. Do not manufacture equivalent meaning.
 
@@ -41,7 +41,7 @@ An illustrative asset (not a normative upstream OKF schema, and digest placehold
 ---
 type: SourceUnit
 title: Example
-x_ukc:
+x-ukc:
   schema: ukc/1
   id: "ukc:v1:<computed-digest>"
   source:

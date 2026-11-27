@@ -2,9 +2,9 @@
 
 **Do not stop at "use OKF."** Every declared reader/parser MUST publish its field crosswalk into the same UKC common-record vocabulary **before** advertising that reader as supported. The crosswalk is implemented at the existing input boundary: no per-search retranslation, no AST→graph→vector knowledge pipeline, no mandatory global ontology. Preserve **all native fields** even when only a subset is directly indexed. A missing recognized field is represented as unsupported or unknown, never invented.
 
-The following is the binding vocabulary for all SDK implementations; the field paths are under producer-defined x_ukc (OKF itself standardizes only its own frontmatter fields and extension convention). **These are named semantic field families in one logical record, not additional objects or completion slots.**
+The following is the binding vocabulary for all SDK implementations; the field paths are under producer-defined x-ukc (OKF itself standardizes only its own frontmatter fields and extension convention). **These are named semantic field families in one logical record, not additional objects or completion slots.**
 
-| Common x_ukc field | Native source that supplies it | Invariant |
+| Common x-ukc field | Native source that supplies it | Invariant |
 |---|---|---|
 | id, source.authority, source.key, source.version | Source resolver, filesystem/provider/repository, content hash | One identity for all search methods; source route and current access are separate |
 | kind, values, native | Exact native reader/parser output, including unknown keys | Retain original casing, types, structure and payload; never discard unrecognized fields |

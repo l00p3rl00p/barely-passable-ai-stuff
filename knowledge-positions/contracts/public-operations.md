@@ -12,7 +12,7 @@ An SDK MAY use idiomatic names, but must supply a conformance adapter offering t
 | **search(query, method, options)** | Support exact literal/structural, graph, lexical/fuzzy or vector access as advertised; results carry canonical IDs, method and source pointers. No mandatory semantic pipeline. |
 | **put_vector(id, descriptor, values)** | Store a named vector position without changing the record identity or original edges. |
 | **upsert_relation(edge, evidence)** | Idempotently add an observed edge or an admitted, qualified newly discovered edge; preserve provenance. |
-| **export_okf(ids)** | Portable OKF assets with complete x_ukc records and included/verifiable native payloads. |
+| **export_okf(ids)** | Portable OKF assets with complete x-ukc records and included/verifiable native payloads. |
 | **import_okf(assets)** | Recreate same identities, fields, positions, relations, vector descriptors and source-backed payloads with no inference. |
 | **verify(ids)** | Check integrity, source and edge references, vector-space coherency, version consistency and round-trip preservation. |
 | **rebuild(sources, accepted_findings)** | Restore disposable indexes from original source and accepted evidence without rerunning an LLM to rediscover prior results. |
