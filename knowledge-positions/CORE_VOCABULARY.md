@@ -1,5 +1,7 @@
 # Core Knowledge Vocabulary
 
+[SDF guide](SDF/README.md) · [Capture reference](contracts/common-record.md) · [Graph contract](methods/graph-contract.md). This is vocabulary and algorithm guidance, not a second record definition.
+
 The minimum common vocabulary for named references, graph structures and algorithms, and vector operations. This is an enabling vocabulary, not an exhaustive ontology, mandated workflow, or independent instruction system. Existing domain relationships remain available as extensions.
 
 ## 1. Relationships

@@ -1,5 +1,7 @@
 # Native ingestion contract — Parse → Emit
 
+[SDF guide](../SDF/README.md) · Build: [scanner/emitter recipes](../docs/implementer-guide.md#recipe-a--universal-scanner) · Verify: [scanner/emitter checklist](../conformance/scanner-emitter-checklist.md)
+
 For the full newcomer explanation, architecture and runtime diagrams, Knowledge Positions boundary, and LLM-independent background operation, see [Understanding JITK](../docs/jitk-architecture-and-ingestion.md).
 
 ## Purpose and scope

@@ -57,3 +57,22 @@ Baseline: existing navigation branch at e82a1fb66d12746a316aa84f84cdc01ac4c88319
 | Current live target runtime, full OKF round trip, complete coverage and idempotency | BLOCKED | No live OmniGraph or Rust toolchain in this review environment. Historic writer run reports idempotency for admitted records but skipped three addresses; no fresh live conformance claim. |
 
 Review outcome: documentation improves discoverability and preserves existing code. Full UKC/kit certification is not achieved; shared fixtures, actual Rust grouping, oversized admission and live OKF round-trip validation remain open.
+
+
+## Human operational readability review — follow-up
+
+**Test:** Enter from the repository root, the Knowledge Positions directory, the SDF directory, or a framework subdirectory. A reader must discover a starting point, a single next action and a return path without reading all documents. A long directory listing is not a reading guide.
+
+| Scenario | Expected path | Result |
+|---|---|---|
+| New reader at repository root | Knowledge Positions or SDF entry link | PASS — root now links both and separates unrelated design skills. |
+| New reader at KP root | Choose one goal before Python/reference material | PASS — five routes, explicit default: SDF. |
+| Builder at SDF | First Law → capture → lifecycle → cookbook → conformance | PASS — one primary link per step, stopping criteria and supporting links. |
+| Reader browsing contracts, core, methods, readers, docs, conformance or languages | Folder README identifies primary starting point and return to SDF | PASS — seven short navigation indexes; no new requirement definitions. |
+| Reader lands directly on a core requirement | Return to SDF, next step or corresponding recipe | PASS — navigation links on foundational documents. |
+| Rust implementer | Rust source and limitations, not historical workspace or Python by default | PASS — pinned inspected source links; current installation and runtime not claimed. |
+| Reader wants historical proof or optional profiles | Clearly separated from normative sources | PASS — examples, paper and legacy connector labelled; no need to interpret them to build a kit. |
+
+The local link audit examined 107 Markdown files (repository README plus all Knowledge Positions Markdown files, including seven new folder navigation indexes), ignoring fenced illustrative source and excluding the separately archived and version-matched upstream skill bundle from active framework validation. All active local links/heading anchors resolved after correcting the historical quick-start entry and two relative investigation links. The bundled upstream skill references require its official companion directory, as the bundle README already explains; its upstream content was not modified. External Rust source references were inspected at the pinned revision. This is a navigation/readability check, not evidence of a new runtime implementation or full certification.
+
+Measured navigation: from the repository root, the SDF guide is one click away and capture, lifecycle, cookbook, conformance and Rust source guide are each at most two. From the SDF guide, each is a direct link. Existing local reference-library tests passed 20/20; no code changed.

@@ -1,4 +1,6 @@
-# Neuron Connector — receive, map, emit
+# Historical Neuron Connector experiment — receive, map, emit
+
+**Not the current native-ingestion contract.** This experiment receives admitted KP records. For the current scanner → native emitter boundary and independent KP writer, start at [native ingestion](../../contracts/native-ingestion.md) and the [SDF cookbook](../../docs/implementer-guide.md).
 
 An independent standard-library implementation, unrelated to the OTel library. Receives already admitted Knowledge Positions records, maps them through destination profiles, emits to one or multiple native surfaces. No scanner, model, daemon, custom MCP or extra datastore. The producer (Rust or another caller) owns canonical admission, identity, source lifecycle and batching. This connector implements **new admissions only**; it does not silently overwrite or reconcile existing records. Re-emission against an existing identity refuses; a production incremental caller must filter previously admitted records with native queries.
 

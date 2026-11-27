@@ -1,5 +1,7 @@
 # Architecture
 
+[SDF guide](SDF/README.md) · [Current native-ingestion architecture](docs/jitk-architecture-and-ingestion.md). This page describes the original library perspective; use the SDF contracts for current kit requirements.
+
 ## One conversation. One identity. Three positions.
 
 Knowledge Positions is a lightweight library for **working conversational knowledge**. We do not need to index the entire universe to stop repeatedly learning what we already learned in a chat. Original conversations remain authoritative; referenced code, files and documents stay at their original sources.

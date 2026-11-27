@@ -1,5 +1,7 @@
 # Precise location and access signals
 
+[SDF guide](SDF/README.md) · Return to [capture reference](contracts/common-record.md) for field requirements.
+
 **Portable design guidance, not an installed access-control system or a new OKF standard.** The [mission](MISSION.md) and the library's [three positions](CORE_VOCABULARY.md) stay unchanged.
 
 ## Three distinct facts

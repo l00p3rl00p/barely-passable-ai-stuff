@@ -1,5 +1,7 @@
 ## 10. Mandatory conformance suite: no claims without execution
 
+[SDF guide](../SDF/README.md) · [Cookbook](../docs/implementer-guide.md) · [Known verification gaps](sdf-independent-review.md)
+
 Implementations MUST publish a language-neutral fixture runner and real, inspectable outputs. Fixture input includes raw source bytes, source identity/version, parser observations, native attributes and observed edges. Output includes canonical ID input bytes/hash, logical records, relation lists, vector space, exact resolved source bytes and export/import verification.
 
 | Test | Required behavior |

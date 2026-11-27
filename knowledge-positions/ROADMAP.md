@@ -1,5 +1,7 @@
 # Roadmap
 
+[SDF guide](SDF/README.md) · [Current conformance gaps](conformance/sdf-independent-review.md). The roadmap below includes historical library plans; it is not the current Rust implementation status.
+
 The technical means by which Knowledge Positions intends to achieve its [mission](MISSION.md). The [architecture](ARCHITECTURE.md) defines the high-level design; the [environment](ENVIRONMENT.md) describes the actual implementation; the [runbook](RUNBOOK.md) explains how humans use it today. This roadmap describes planned engineering work and its validation.
 
 | Mission objective | Planned technical means | Evidence of completion |

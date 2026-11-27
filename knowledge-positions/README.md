@@ -1,6 +1,17 @@
 # Knowledge Positions
 
-Two entry points: **[The paper](paper/README.md)** — the existing canonical JITK manuscript and its findings; **[Software Development Framework (SDF)](SDF/README.md)** — the Knowledge Positions method, contracts, generic skill, examples, and practical implementation guidance. The paper and framework are distinct; neither requires a particular language or database.
+## Start here — choose one goal
+You do not need to read the whole directory.
+
+| I want to… | Open this next |
+|---|---|
+| Understand Knowledge Positions or build a kit | **[SDF developer guide](SDF/README.md)** — one reading path, with assembly and verification instructions. |
+| See what the existing Rust implementation does | [Current inspected Rust components](languages/rust/README.md) — source and known gaps. |
+| Use knowledge tools as an agent | [JITK skill](skills/knowledge-positions/README.md) — independent of whether KP is available. |
+| Run the historical Python reference example | [Python getting started](#install-and-run-your-first-example). |
+| Read the research and experiments | [The paper](paper/README.md) — separate from the implementation contract. |
+
+**Not sure? Open the SDF guide first.** The rest of this README explains the existing Python reference library; it is not a prerequisite for Rust or another kit.
 
 **One knowledge identity. Many ways to find, traverse, verify and reuse it—without losing the source or starting over.**
 
@@ -29,6 +40,10 @@ Imagine an application has already encountered a source file, a paragraph, and a
 **Why use this reference library rather than build it from scratch?** The existing Python library already supplies source-position records, deterministic repeat admission within its legacy identity scheme, directed relationships, graph traversal/algorithms, deferred vectors, persistence, and lifecycle operations. The framework contract specifies how independent implementations should preserve identity, native values, provenance, failure states, and portability. Its examples and conformance requirements make results inspectable instead of merely plausible.
 
 The contract is language-neutral. **The currently installable implementation here is Python; Rust scanner/ingester source exists in a separate workspace; a complete TypeScript binding is not yet supplied.** Do not mistake the existing Python library's historical record IDs for certified UKC/1 canonical IDs.
+
+## Quick start — capture working conversations
+
+For the existing Python capture workflow, open the [Python reference guide](docs/python-library-guide.md#quick-start--capture-working-conversations). For the current Rust kit, use [Rust components](languages/rust/README.md).
 
 ## Install and run your first example
 

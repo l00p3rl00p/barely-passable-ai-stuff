@@ -1,5 +1,7 @@
 ## 4. Identity, exact source positions and deterministic equality
 
+[SDF guide](../SDF/README.md) · Return to [capture reference](../contracts/common-record.md)
+
 For new source-backed UKC/1 records, define a deterministic ID from **(schema, authority, source_key, observed_source_version, native_kind, native_unit_key)**. Exact same normalized inputs must produce exact same identity bytes in every language; no random UUID, database auto-ID or machine-specific temporary checkout path is allowed as a canonical identity.
 
 **Canonical ID bytes profile UKC-ID-1:**

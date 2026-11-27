@@ -4,13 +4,13 @@ UKC is an executable-language-independent SDK specification. Python, Rust, TypeS
 
 **MUST**, **MUST NOT**, **SHOULD** and **MAY** are normative. The first law and all Core requirements are mandatory. Advertised optional functions must pass their relevant conformance tests. Unsupported features must be reported, not faked.
 
-Read this contract together with:
-- [Canonical JITK paper](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/main/knowledge-positions/research/paper.md): origin, principle and the original cold-context GPS experiment.
-- [Knowledge Asset Evolution v1.6.3](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/main/knowledge-positions/Knowledge-Asset-Evolution-Spec-v1.6.3.md): portable OKF-compatible ownership, lifecycle, schema governance and durable events, when those profiles are selected.
-- [Knowledge Graph Relationships and Enrichment](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/main/knowledge-positions/Knowledge_Graph_Relationships_and_Enrichment.md): observed versus qualified discovered relations and provenance.
+The [SDF guide](../SDF/README.md) is the starting point. The linked UKC contracts own normative requirements; the following sources provide research evidence, optional profiles or the external interchange standard. Read them when needed, not as a prerequisite for building a kit:
+- [Canonical JITK paper](../research/paper.md): origin, principle and the original cold-context GPS experiment.
+- [Knowledge Asset Evolution v1.6.3](../Knowledge-Asset-Evolution-Spec-v1.6.3.md): portable OKF-compatible ownership, lifecycle, schema governance and durable events, when those profiles are selected.
+- [Knowledge Graph Relationships and Enrichment](../Knowledge_Graph_Relationships_and_Enrichment.md): observed versus qualified discovered relations and provenance.
 - [OpenKC architecture](https://github.com/l00p3rl00p/quatrus-scratchpad/blob/main/experiments/openkc-ast-okf-yanp/ARCHITECTURE.md), [deterministic mapping](https://github.com/l00p3rl00p/quatrus-scratchpad/blob/main/experiments/openkc-ast-okf-yanp/MAPPING.md), [working code](https://github.com/l00p3rl00p/quatrus-scratchpad/blob/main/experiments/openkc-ast-okf-yanp/openkc_etl.py), [proof](https://github.com/l00p3rl00p/quatrus-scratchpad/blob/main/experiments/openkc-ast-okf-yanp/EVIDENCE.md).
-- [Original GPS experiment and replay](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/main/knowledge-positions/research/EXPERIMENT.md).
-- [Official upstream OKF specification](https://github.com/open-knowledge-format/open-knowledge-format/blob/main/SPEC.md). This is the current upstream **OKF v0.3** specification; the previous GoogleCloudPlatform repository contains deprecated v0.2. UKC keys are **producer-defined extensions**, not fields standardized by OKF itself.
+- [Original GPS experiment and replay](../research/EXPERIMENT.md).
+- [Official upstream OKF specification](https://github.com/open-knowledge-format/open-knowledge-format/blob/527e81aff55992be21507e97004286789126f88c/SPEC.md). This is the current upstream **OKF v0.3** specification; the previous GoogleCloudPlatform repository contains deprecated v0.2. UKC keys are **producer-defined extensions**, not fields standardized by OKF itself.
 
 The OpenKC experiment proved source-preserving AST–OKF round trips and observed syntax graph edges. The original GPS experiment documented a fresh investigator following imperfect lookup leads and graph relationships to four precise source passages from a source withheld from the model. They establish the mechanism in real, bounded tests—not universal parser/vector or large-corpus performance. New claims require executable evidence.
 
@@ -81,7 +81,7 @@ p=d['position']
 b=raw[p['start_byte']:p['end_byte']]
 ~~~
 
-The real read function additionally verifies the original source version and span content hash. The [preserved GPS replay](https://github.com/l00p3rl00p/barely-passable-ai-stuff/blob/main/knowledge-positions/research/EXPERIMENT.md) verified **28 nodes, 42 edges (27 sequence, 15 lexical-shared-term), four requested source passages and exact source-backed reads**. Its hash-based vector offered cheap imperfect leads rather than new facts.
+The real read function additionally verifies the original source version and span content hash. The [preserved GPS replay](../research/EXPERIMENT.md) verified **28 nodes, 42 edges (27 sequence, 15 lexical-shared-term), four requested source passages and exact source-backed reads**. Its hash-based vector offered cheap imperfect leads rather than new facts.
 
 **What the experiments prove together, and what they do not:** Scratchpad proved **literal source/AST/OKF preservation, deterministic structural graph projection and verified retrieval**; it did not prove a complete vector SDK over OKF. GPS proved **same-ID lexical/vector/graph/source navigation**; it did not use OKF. The Tree-sitter-only proof independently parsed the same source corpus but was not a tested bridge from Tree-sitter to all these methods. This SDK specifies their **combined language-neutral invariant**, which still requires unified conformance testing before claiming the entire UKC/1 SDK is implemented.
 

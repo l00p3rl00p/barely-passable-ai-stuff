@@ -1,5 +1,7 @@
 # 0. FIRST LAW — the entire mechanism before any implementation detail
 
+[SDF guide](../SDF/README.md) · Next: [complete capture reference](common-record.md)
+
 **ONE KNOWLEDGE IDENTITY. THREE POSITIONS: LOCATION · RELATION · PROXIMITY.**
 
 **One common knowledge record contains the naturally occurring values necessary for LOCATION, RELATION and PROXIMITY methods to operate against it.** These are three ways to address **the same recorded knowledge**, not separate representations to construct, slots to fill, databases to synchronize, or stages to process. The fourth position, **RESONANCE**, is the planned extension; it will be another position of the same knowledge, not a new knowledge system.

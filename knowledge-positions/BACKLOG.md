@@ -1,5 +1,7 @@
 # Backlog
 
+[SDF guide](SDF/README.md) · [Current conformance gaps](conformance/sdf-independent-review.md). The items below are retained historical reference-library work.
+
 Work remaining between the current [environment](ENVIRONMENT.md) and [mission](MISSION.md). See [roadmap](ROADMAP.md) for technical direction.
 
 - [ ] Execute both notebooks with the actual semantic model; reproduce GPS and address-only handoff.

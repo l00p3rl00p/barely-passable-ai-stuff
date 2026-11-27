@@ -1,6 +1,18 @@
 ## 12. Implementer's cookbook
 
-Use the [SDF guide](../unified-knowledge-context.md) for navigation. The [First Law](../contracts/first-law.md), [complete capture reference](../contracts/common-record.md), [lifecycle](../core/lifecycle.md), [operations](../contracts/public-operations.md) and [conformance suite](../conformance/requirements.md) define correctness. This cookbook is assembly guidance, not a second specification.
+Use the [SDF guide](../SDF/README.md) for navigation. The [First Law](../contracts/first-law.md), [complete capture reference](../contracts/common-record.md), [lifecycle](../core/lifecycle.md), [operations](../contracts/public-operations.md) and [conformance suite](../conformance/requirements.md) define correctness. This cookbook is assembly guidance, not a second specification.
+
+## Choose your recipe
+You do not have to implement every component from scratch.
+
+| Component or task | Open the recipe |
+|---|---|
+| Reuse or extend universal extraction | [A — Scanner](#recipe-a--universal-scanner) |
+| Write native observations to a target | [B — Emitter](#recipe-b--target-emitter) |
+| Create KP records | [C — Writer](#recipe-c--target-kp-writer) |
+| Group, relate and enrich knowledge | [D — Enricher](#recipe-d--target-kp-enricher) |
+| Expose retrieval or MCP | [E — Retrieval](#recipe-e--retrieval-and-optional-mcp) |
+| Export, rebuild and verify | [F — Interchange and verification](#recipe-f--interchange-reconstruction-and-final-verification) |
 
 ### 12.1 Select the implementation path
 

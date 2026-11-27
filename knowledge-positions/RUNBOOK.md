@@ -1,5 +1,7 @@
 # Runbook
 
+[SDF guide](SDF/README.md) · [Rust components](languages/rust/README.md). This runbook serves the historical Python library and its optional host integrations, not the current Rust deployment.
+
 A human-facing guide to installing, running, using and experimenting with Knowledge Positions.
 
 ## 0. Agent capture workflow

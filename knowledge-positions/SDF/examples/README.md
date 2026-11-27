@@ -122,7 +122,7 @@ The live-paper test verifies: **29 current UKC/1 section records**, **15 matchin
 
 ### Touch behavior and limits
 
-The existing Python library's [three-touch regression tests](../../tests/test_enrichment_budget.py) establish that admission is touch 1; touches 2 and 3 may update a semantic payload; the third freezes it, while new qualified links can still grow outward. A source-version change starts a new budget. **Touches do not create links automatically.** Neither the companion nor the present example contains proof of per-edge historical touch events; the companion's editorial edges are treated as prior recorded navigational knowledge, not retroactively attributed to touches.
+The historical Python reference (not the current [SDF touch lifecycle](../../core/lifecycle.md)) has [three-touch regression tests](../../tests/test_enrichment_budget.py) establish that admission is touch 1; touches 2 and 3 may update a semantic payload; the third freezes it, while new qualified links can still grow outward. A source-version change starts a new budget. **Touches do not create links automatically.** Neither the companion nor the present example contains proof of per-edge historical touch events; the companion's editorial edges are treated as prior recorded navigational knowledge, not retroactively attributed to touches.
 
 ### Conformance boundary
 

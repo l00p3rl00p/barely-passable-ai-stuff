@@ -1,5 +1,7 @@
 # Mission
 
+[SDF guide](SDF/README.md) · [Broader JITK context](docs/jitk-architecture-and-ingestion.md). This mission describes the original conversational-knowledge use case, not a limit on the framework.
+
 Make working conversational knowledge navigable and reusable across fresh AI sessions without requiring bulk context loading or duplication of original sources. Enable humans and intelligences to explore the same evolving, evidence-grounded knowledge.
 
 ## Objectives

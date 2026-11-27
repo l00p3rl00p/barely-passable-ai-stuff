@@ -1,8 +1,10 @@
 # Environment
 
+[SDF guide](SDF/README.md) · [Current inspected Rust components](languages/rust/README.md) · [Capability map](docs/component-and-capability-map.md). The environment below is for the existing Python reference library.
+
 ## Actual implementation
 
-The current implementation is a standalone Python library, version 0.1.0. [Source code](knowledge_positions.py) is authoritative for actual behavior; [pyproject.toml](pyproject.toml) defines installation dependencies.
+The historical reference implementation is a standalone Python library, version 0.1.0. [Source code](knowledge_positions.py) is authoritative for actual behavior; [pyproject.toml](pyproject.toml) defines installation dependencies.
 
 | Component | What is actually implemented |
 |---|---|

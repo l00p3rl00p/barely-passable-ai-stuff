@@ -1,5 +1,7 @@
 ## 8. Public SDK operations — required semantics, arbitrary language syntax
 
+[SDF guide](../SDF/README.md) · [Retrieval and optional MCP recipe](../docs/implementer-guide.md#recipe-e--retrieval-and-optional-mcp) · [Conformance](../conformance/requirements.md)
+
 An SDK MAY use idiomatic names, but must supply a conformance adapter offering these logical operations:
 
 | Operation | Observable contract |

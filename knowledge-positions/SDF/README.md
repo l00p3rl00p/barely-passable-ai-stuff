@@ -1,26 +1,48 @@
 # Knowledge Positions — Software Development Framework (SDF)
 
-This is the **developer-facing navigation to the existing Knowledge Positions method**. It organizes the material; it does not replace the research, define a new method, or require a particular implementation.
+[Knowledge Positions home](../README.md)
 
-Knowledge Positions has two entry points: [the paper](../paper/README.md) and this **Software Development Framework**. For the relationship between JITK and Knowledge Positions, read [the canonical paper](../research/paper.md), especially [§1.2: JITK, Knowledge Positions, and practical use](../research/paper.md#12-the-larger-endeavor-jitk-knowledge-positions-and-practical-use).
+## Start here
 
-**JITK is the broader research and engineering endeavor.** Knowledge Positions is a contribution within it: one source-backed knowledge identity and one logical record, with available values usable by multiple methods. A method may use existing recorded values without creating a competing knowledge object or a mandatory AST-to-graph-to-vector conversion chain. An implementation must not invent values that are absent. The original evidence remains authoritative.
+You do not need to read every Markdown file. Pick the task you want to complete and follow only that path.
 
-## Developer guide and table of contents
+| I want to… | Start with one document |
+|---|---|
+| Understand the method | [First Law](../contracts/first-law.md) |
+| Build or improve a kit | [Implementation cookbook](../docs/implementer-guide.md) |
+| Know what data to capture | [Complete capture reference](../contracts/common-record.md) |
+| Check a kit or its implementation status | [Conformance](../conformance/requirements.md) |
+| Find the existing Rust components | [Rust component guide](../languages/rust/README.md) |
+| Run an existing example | [Examples](../examples/README.md) |
+| Use JITK as an agent | [JITK skill](../skills/knowledge-positions/README.md) |
+| Read the research | [The paper](../paper/README.md) |
 
-JITK is an approach to making knowledge available when needed. KP represents knowledge through Location, Relation, Proximity and Resonance (currently a reserved UKC extension). UKC is the common record contract. OKF is the external interoperability format. This SDF is the development framework; kits implement it against their native targets. The paper is an independent research perspective.
+JITK is an approach to making knowledge available when needed. KP represents knowledge through Location, Relation, Proximity and Resonance (currently a reserved UKC extension). UKC is the common record contract; OKF is the external interoperability format; the SDF is the development framework; kits implement it against native targets. The paper is an independent research perspective.
 
-| Step / goal | Read in order | Check your work |
+## Build a kit: read in this order
+
+Each step has one primary document. Follow its supporting links only when needed. Stop when the question you are answering is resolved; do not read research to discover mandatory requirements.
+
+| Step | Open | Done when |
 |---|---|---|
-| 1. Understand the framework | [First Law](../contracts/first-law.md), [positions](../contracts/positions.md), [scope and authority](../docs/authority-and-evidence.md) | Identify common identity and separate JITK, KP, UKC, OKF, SDF and kits. |
-| 2. Know what to capture | [Complete capture reference](../contracts/common-record.md), [identity algorithm](../core/identity.md), [relationship vocabulary](../CORE_VOCABULARY.md) | Every required/conditional field, provenance and missing-value behavior accounted for. |
-| 3. Know how it operates | [Native ingestion](../contracts/native-ingestion.md), [lifecycle and block grouping](../core/lifecycle.md), [relationships](../core/relations-and-enrichment.md), [public operations](../contracts/public-operations.md) | Check processing boundaries, touch budget, supported groupings and retrieval. |
-| 4. Build a kit | [SIPOC assembly cookbook](../docs/implementer-guide.md), [reader crosswalks](../readers/native-to-common.md), [native adapters](../adapters/README.md) | Assess native capabilities, implement only gaps, execute recipe checks. |
-| 5. Check and certify | [UKC conformance](../conformance/requirements.md), [independent review checklist](../conformance/sdf-independent-review.md), [scanner/emitter checks](../conformance/scanner-emitter-checklist.md) | Record actual inputs, expected and observed outputs, pass/fail/blocked. |
-| 6. Use existing components | [Rust](../languages/rust/README.md), [Python reference](../languages/python/README.md), [TypeScript status](../languages/typescript/README.md), [examples](../examples/README.md) | Verify actual capabilities and limitations before installation/use. |
-| 7. Explore research | [Paper](../paper/README.md), [research](../research/README.md), [reconstruction examples](examples/README.md) | Distinguish existing experiments from normative requirements and current verification. |
+| 1. Understand | [First Law](../contracts/first-law.md) | You understand one identity, one logical record and independent access methods. |
+| 2. Capture | [Common record](../contracts/common-record.md) | You can list required/conditional fields and unknown-value behavior. |
+| 3. Process | [Lifecycle](../core/lifecycle.md) | You can distinguish touch 0–3 and block grouping; native ingestion is independently defined in the [native ingestion contract](../contracts/native-ingestion.md). |
+| 4. Assemble | [SIPOC cookbook](../docs/implementer-guide.md) | You know the supplier, input, process, output, customer, native capabilities and checks for each selected component. |
+| 5. Verify | [Conformance requirements](../conformance/requirements.md) | You can report actual pass, fail, blocked and unsupported results. |
 
-For a complete section-by-section normative index, see [UKC specification](../unified-knowledge-context.md). For existing component coverage, see the [capability map](../docs/component-and-capability-map.md). No implementation must read historical experiments to discover hidden requirements.
+## Reference map — open only as needed
+
+| Folder | First document | Purpose |
+|---|---|---|
+| Contracts | [Contracts guide](../contracts/README.md) | Normative record, ingestion and operations. |
+| Core | [Core guide](../core/README.md) | Identity, lifecycle, relationships and recovery. |
+| Methods | [Methods guide](../methods/README.md) | Applicable retrieval, graph and proximity methods. |
+| Readers | [Reader guide](../readers/README.md) | Native parser fidelity and field mappings. |
+| Implementation guidance | [Docs guide](../docs/README.md) | Cookbook, authority and component inventory. |
+| Conformance | [Conformance guide](../conformance/README.md) | Requirements, evidence and review checklists. |
+
+For the complete section-by-section normative index, see [UKC specification](../unified-knowledge-context.md). For what is actually implemented, see the [capability map](../docs/component-and-capability-map.md). Normative requirements are distinct from implementation guidance, optional host profiles, historical experiments and research.
 
 ### Existing higher-order specifications
 

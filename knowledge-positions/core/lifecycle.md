@@ -1,5 +1,7 @@
 ## 11. Lifecycles, updates, concurrency, storage and performance
 
+[SDF guide](../SDF/README.md) · Previous: [capture reference](../contracts/common-record.md) · Next: [implementation cookbook](../docs/implementer-guide.md)
+
 **Sources and accepted discoveries are durable. Projections are disposable.** An implementation MAY use JSON, SQLite, LadybugDB, OmniGraph, NetworkX, Rust containers, distributed storage or a vector DB. Its physical layout is immaterial provided the logical record and observable operations remain exact.
 
 ### Authoritative touch lifecycle

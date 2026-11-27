@@ -1,5 +1,7 @@
 # Coverage, evidence and warnings
 
+[SDF guide](SDF/README.md) · [Current kit verification and gaps](conformance/sdf-independent-review.md). The historical reference coverage below is not certification of the active Rust kit.
+
 This folder contains the small Python library, original reference specifications, runnable examples/tests, and the evolving research paper. Reference specifications describe the intended design; this file distinguishes what the implementation actually supports from what remains unimplemented.
 
 ## Traceability

@@ -10,8 +10,8 @@ The first repository commit containing the companion is [`1159be9`](https://gith
 
 ## Reproducible code observations
 
-- [`build_companion.py`](../../research/build_companion.py) reads the saved node/edge records and imports them into the Knowledge Positions graph. It **does not infer** editorial edges from the manuscript.
-- [`jit_index.py`](../../research/jit_index.py) reconstructs section boundaries, source digests, `next_section` and `part_of` relationships from the current paper. Its output is not a replacement for previously recorded editorial knowledge.
+- [`build_companion.py`](../research/build_companion.py) reads the saved node/edge records and imports them into the Knowledge Positions graph. It **does not infer** editorial edges from the manuscript.
+- [`jit_index.py`](../research/jit_index.py) reconstructs section boundaries, source digests, `next_section` and `part_of` relationships from the current paper. Its output is not a replacement for previously recorded editorial knowledge.
 - The historical companion references a source Git blob distinct from the manuscript revision first committed beside it; historical positions should not be treated as current coordinates.
 - The saved historical companion has no per-edge touch-event history or proof that the three-touch mechanism generated these editorial relationships.
 - The paper-specific alpha is a separate, limited AST/OKF experiment with independently supplied annotations; it does not generate this companion's set of 30 editorial links.

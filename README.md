@@ -1,5 +1,11 @@
 # Quick Start
 
+## Looking for Knowledge Positions or JITK?
+
+Start at [Knowledge Positions](knowledge-positions/README.md). To build or verify a kit, go directly to the [SDF developer guide](knowledge-positions/SDF/README.md). To read the research, use [the paper](knowledge-positions/paper/README.md).
+
+The material below is for the separate human-centered design skills in this repository.
+
 [![Focus](https://img.shields.io/badge/Focus-Human_Centered_AI-8B5CF6?style=flat-square)](https://github.com/l00p3rl00p/barely-passable-ai-stuff) [![Format](https://img.shields.io/badge/Format-Skills-00D6C2?style=flat-square)](https://github.com/l00p3rl00p/barely-passable-ai-stuff)
 These skills aim to test code and outcomes for human centric desin and human experience design
 ---
