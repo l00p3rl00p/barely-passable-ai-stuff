@@ -124,3 +124,31 @@ We started trying to save tokens. The bigger opportunity is to stop repeatedly p
 **We did not invent cascading invalidation.** We learned the dependency-staleness mechanism from [Garyu-tt/noosphere-lite-mcp](https://github.com/Garyu-tt/noosphere-lite-mcp). In our engineering judgment, the library supplies roughly 95% of the mechanisms needed for JIT memory; the remaining work is architecture, integration and execution. This is a design assessment, not a measured percentage or token-saving result. [LadybugDB](https://docs.ladybugdb.com/) is a prospective embedded graph store; [SQLite](https://www.sqlite.org/) supplies the FTS5 example. Neither is required for the core in-memory library.
 
 [Architecture: four views](../ARCHITECTURE.md) · [Agent reminder](../agent.md) · [Runbook](../RUNBOOK.md)
+
+
+## Named graph capabilities — out of the box
+
+These are the ten native views available through `KnowledgePositions.graph_view(kind, name=...)`. The names are discoverable in `KnowledgePositions.GRAPH_VIEWS`. They are conveniences, not a closed graph language.
+
+| View name | What it is for | How to select it |
+|---|---|---|
+| directed | Directional navigation and cycle checks | graph_view('directed') |
+| undirected | Connectivity, reciprocal navigation, union-find | graph_view('undirected') |
+| weighted | Cost-aware paths and spanning trees | graph_view('weighted', unit_cost=True) or provide actual edge costs |
+| multigraph | Preserve parallel relationships and evidence | graph_view('multigraph') |
+| tree | Rooted investigation/hierarchy traversal | graph_view('tree', root=node_id) |
+| forest | Minimum spanning forest across connected groups | graph_view('forest', unit_cost=True) |
+| dag | Prerequisite-first ordering from explicit dependencies | graph_view('dag') |
+| bipartite | Reference–relationship incidence, or caller-selected disjoint sets | graph_view('bipartite') |
+| similarity | Candidate proximity links from compatible known vectors | graph_view('similarity', threshold=0.25) |
+| neighborhood | Bounded local investigation | graph_view('neighborhood', root=node_id, radius=2) |
+
+Use an investigation-specific name for reproducibility. The optional relation filter restricts the input; costs must be justified or explicitly unit cost. A DAG reports cycles rather than hiding them. The default bipartite view uses real relationship records as incidence nodes, not invented factual edges. Tree and forest views are calculated structures, not claims that the full knowledge graph is a hierarchy. Unknown vectors remain nodes without similarity edges.
+
+If a graph structure is not listed, calculate it from the data: use ordinary NetworkX operations on the detached graph, or call `derive_graph(name, transform, source=...)`. For example, `k.derive_graph('navigation-components', nx.condensation, source='directed')` calculates a condensation DAG; `k.derive_graph('relationship-line-graph', nx.line_graph, source='directed')` calculates a line graph. An investigator may use other libraries as appropriate. The original graph is never rewritten merely to satisfy a structural property. If the data do not support a requested *meaning* (e.g., verified causation, measured cost, a real partition), capture missing evidence rather than fabricate it.
+
+`k.core_algorithms(root, target)` runs the ten core algorithms and reports which named view each used. Record useful results, selected views, parameters, original source version and evidence in the evolving knowledge graph; retain only qualified relationships, not every temporary derived edge.
+
+## Working-context retrieval
+
+Use `chat_context` for working conversations. The default policy is Personalized PageRank / random-walk-with-restart attenuation from the selected root, with a transparent `conservative`, `balanced`, or `aggressive` profile. No fixed hop depth is imposed. When an ego radius is genuinely the desired graph operation, request `retrieval='ego'` and an explicit radius. `other` contains immediate boundary references not loaded into the working set. Graph calculations and cascading dependency staleness remain full-graph operations. API writes clear the derived cache; direct NetworkX mutations require `invalidate_cache()`.

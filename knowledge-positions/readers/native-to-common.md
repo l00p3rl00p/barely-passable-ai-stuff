@@ -2,18 +2,7 @@
 
 **Do not stop at "use OKF."** Every declared reader/parser MUST publish its field crosswalk into the same UKC common-record vocabulary **before** advertising that reader as supported. The crosswalk is implemented at the existing input boundary: no per-search retranslation, no AST→graph→vector knowledge pipeline, no mandatory global ontology. Preserve **all native fields** even when only a subset is directly indexed. A missing recognized field is represented as unsupported or unknown, never invented.
 
-The following is the binding vocabulary for all SDK implementations; the field paths are under producer-defined x_ukc (OKF itself standardizes only its own frontmatter fields and extension convention). **These are named semantic field families in one logical record, not additional objects or completion slots.**
-
-| Common x_ukc field | Native source that supplies it | Invariant |
-|---|---|---|
-| id, source.authority, source.key, source.version | Source resolver, filesystem/provider/repository, content hash | One identity for all search methods; source route and current access are separate |
-| kind, values, native | Exact native reader/parser output, including unknown keys | Retain original casing, types, structure and payload; never discard unrecognized fields |
-| values.name / title / typed attributes | Native filename, explicit heading, symbol, column name, literal metadata | Record provenance per field; file name from filesystem ≠ AST-produced name |
-| location.source_locator, source_version, spans | Filesystem/URI/provider, native span or qualified locator | Version and coordinate units mandatory; original source recoverable when access permits |
-| location.item_path, parent_path, sibling_index, depth | Actual AST, DOM, document tree, workbook sheet/cell or native hierarchy | Structural position is distinct from external source location; **do not invent a tree** |
-| relations[].{subject,predicate,target,direction,origin,evidence} | Actual parser child/parent, DOM href, imports, document links, filesystem containment, qualified delta | Exact direction and observed-vs-proposed status; native edges are graph-ready |
-| proximity inputs | Existing names, literals, content, coordinates or vectors with declared encoder | Lexical/fuzzy similarity can work without an embedding; computed vector is a derived indexable value, not new source truth |
-| evidence / native original | Original bytes or accessible hash-addressed original, parser version, source-hash and span hashes | The full parse/source can be checked and reconstructed; illustrative excerpts are never substitutes |
+The [complete capture reference](../contracts/common-record.md) owns the common field definitions, requirement levels, provenance and missing-value rules. The reader crosswalk below provides concrete mappings into that vocabulary; it does not independently redefine the minimum record.
 
 **The exact inherited OpenKC field crosswalk (from Scratchpad MAPPING.md and actual openkc_etl.py):**
 

@@ -1,6 +1,6 @@
-# Unified Knowledge Context (UKC): The Knowledge Positions SDK
+# Knowledge Positions SDF — specification and developer guide
 
-**Experimental / pre-standard.** A small Python library for just-in-time knowledge navigation: one identity, three positions (source, vector, graph). Keep original evidence accessible and let the intelligence construct and navigate its own graph using NetworkX.
+**Experimental / pre-standard.** Language- and target-independent framework for source-backed knowledge navigation. The existing universal Rust scanner and target kits are implementations; the historical Python library is a reference, not a framework dependency.
 
 **ONE KNOWLEDGE IDENTITY. THREE POSITIONS: LOCATION · RELATION · PROXIMITY.**
 
@@ -9,9 +9,13 @@
 
 ![Knowledge Positions: source-backed knowledge navigation](diagrams/knowledge-loop.svg)
 
-**Normative contract:** UKC/1 candidate. **Target:** any execution language. **Authority:** the linked core contract sections below, interpreted with the existing JITK paper, two companion specifications and original executable experiments. The index is navigation, not the whole SDK specification.
+**Normative contract:** UKC/1 candidate. **Target:** any execution language. **Authority:** the linked normative UKC contract sections own their requirements. Research and experiments supply context and evidence; optional companion profiles apply only when selected.
 
-## Start here — choose what you want to do
+## Start here
+
+Use the [SDF developer guide and TOC](SDF/README.md) for the natural reading order, capture reference, SIPOC cookbook and conformance path. This page is the detailed UKC specification index, not a competing introductory guide.
+
+## Existing examples and shortcuts
 
 The original [Knowledge Positions README](README.md) explains the existing library and includes installation and capture instructions. The pages below put its existing examples, code and recorded results first.
 
@@ -63,7 +67,7 @@ This index and the contract documents **do not themselves implement an executabl
 - [9. Retrieval and investigative loop](methods/retrieval.md)
 - [10. Mandatory conformance suite: no claims without execution](conformance/requirements.md)
 - [11. Lifecycles, updates, concurrency, storage and performance](core/lifecycle.md)
-- [12. Implementer's exact procedure](docs/implementer-guide.md)
+- [12. Implementer's SIPOC cookbook](docs/implementer-guide.md)
 - [13. Future fourth position: Resonance](docs/resonance.md)
 
 ## Agent and Host Integration — optional, non-normative guidance

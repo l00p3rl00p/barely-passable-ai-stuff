@@ -42,13 +42,13 @@ Core does not prohibit domain extensions. [Knowledge Graph Relationships](Knowle
 | Subgraph / projection | Selected nodes, edges or relationship types; explicitly state any direction, weight or edge-collapse transformation |
 | Neighborhood | Nodes adjacent to a reference; expansion may include a selected number of hops |
 
-A weighted graph and a DAG are properties/views, not separate mandatory stores. Knowledge Positions exposes its NetworkX MultiDiGraph; the intelligence creates the appropriate view. Never discard direction or parallel evidence accidentally.
+A weighted graph and a DAG are properties/views, not separate mandatory stores. The target exposes an appropriate native graph view; the investigator chooses the view. Never discard direction or parallel evidence accidentally.
 
 ## 3. Core graph algorithms
 
-Use NetworkX directly. These are the ten fundamental algorithms from the supplied reference, plus the minimal dependency and neighborhood operations already used by the library.
+Use the target’s native graph algorithms where available. The NetworkX column below is an example from the existing Python reference, not a required dependency.
 
-| Algorithm | Native operation | Use over our work |
+| Algorithm | Python/NetworkX example | Use over our work |
 |---|---|---|
 | Depth-first search | nx.dfs_preorder_nodes | Follow a chain of relationships |
 | Breadth-first search | nx.bfs_tree | Explore nearby knowledge level by level |
@@ -90,11 +90,9 @@ Choose the graph, relationship types, direction, weights and algorithm that answ
 
 ## First pass: Core + three required positions
 
-Every admitted knowledge item first receives one common identity and three positional slots: **location** (original source address, version and exact coordinates), **relation** (graph node identity and any known qualified relationships), and **proximity** (a compatible embedding/vector position). Proximity is computed against other vectors when needed; it is not a factual relationship. A graph position is required even when no relationship has yet been established. Do not invent edges to fill a graph.
+The [complete capture reference](contracts/common-record.md) owns the required record fields and missing-value behavior. The [positions contract](contracts/positions.md) explains location, relation, proximity and the reserved resonance extension. The twelve relationship types above are a shared vocabulary; only source-supported or appropriately qualified relationships may be recorded.
 
-The twelve core relationship types are the first-pass relationship vocabulary. Record only relationships actually supported by the source or qualified as candidates. Additional domain-specific relationships and deeper discoveries belong to enrichment. Enrichment extends the first pass without replacing original evidence or changing human intent. A required slot may be unknown: use a separate status and a null value, never a fabricated coordinate. The library implements deferred embeddings (`vector=null`, `vector_status='unknown'`) and source-verified `fill_vector`. Unknown vectors remain graph nodes but do not participate in similarity calculations. Source-backed admission still requires the actual source identity, version and coordinates; unresolved original-source locators are recorded as leads, not exact source spans.
-
-**Location is not access or ownership.** A source record retains its owner, observed version and verified coordinates separately from possible access realms/routes. Current discover/read/write rights must be checked by the current environment; a graph reference to a private provider chat or an SSH-only source is not an access grant. See the [portable location guidance](LOCATION_ACCESS.md). Structural indexing may cover many sources cheaply, but **LLM enrichment is performed only when work has already touched and read relevant source content**. Initial admission counts as enrichment touch 1; a node or explicit cluster can receive only two more semantic mutation passes. After touch 3 its payload freezes until verified source mutation starts a new epoch; later discoveries link outward as new knowledge/relationships.
+**Location is not access or ownership.** A source record retains its owner, observed version and verified coordinates separately from possible access realms/routes. Current discover/read/write rights must be checked by the current environment; a graph reference to a private provider chat or an SSH-only source is not an access grant. See the [portable location guidance](LOCATION_ACCESS.md). Structural indexing may cover many sources cheaply, but **LLM enrichment is performed only when work has already touched and read relevant source content**. The [touch lifecycle](core/lifecycle.md) governs admission and enrichment. After touch 3 its payload freezes until verified source mutation starts a new epoch; later discoveries link outward as new knowledge/relationships.
 
 ### Item-internal structural position
 
@@ -106,27 +104,8 @@ Do not merely project whatever edges happen to exist. When work establishes a pr
 
 ## Named graph capabilities — out of the box
 
-These are the ten native views available through `KnowledgePositions.graph_view(kind, name=...)`. The names are discoverable in `KnowledgePositions.GRAPH_VIEWS`. They are conveniences, not a closed graph language.
-
-| View name | What it is for | How to select it |
-|---|---|---|
-| directed | Directional navigation and cycle checks | graph_view('directed') |
-| undirected | Connectivity, reciprocal navigation, union-find | graph_view('undirected') |
-| weighted | Cost-aware paths and spanning trees | graph_view('weighted', unit_cost=True) or provide actual edge costs |
-| multigraph | Preserve parallel relationships and evidence | graph_view('multigraph') |
-| tree | Rooted investigation/hierarchy traversal | graph_view('tree', root=node_id) |
-| forest | Minimum spanning forest across connected groups | graph_view('forest', unit_cost=True) |
-| dag | Prerequisite-first ordering from explicit dependencies | graph_view('dag') |
-| bipartite | Reference–relationship incidence, or caller-selected disjoint sets | graph_view('bipartite') |
-| similarity | Candidate proximity links from compatible known vectors | graph_view('similarity', threshold=0.25) |
-| neighborhood | Bounded local investigation | graph_view('neighborhood', root=node_id, radius=2) |
-
-Use an investigation-specific name for reproducibility. The optional relation filter restricts the input; costs must be justified or explicitly unit cost. A DAG reports cycles rather than hiding them. The default bipartite view uses real relationship records as incidence nodes, not invented factual edges. Tree and forest views are calculated structures, not claims that the full knowledge graph is a hierarchy. Unknown vectors remain nodes without similarity edges.
-
-If a graph structure is not listed, calculate it from the data: use ordinary NetworkX operations on the detached graph, or call `derive_graph(name, transform, source=...)`. For example, `k.derive_graph('navigation-components', nx.condensation, source='directed')` calculates a condensation DAG; `k.derive_graph('relationship-line-graph', nx.line_graph, source='directed')` calculates a line graph. An investigator may use other libraries as appropriate. The original graph is never rewritten merely to satisfy a structural property. If the data do not support a requested *meaning* (e.g., verified causation, measured cost, a real partition), capture missing evidence rather than fabricate it.
-
-`k.core_algorithms(root, target)` runs the ten core algorithms and reports which named view each used. Record useful results, selected views, parameters, original source version and evidence in the evolving knowledge graph; retain only qualified relationships, not every temporary derived edge.
+See the [Python reference-library graph views](docs/python-library-guide.md#named-graph-capabilities--out-of-the-box) for the existing implementation. Other targets use their native equivalents.
 
 ## Working-context retrieval
 
-Use `chat_context` for working conversations. The default policy is Personalized PageRank / random-walk-with-restart attenuation from the selected root, with a transparent `conservative`, `balanced`, or `aggressive` profile. No fixed hop depth is imposed. When an ego radius is genuinely the desired graph operation, request `retrieval='ego'` and an explicit radius. `other` contains immediate boundary references not loaded into the working set. Graph calculations and cascading dependency staleness remain full-graph operations. API writes clear the derived cache; direct NetworkX mutations require `invalidate_cache()`.
+See the [Python reference-library retrieval example](docs/python-library-guide.md#working-context-retrieval). This is an implementation profile, not a mandatory framework algorithm.

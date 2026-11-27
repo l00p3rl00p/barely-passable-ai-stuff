@@ -6,16 +6,21 @@ Knowledge Positions has two entry points: [the paper](../paper/README.md) and th
 
 **JITK is the broader research and engineering endeavor.** Knowledge Positions is a contribution within it: one source-backed knowledge identity and one logical record, with available values usable by multiple methods. A method may use existing recorded values without creating a competing knowledge object or a mandatory AST-to-graph-to-vector conversion chain. An implementation must not invent values that are absent. The original evidence remains authoritative.
 
-## Read the framework in this order
+## Developer guide and table of contents
 
-| Start here | Existing material | What it establishes |
-| --- | --- | --- |
-| **1. Understand** | [Mission](../MISSION.md), [Architecture](../ARCHITECTURE.md), [Core vocabulary](../CORE_VOCABULARY.md) | Why the method exists, its logical model, and its terminology |
-| **2. Specify** | [Common record](../contracts/common-record.md), [Positions](../contracts/positions.md), [Public operations](../contracts/public-operations.md), [First law](../contracts/first-law.md) | Language-independent records, invariants, operations, and boundaries |
-| **3. Apply the method** | [Methods](../methods/), [Core](../core/), [Location/access](../LOCATION_ACCESS.md) | Retrieval, relations, proximity, source access, lifecycle, and enrichment |
-| **4. See examples** | [Examples](../examples/), [Developer guidance](../docs/implementer-guide.md) | Concrete demonstrations, not mandatory algorithms or technologies |
-| **5. Choose tools/language** | [Languages](../languages/), [Adapters](../adapters/), [Python library guide](../docs/python-library-guide.md) | Optional implementations and integration guidance; language is not the method |
-| **6. Verify behavior** | [Conformance](../conformance/), [reference-library smoke-check tooling](../tools/) | Whether an implementation maintains the stated requirements; a smoke check is not certification |
+JITK is an approach to making knowledge available when needed. KP represents knowledge through Location, Relation, Proximity and Resonance (currently a reserved UKC extension). UKC is the common record contract. OKF is the external interoperability format. This SDF is the development framework; kits implement it against their native targets. The paper is an independent research perspective.
+
+| Step / goal | Read in order | Check your work |
+|---|---|---|
+| 1. Understand the framework | [First Law](../contracts/first-law.md), [positions](../contracts/positions.md), [scope and authority](../docs/authority-and-evidence.md) | Identify common identity and separate JITK, KP, UKC, OKF, SDF and kits. |
+| 2. Know what to capture | [Complete capture reference](../contracts/common-record.md), [identity algorithm](../core/identity.md), [relationship vocabulary](../CORE_VOCABULARY.md) | Every required/conditional field, provenance and missing-value behavior accounted for. |
+| 3. Know how it operates | [Native ingestion](../contracts/native-ingestion.md), [lifecycle and block grouping](../core/lifecycle.md), [relationships](../core/relations-and-enrichment.md), [public operations](../contracts/public-operations.md) | Check processing boundaries, touch budget, supported groupings and retrieval. |
+| 4. Build a kit | [SIPOC assembly cookbook](../docs/implementer-guide.md), [reader crosswalks](../readers/native-to-common.md), [native adapters](../adapters/README.md) | Assess native capabilities, implement only gaps, execute recipe checks. |
+| 5. Check and certify | [UKC conformance](../conformance/requirements.md), [independent review checklist](../conformance/sdf-independent-review.md), [scanner/emitter checks](../conformance/scanner-emitter-checklist.md) | Record actual inputs, expected and observed outputs, pass/fail/blocked. |
+| 6. Use existing components | [Rust](../languages/rust/README.md), [Python reference](../languages/python/README.md), [TypeScript status](../languages/typescript/README.md), [examples](../examples/README.md) | Verify actual capabilities and limitations before installation/use. |
+| 7. Explore research | [Paper](../paper/README.md), [research](../research/README.md), [reconstruction examples](examples/README.md) | Distinguish existing experiments from normative requirements and current verification. |
+
+For a complete section-by-section normative index, see [UKC specification](../unified-knowledge-context.md). For existing component coverage, see the [capability map](../docs/component-and-capability-map.md). No implementation must read historical experiments to discover hidden requirements.
 
 ### Existing higher-order specifications
 
@@ -43,12 +48,12 @@ The existing `research/` directory contains more than the manuscript: it also ho
 
 ## What this does not change
 
-This navigation does **not** rename the Python package, rewrite or relocate the paper, alter the UKC/1 candidate contract, declare additional conformance, or change source files, packaging, tests, or runtime behavior. Any future physical moves should preserve links and test entry points and be made only when the move itself adds value.
+This navigation does **not** rename the Python package, rewrite or relocate the paper, declare additional conformance, or change runtime code, packaging, tests or configuration. Approved contract clarifications are owned by their linked normative sections. Any future physical moves should preserve links and test entry points and be made only when the move itself adds value.
 
 ## Reconstructed Knowledge Positions — executed, cross-language paper proof
 
 [Run the complete current-paper reconstruction](examples/README.md) in Python or JavaScript. Both implementations read the existing public paper and archived companion without modifying them. In the latest verified execution, they produced **29 current `ukc/1` common records**, found **15 unchanged historical sections**, reproduced **15 matching lexical vectors**, and reconstructed **38 source-observed structural relations plus eight hash-qualified historical editorial navigation relations**. Another 22 historical editorial links remain inactive because the underlying source version changed.
 
-This is the language-neutral shared-record method in actual use: one canonical source-backed identity per section, available Location/Relation/Proximity values, honest native structural metadata, verified original-byte resolution, and portable `x_ukc` records. The [shared regression test](../tests/test_paper_reconstruction.py) is executed by [GitHub Actions](../../.github/workflows/paper-reconstruction.yml). Existing [three-touch tests](../tests/test_enrichment_budget.py) separately establish that semantic payload mutation freezes after the third touch while qualified outward relationships remain possible. No historical per-edge touch attribution is claimed.
+This is the language-neutral shared-record method in actual use: one canonical source-backed identity per section, available Location/Relation/Proximity values, honest native structural metadata, verified original-byte resolution, and portable records using the historical `x_ukc` spelling (the current interchange contract uses `x-ukc`). The [shared regression test](../tests/test_paper_reconstruction.py) is executed by [GitHub Actions](../../.github/workflows/paper-reconstruction.yml). Existing [three-touch tests](../tests/test_enrichment_budget.py) separately establish that semantic payload mutation freezes after the third touch while qualified outward relationships remain possible. No historical per-edge touch attribution is claimed.
 
 The public example is intentionally **EKC-anchored Markdown only**; it does not claim full CommonMark AST fidelity or complete source-agnostic SDK certification. The original manuscript and historical index remain intact. This is a technical reproduction of the current paper, not a retroactive amendment to its original research.
