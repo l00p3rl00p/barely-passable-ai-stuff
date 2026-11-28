@@ -1,4 +1,43 @@
+---
+type: Guide
+title: Knowledge Positions
+description: Start here to understand, use or implement Knowledge Positions.
+tags: [topic]
+---
+
 # Knowledge Positions
+
+## Purpose
+
+Find, connect and reuse knowledge without having to rediscover it each time.
+
+Knowledge Positions makes the same source-backed knowledge accessible through **Location, Relation and Proximity**. A knowledge graph can exist independently of Knowledge Positions; the method can also be applied to that graph.
+
+## Requirements
+
+| What must be true | Where to learn more |
+|---|---|
+| The same knowledge has one identity across access methods. | [First Law](contracts/first-law.md) |
+| Preserve what the source knows; do not invent missing values. | [Common record](contracts/common-record.md) |
+| Location, Relation and Proximity work against the same record. | [Framework contract](unified-knowledge-context.md) |
+| Implementations demonstrate their behavior with evidence. | [Conformance requirements](conformance/requirements.md) |
+
+## Related knowledge
+
+| I want to understand… | Continue here |
+|---|---|
+| What Just-in-Time Knowledge means | [Research paper](paper/README.md) |
+| How to build an implementation | [SDF developer guide](SDF/README.md) |
+| How to construct and enrich a knowledge graph | [Knowledge Graph Relationships and Enrichment](Knowledge_Graph_Relationships_and_Enrichment.md) |
+| How knowledge and schemas evolve safely | [Knowledge Asset Evolution](Knowledge-Asset-Evolution-Spec-v1.6.3.md) |
+| How an agent can use available knowledge | [JITK skill](skills/knowledge-positions/README.md) |
+| How the components fit together | [Implementation cookbook](docs/implementer-guide.md) |
+| How the documentation itself is connected | [Documentation knowledge graph](index.md) |
+
+---
+
+<details>
+<summary><strong>Existing reference documentation, examples and API — expand when needed</strong></summary>
 
 ## Start here — choose one goal
 You do not need to read the whole directory.
@@ -147,3 +186,5 @@ The [UKC/1 contract](unified-knowledge-context.md) defines the common record, ca
 - [Original Python project guide](docs/python-library-guide.md)
 
 **Status:** Experimental Python library (`0.1.0` in `pyproject.toml`) and UKC/1 candidate specification. The original sources and accepted discoveries are authoritative; graph and search indexes are reconstructable projections. Other implementations may use any suitable language, parser, or database as long as they meet and demonstrate the shared contract.
+
+</details>
